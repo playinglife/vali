@@ -1,0 +1,73 @@
+$color-background: #E7DCC0;
+$color-background-transparent: rgba(0, 0, 0, 0.5);
+$color-panel: #E7DCC0;
+$color-border: #49544b;
+
+$color-one: #8CB9C4;
+$color-two: #C48CB9;
+$color-three: #B9C48C;
+$color-four: #97B39E;
+$color-five: #546A6F;
+
+$color-success: green;
+$color-error: red;
+$color-warning: yellow;
+$color-info: blue;
+$color-action: #c48cb9;
+
+$font-family-one: "Roboto Black", sans-serif !important;
+$font-family-two: "Roboto Black", sans-serif !important;
+
+$padding-small: 1em;
+$padding-medium: 2em;
+$padding-large: 3em;
+
+$margin-small: 1em;
+$margin-medium: 2em;
+$margin-large: 3em;
+
+$border-radius-small: 0.05em;
+$border-radius-medium: 0.1em;
+$border-radius-large: 0.5em;
+
+$color-text: #fff;
+
+
+
+/* Exposed to Blade / inline <style> via var(...) — SCSS $vars are not compiled there */
+:root {
+    --color-background: #{$color-background};
+    --color-background-transparent: #{$color-background-transparent};
+    --color-panel: #{$color-panel};
+    --color-border: #{$color-border};
+
+    --color-one: #{$color-one};
+    --color-two: #{$color-two};
+    --color-three: #{$color-three};
+    --color-four: #{$color-four};
+    --color-five: #{$color-five};
+
+    --color-success: #{$color-success};
+    --color-error: #{$color-error};
+    --color-warning: #{$color-warning};
+    --color-info: #{$color-info};
+    --color-action: #{$color-action};
+
+    /* Same stacks as $font-family-*; !important omitted so var() works in plain CSS */
+    --font-family-one: "Roboto Black", sans-serif;
+    --font-family-two: "Roboto Black", sans-serif;
+
+    --padding-small: #{$padding-small};
+    --padding-medium: #{$padding-medium};
+    --padding-large: #{$padding-large};
+
+    --margin-small: #{$margin-small};
+    --margin-medium: #{$margin-medium};
+    --margin-large: #{$margin-large};
+
+    --border-radius-small: #{$border-radius-small};
+    --border-radius-medium: #{$border-radius-medium};
+    --border-radius-large: #{$border-radius-large};
+
+    --color-text: #{$color-text};
+}

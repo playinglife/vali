@@ -21,8 +21,8 @@ class ContactController extends Controller
 
         // Send the email
         Mail::raw(
-            "Name: {$validated['name']}\n" .
-            "Email: {$validated['email']}\n\n" .
+            "Name: {$validated['name']}\n".
+            "Email: {$validated['email']}\n\n".
             "Message:\n{$validated['message']}",
             function ($message) use ($validated, $toEmail) {
                 $message->to($toEmail)
@@ -35,4 +35,3 @@ class ContactController extends Controller
         return redirect()->route('contact.success')->with('success', 'Your message has been sent successfully. We typically respond within 24 hours.');
     }
 }
-

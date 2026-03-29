@@ -1,0 +1,3 @@
+SESSION VARIABLES
+-----------------
+language

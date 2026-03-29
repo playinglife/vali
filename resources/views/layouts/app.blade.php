@@ -5,21 +5,57 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Clef Play - @yield('title')</title>
-        @vite(['resources/css/app.css','resources/js/app.js'])
-        
+        <title>ShirtHouse - @yield('title')</title>
+        @vite(['resources/scss/app.scss','resources/js/app.js'])
+        @livewireStyles
+
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     </head>
     <body>
-        <div class="flex flex-col w-full h-full overflow-y-auto bg-black">
+        <div class="root-views-layouts-app">
             <!-- Menu -->
             @include('layouts.menu')
             <!-- Content -->
-            <div id="main-content" class="w-full h-full flex absolute top-0 left-0 right-0 bottom-0 z-1 overflow-y-auto">
+            <div class="main-content">
             <!--<div class="flex flex-1 relative">-->
                 @yield('content')
             </div>
         </div>
+        @livewireScripts
     </body>
 </html>
+@once
+    <style lang="scss" scoped>
+        body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box;
+        }
+        .root-views-layouts-app {
+            width: 100%;
+            height: 100%;
+            box-sizing: border-box;
+            flex: 1;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: auto;
+            box-sizing: border-box;
+            & > .main-content {
+                width: 100%;
+                height: 100%;
+                box-sizing: border-box;
+                flex: 1;
+                z-index: 0;
+                display: flex;
+                flex-direction: column;
+                overflow: auto;
+                box-sizing: border-box;
+            }
+        }
+    </style>
+@endonce
