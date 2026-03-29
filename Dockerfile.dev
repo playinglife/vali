@@ -1,0 +1,10 @@
+FROM thecodingmachine/php:8.2-v4-apache
+USER root
+RUN apt-get update -o Acquire::Retries=3 \
+ && apt-get install -y --no-install-recommends imagemagick librsvg2-2 librsvg2-bin \
+ && rm -rf /var/lib/apt/lists/*
+# keep running as root (required by this image's entrypoint)
+# do NOT switch to www-data
+ENV APACHE_DOCUMENT_ROOT=public/
+ENV PHP_EXTENSIONS="gd imagick"
+WORKDIR /var/www/html

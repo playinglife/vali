@@ -1,0 +1,459 @@
+@import "tailwindcss";
+
+/* Tell Tailwind where to scan for classes */
+@source "../views/**/*.blade.php";
+@source "../js/**/*.{js,ts,vue}";
+@source "../../storage/framework/views/*.php";
+@source "../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php";
+
+/* Lato Font Family */
+@font-face{
+  font-family:"Lato";
+  src:url("/public/fonts/lato/Lato-Regular.ttf") format("truetype");
+  font-weight:400;
+  font-style:normal;
+  font-display:swap;
+}
+
+@font-face{
+  font-family:"Lato";
+  src:url("/public/fonts/lato/Lato-Medium.ttf") format("truetype");
+  font-weight:500;
+  font-style:normal;
+  font-display:swap;
+}
+
+@font-face{
+  font-family:"Lato";
+  src:url("/public/fonts/lato/Lato-Bold.ttf") format("truetype");
+  font-weight:700;
+  font-style:normal;
+  font-display:swap;
+}
+
+@font-face{
+  font-family:"Lato";
+  src:url("/public/fonts/lato/Lato-Black.ttf") format("truetype");
+  font-weight:900;
+  font-style:normal;
+  font-display:swap;
+}
+
+@font-face{
+  font-family:"Lato";
+  src:url("/public/fonts/lato/Lato-Thin.ttf") format("truetype");
+  font-weight:100;
+  font-style:normal;
+  font-display:swap;
+}
+
+@font-face{
+  font-family:"Lato";
+  src:url("/public/fonts/lato/Lato-Hairline.ttf") format("truetype");
+  font-weight:200;
+  font-style:normal;
+  font-display:swap;
+}
+
+/* Roboto font (keeping as fallback) */
+@font-face{
+  font-family:"Roboto Black";
+  src:url("/public/fonts/roboto/Roboto-Black.woff2") format("woff2");
+  font-weight:900;
+  font-style:normal;
+  font-display:swap;
+}
+
+/* Oswald Font Family */
+@font-face{
+  font-family:"Oswald";
+  src:url("/public/fonts/oswald/Oswald-Light.woff2") format("woff2"),
+      url("/public/fonts/oswald/Oswald-Light.ttf") format("truetype");
+  font-weight:300;
+  font-style:normal;
+  font-display:swap;
+}
+
+@font-face{
+  font-family:"Oswald";
+  src:url("/public/fonts/oswald/Oswald-Regular.woff2") format("woff2"),
+      url("/public/fonts/oswald/Oswald-Regular.ttf") format("truetype");
+  font-weight:400;
+  font-style:normal;
+  font-display:swap;
+}
+
+@font-face{
+  font-family:"Oswald";
+  src:url("/public/fonts/oswald/Oswald-Bold.woff2") format("woff2"),
+      url("/public/fonts/oswald/Oswald-Bold.ttf") format("truetype");
+  font-weight:700;
+  font-style:normal;
+  font-display:swap;
+}
+
+html {
+    font-family:"Lato", "Roboto Black", system-ui, sans-serif !important; 
+    font-size: 1vw;
+    margin: 0px;
+    height: 100%;
+    width: 100%;
+ }
+ 
+body {
+    font-family:"Lato", "Roboto Black", system-ui, sans-serif !important; 
+    margin: 0px;
+    padding: 0;
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    display: flex;
+    background-color: #000;
+ }
+
+ .my-menu {
+    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+    opacity: 1;
+    transform: translateY(0);
+ }
+
+ .my-menu.hidden {
+    opacity: 0;
+    transform: translateY(-100%);
+ }
+
+ a:not(.button) {
+    font-size: 0.8rem;
+    font-weight: normal;
+    text-decoration: none;
+    color: var(--color-five);
+    font-family: "Oswald", sans-serif !important; 
+    font-weight: 400 !important;
+    letter-spacing: 0.05em;
+    &:hover {
+        color: var(--color-five-500);
+        text-shadow: 0 0 10px var(--color-five-500);
+    }
+ }
+
+ .color-dark {
+    color: #242121;
+ }
+
+ .color-light {
+    color: #fff;
+ }
+
+ h1, h2, h3, h4, h5, h6 {
+    font-family: "Oswald", sans-serif !important; 
+    font-weight: bold;
+    /*text-shadow: 0 0 10px black;*/
+ }
+
+ h1 {
+    font-size: 3rem;
+ }
+ h2 {
+    font-size: 2.5rem;
+ }
+ h3 {
+    font-size: 2rem;
+ }
+ h4 {
+    font-size: 1.5rem;
+ }
+ h5 {
+    font-size: 1rem;
+ }
+
+ h6 {
+    font-size: 0.5rem;
+ }
+
+ .font-family-one {
+    font-family: "Oswald", sans-serif !important; 
+ }
+ .font-family-two {
+    font-family: "Lato", sans-serif !important; 
+ }
+
+ @theme {
+
+    --radius-xs: 0.01rem;
+    --radius-sm: 0.05rem;
+    --radius-md: 0.1rem;
+    --radius-lg: 0.15rem;
+    --radius-xl: 0.2rem;
+    --radius-2xl: 1rem;
+    --radius-3xl: 2rem;
+    --radius-4xl: 3rem;
+  
+    /*SVGs*/
+    --color-svg-background: transparent;
+    --color-svg-stroke: #333;
+    --color-svg-1: #789799;
+    --color-svg-2: #fff;
+  
+    /*Main colors*/
+    --color-background: #E7DCC0;
+    /*--color-background: #97B39E;*/
+    --color-panel: #E7DCC0;
+    --color-border: #49544b;
+  
+    --color-one: #8CB9C4;
+    --color-two: #C48CB9;
+    --color-three: #B9C48C;
+    --color-four: #97B39E;
+    --color-five: #546A6F;
+    --color-tree: #97B39E;
+  
+    --color-action: #9D7278;
+  
+    --color-one-50: #f4f5f0;
+    --color-one-100: #e5e9de;
+    --color-one-200: #cfd6c0;
+    --color-one-300: #b0bb9b;
+    --color-one-400: #8e9d72;
+    --color-one-500: #76865c;
+    --color-one-600: #5c6947;
+    --color-one-700: #485239;
+    --color-one-800: #3c4331;
+    --color-one-900: #343b2c;
+    --color-one-950: #1a1e15;
+  
+  
+    --color-two-50: #f5f8f7;
+    --color-two-100: #ddeae7;
+    --color-two-200: #bbd4cf;
+    --color-two-300: #91b7b0;
+    --color-two-400: #729d97;
+    --color-two-500: #507c76;
+    --color-two-600: #3e635f;
+    --color-two-700: #34514e;
+    --color-two-800: #2d4241;
+    --color-two-900: #283937;
+    --color-two-950: #141f1f;
+  
+  
+    --color-three-50: #f8f7fb;
+    --color-three-100: #f2f1f6;
+    --color-three-200: #e7e5ef;
+    --color-three-300: #d4d0e2;
+    --color-three-400: #bab4d1;
+    --color-three-500: #a095bd;
+    --color-three-600: #8c7cab;
+    --color-three-700: #82729d;
+    --color-three-800: #66587f;
+    --color-three-900: #554a68;
+    --color-three-950: #373045;
+  
+    
+    --color-four-50: #f8f8f2;
+    --color-four-100: #ecebd9;
+    --color-four-200: #d7d5b0;
+    --color-four-300: #c4c08b;
+    --color-four-400: #b4ac6b;
+    --color-four-500: #a79759;
+    --color-four-600: #937e4c;
+    --color-four-700: #7b6442;
+    --color-four-800: #66523a;
+    --color-four-900: #554532;
+    --color-four-950: #2f2519;
+  
+    --color-five-50: #f4f7f7;
+    --color-five-100: #e3e9ea;
+    --color-five-200: #cad6d7;
+    --color-five-300: #a5b8bb;
+    --color-five-400: #799397;
+    --color-five-500: #5d787d;
+    --color-five-600: #546a6f;
+    --color-five-700: #455559;
+    --color-five-800: #3e494c;
+    --color-five-900: #373f42;
+    --color-five-950: #21282b;
+  
+    --color-action-50: #f9f6f7;
+    --color-action-100: #f4eff0;
+    --color-action-200: #ebdfe2;
+    --color-action-300: #dbc6cb;
+    --color-action-400: #c3a3aa;
+    --color-action-500: #af858d;
+    --color-action-600: #9d7278;
+    --color-action-700: #80565a;
+    --color-action-800: #6b494d;
+    --color-action-900: #5b4043;
+    --color-action-950: #352224;
+  
+    --color-background-50: #faf7f2;
+    --color-background-100: #f4efe0;
+    --color-background-200: #e7dcc0;
+    --color-background-300: #d8c499;
+    --color-background-400: #c7a770;
+    --color-background-500: #bc9153;
+    --color-background-600: #ae7e48;
+    --color-background-700: #91653d;
+    --color-background-800: #755137;
+    --color-background-900: #5f442f;
+    --color-background-950: #332217;
+  
+    --font-display: "Jorude", "Open Sans", sans-serif;
+  
+  }
+
+/* 3D Rotation Classes */
+.rotate-3d {
+  transform: perspective(1000px) rotateX(3deg) rotateY(1deg);
+  transform-style: preserve-3d;
+  transition: transform 0.3s ease;
+}
+
+.rotate-3d-image {
+  transform: perspective(1000px) scale(1.00);
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  z-index: 1;
+  position: relative;
+}
+
+.rotate-3d:hover {
+  transform: perspective(1000px) scale(1.05);
+}
+
+.rotate-3d:hover .rotate-3d-image {
+  transform: perspective(1000px) scale(1.25) rotateZ(-5deg);
+  transform-style: preserve-3d;
+  box-shadow: 0 20px 30px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  z-index: 9999;
+  position: relative;
+}
+
+.rotate-3d:hover > div:first-child > .rotate-3d-image {
+  transform: perspective(1000px) scale(1.25) rotateZ(-5deg) translateX(15%);
+  transition: transform 0.3s ease;
+}
+
+.rotate-3d:hover > div:last-child > .rotate-3d-image {
+  transform: perspective(1000px) scale(1.25) rotateZ(-5deg) translateX(-15%);
+  transition: transform 0.3s ease;
+}
+
+.rotate-3d-text {
+  transform: perspective(1000px) scale(1.00);
+  transform-style: preserve-3d;
+  transition: transform 0.3s ease;
+}
+
+.rotate-3d:hover .rotate-3d-text {
+  transform: perspective(1000px) scale(1.05);
+  transform-style: preserve-3d;
+  transition: transform 0.3s ease;
+}
+
+/* Text Shadow Classes */
+.text-shadow-lg {
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+.text-shadow-lg-light {
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 1);
+}
+
+.text-shadow-lg-dark {
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 1);
+}
+
+
+.text-shadow-xl {
+  text-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+}
+
+.text-shadow-2xl {
+  text-shadow: 0 12px 24px rgba(0, 0, 0, 0.5);
+}
+
+.shadow-lg {
+  box-shadow: 0 5px 8px rgba(0, 0, 0, 0.1);
+}
+
+.shadow-xl {
+  box-shadow: 0 7px 10px rgba(0, 0, 0, 0.3);
+}
+
+.shadow-2xl {
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.5);
+}
+
+/* Flashlight effect for buttons */
+.flashlight-button {
+  position: relative;
+  overflow: hidden;
+}
+
+.flashlight-button::before {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: -100%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent 40%,
+    rgba(255, 255, 255, 0.4) 50%,
+    transparent 60%
+  );
+  transition: all 0.6s ease;
+  z-index: 1;
+  transform: rotate(45deg);
+}
+
+.flashlight-button:hover::before {
+  top: -100%;
+  left: 100%;
+}
+
+.flashlight-button > * {
+  position: relative;
+  z-index: 2;
+}
+
+/* List styles */
+ul {
+  list-style-type: disc;
+  list-style-position: inside;
+  padding-left: 0;
+}
+
+ul li {
+  padding-left: 0;
+  margin-bottom: 0.5rem;
+}
+
+ol {
+  list-style-type: decimal;
+  list-style-position: inside;
+  padding-left: 0;
+}
+
+ol li {
+  padding-left: 0;
+  margin-bottom: 0.5rem;
+}
+
+@layer base {
+    html, :host {
+      line-height: 1.5;
+    }
+}
+
+.divider {
+  width: 100%;
+  height: 1px;
+  background-color: #ccc;
+  margin: 2rem 0;
+}

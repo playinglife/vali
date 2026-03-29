@@ -1,0 +1,98 @@
+services:
+    laravel:
+        #image: thecodingmachine/php:8.2-v4-apache
+        build:
+            context: .
+            dockerfile: Dockerfile.dev
+        image: laravel-dev
+        #dockerfile: Dockerfile
+        container_name: ${DOCKER_NAME}_app
+        ports:
+            - ${DOCKER_BASE_PORT}01:80
+            - 7005:7001
+            - 9999:9999
+        environment:
+            WWWUSER: "${WWWUSER}"
+            LARAVEL_SAIL: 1
+            ###XDEBUG_MODE: "${SAIL_XDEBUG_MODE:-off}"
+            ###XDEBUG_CONFIG: "${SAIL_XDEBUG_CONFIG:-client_host=host.docker.internal}"
+            ###PHP_EXTENSIONS: "xdebug pdo_sqlite pdo_pgsql"
+            PHP_EXTENSIONS: "gd imagick"
+            APACHE_DOCUMENT_ROOT: public/
+
+            STARTUP_COMMAND_1: php -r "file_exists('.env') || copy('.env.example', '.env');"
+            ###STARTUP_COMMAND_2: composer install
+            #STARTUP_COMMAND_3: php artisan key:gen --env=production -n
+            STARTUP_COMMAND_4: php artisan migrate
+            #STARTUP_COMMAND_5: php artisan db:seed
+            #STARTUP_COMMAND_6: php artisan horizon &
+            #STARTUP_COMMAND_8: sudo service supervisor start
+            ###STARTUP_COMMAND_9: sudo cron &
+
+        volumes:
+            - ".:/var/www/html"
+            - ./files:/var/www/html/files
+            # - "./../frontend/assets/games:/var/www/html/frontend/games"
+            - ./db_backups:/backups
+            - ./db-backup/restore.sh:/usr/local/bin/restore.sh      
+        networks:
+            - website
+        depends_on:
+            - db
+        tty: true
+        stdin_open: true
+        healthcheck:
+            test: ["CMD", "curl", "-f", "http://localhost"]
+            interval: 5m
+            timeout: 10s
+            retries: 3        
+
+    db:
+        image: 'mariadb:10'
+        #container_name: ${DOCKER_NAME}_db
+        container_name: ${DOCKER_NAME}_db
+        ports:
+            - ${DOCKER_BASE_PORT}02:3306
+        environment:
+            MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
+            MYSQL_ROOT_HOST: "%"
+            MYSQL_DATABASE: '${DB_DATABASE}'
+            MYSQL_USER: '${DB_USERNAME}'
+            MYSQL_PASSWORD: '${DB_PASSWORD}'
+            MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+        volumes:
+            - 'sail-mariadb:/var/lib/mysql'
+        restart: on-failure
+        networks:
+            - website
+
+    mailpit:
+        image: axllent/mailpit
+        container_name: ${DOCKER_NAME}_mailpit
+        ports:
+            - "8025:8025"
+            - "1025:1025"
+        restart: unless-stopped
+        networks:
+            - website
+           
+    vite:
+        image: node:20-alpine
+        working_dir: /app
+        volumes:
+          - .:/app
+        command: sh -c "npm i && npm run dev"
+        ports:
+          - "7000:5173"   # uses your FRONTEND_URL port
+        networks:
+          - website
+        depends_on:
+          - laravel
+                     
+networks:
+    website:
+        name: ${DOCKER_NAME}_website
+        driver: bridge
+volumes:
+    sail-mariadb:
+        driver: local
