@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 568.82 379.29">
+ <defs>
+  <style type="text/css">
+   <![CDATA[
+    .theme1_flags_it-svg-flags_it-svg-fil1 {fill:#FEFEFE}
+    .theme1_flags_it-svg-flags_it-svg-fil0 {fill:#009246}
+    .theme1_flags_it-svg-flags_it-svg-fil2 {fill:#CD2B37}
+   ]]>
+  </style>
+ </defs>
+ <g class="theme1_flags_it-svg-x" id="Layer_x0020_1">
+  <polygon class="theme1_flags_it-svg-flags_it-svg-fil0" points="0,379.29 189.53,379.29 189.53,0 0,0 "/>
+  <polygon class="theme1_flags_it-svg-flags_it-svg-fil1" points="379.07,379.29 189.53,379.29 189.53,0 379.07,0 "/>
+  <polygon class="theme1_flags_it-svg-flags_it-svg-fil2" points="568.82,0 379.28,0 379.28,379.29 568.76,379.29 "/>
+ </g>
+</svg>

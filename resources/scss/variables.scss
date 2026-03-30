@@ -3,20 +3,18 @@ $color-background-transparent: rgba(0, 0, 0, 0.5);
 $color-panel: #E7DCC0;
 $color-border: #49544b;
 
-$color-one: #8CB9C4;
-$color-two: #C48CB9;
-$color-three: #B9C48C;
-$color-four: #97B39E;
-$color-five: #546A6F;
+$color-one: #546A6F;
+$color-two: #917247;
+$color-three: #97B39E;
 
-$color-success: green;
-$color-error: red;
-$color-warning: yellow;
-$color-info: blue;
-$color-action: #c48cb9;
+$color-success: #B9C48C;
+$color-error: #B98C8C;
+$color-warning: #e7cf1b;
+$color-info: #96c1cc;
+$color-action: #b47875;
 
 $font-family-one: "Roboto Black", sans-serif !important;
-$font-family-two: "Roboto Black", sans-serif !important;
+$font-family-two: "Roboto", sans-serif !important;
 
 $padding-small: 1em;
 $padding-medium: 2em;
@@ -26,11 +24,23 @@ $margin-small: 1em;
 $margin-medium: 2em;
 $margin-large: 3em;
 
+$gap-small: 0.5em;
+$gap-medium: 1em;
+$gap-large: 2em;
+
 $border-radius-small: 0.05em;
 $border-radius-medium: 0.1em;
 $border-radius-large: 0.5em;
 
-$color-text: #fff;
+$color-text-light: #fff;
+$color-text-dark: #404c59;
+
+$color-interact-1: rgba(63, 68, 71, 1);
+$color-interact-1-border: rgba(99, 106, 108, 1);
+$color-interact-2: rgba(95, 101, 106, 1);
+$color-interact-2-border: rgba(164, 169, 173, 1);
+$color-interact-3: rgba(140, 147, 152, 1);
+$color-interact-3-border: #d9dfe450;
 
 
 
@@ -44,8 +54,6 @@ $color-text: #fff;
     --color-one: #{$color-one};
     --color-two: #{$color-two};
     --color-three: #{$color-three};
-    --color-four: #{$color-four};
-    --color-five: #{$color-five};
 
     --color-success: #{$color-success};
     --color-error: #{$color-error};
@@ -55,7 +63,7 @@ $color-text: #fff;
 
     /* Same stacks as $font-family-*; !important omitted so var() works in plain CSS */
     --font-family-one: "Roboto Black", sans-serif;
-    --font-family-two: "Roboto Black", sans-serif;
+    --font-family-two: "Roboto", sans-serif;
 
     --padding-small: #{$padding-small};
     --padding-medium: #{$padding-medium};
@@ -65,9 +73,21 @@ $color-text: #fff;
     --margin-medium: #{$margin-medium};
     --margin-large: #{$margin-large};
 
+    --gap-small: #{$gap-small};
+    --gap-medium: #{$gap-medium};
+    --gap-large: #{$gap-large};
+
     --border-radius-small: #{$border-radius-small};
     --border-radius-medium: #{$border-radius-medium};
     --border-radius-large: #{$border-radius-large};
 
-    --color-text: #{$color-text};
+    --color-text-light: #{$color-text-light};
+    --color-text-dark: #{$color-text-dark};
+
+    --color-interact-1: #{$color-interact-1};
+    --color-interact-1-border: #{$color-interact-1-border};
+    --color-interact-2: #{$color-interact-2};
+    --color-interact-2-border: #{$color-interact-2-border};
+    --color-interact-3: #{$color-interact-3};
+    --color-interact-3-border: #{$color-interact-3-border};
 }

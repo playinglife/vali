@@ -3,6 +3,7 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
         <meta charset="utf-8">
+        <script>document.documentElement.classList.add('js');</script>
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <title>ShirtHouse - @yield('title')</title>
@@ -17,7 +18,7 @@
             <!-- Menu -->
             @include('layouts.menu')
             <!-- Content -->
-            <div class="main-content">
+            <div id="main-content" class="main-content">
             <!--<div class="flex flex-1 relative">-->
                 @yield('content')
             </div>
@@ -43,8 +44,7 @@
             z-index: 1;
             display: flex;
             flex-direction: column;
-            overflow: auto;
-            box-sizing: border-box;
+            overflow: hidden;
             & > .main-content {
                 width: 100%;
                 height: 100%;

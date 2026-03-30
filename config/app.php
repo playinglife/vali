@@ -95,7 +95,7 @@ return [
 
     'supported_locales' => [
         'en' => 'English',
-        'fr' => 'Français',
+        'ro' => 'Română',
     ],
 
     /*

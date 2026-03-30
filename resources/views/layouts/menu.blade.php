@@ -1,4 +1,4 @@
-<div class="menu">
+<div id="main-menu" class="menu">
     <div class="flex justify-center items-center">
         <x-svg.logo mode="light" class="logo"/>
     </div>
@@ -9,10 +9,11 @@
     <a href="/contact" class="menu-item">{{ __('menu.about_us') }}</a>
     <a href="/contact" class="menu-item">{{ __('menu.contact') }}</a>
     <span class="menu-item">|</span>
+    <a href="/cart" class="menu-item">
+        <x-icon name="heroicon-o-shopping-cart" class="menu-item__cart" aria-hidden="true" />
+    </a>
 
-    <x-language />
-
-    <a class="flex-1"></a>
+    <livewire:language-switcher class="menu__language" />
 </div>
 
 @once
@@ -26,7 +27,6 @@
             box-sizing: border-box;
             z-index: 1;
             display: flex;
-            justify-content: space-between;
             align-items: center;
             width: 100%;
             padding: 1em;
@@ -44,7 +44,17 @@
             height: 2.5em;
         }
         .menu-item {
-            color: var(--color-text);
+            color: var(--color-text-light);
+        }
+        .menu .menu__language {
+            margin-left: auto;
+        }
+        .menu-item__cart {
+            width: 1.5em;
+            height: 1.5em;
+        }
+        .menu.menu--hidden {
+            display: none !important;
         }
     </style>
 @endonce

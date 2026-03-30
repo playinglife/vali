@@ -1,63 +1,64 @@
 import './bootstrap';
 import { initCallBookingPickers } from './call-booking-picker';
 
-// Scroll to hide menu functionality
-document.addEventListener('DOMContentLoaded', function() {
+/**
+ * Fade 0→half viewport; at/ past half hide. Resize can change threshold — sticky hide
+ * until scroll back into the top band.
+ */
+function updateMenuFromScroll(menu, scrollEl, state) {
+    const threshold = window.innerHeight * 0.5;
+    const scrollTop = scrollEl.scrollTop;
+
+    if (scrollTop >= threshold) {
+        state.wasPastThreshold = true;
+        menu.classList.add('menu--hidden');
+        menu.style.removeProperty('opacity');
+        return;
+    }
+
+    if (state.wasPastThreshold && scrollTop >= threshold * 0.5) {
+        menu.classList.add('menu--hidden');
+        menu.style.removeProperty('opacity');
+        return;
+    }
+
+    if (scrollTop < threshold * 0.5) {
+        state.wasPastThreshold = false;
+    }
+
+    menu.classList.remove('menu--hidden');
+    const opacity = Math.max(0, 1 - scrollTop / threshold);
+    menu.style.opacity = String(opacity);
+}
+
+document.addEventListener('DOMContentLoaded', function () {
     initCallBookingPickers();
+
     const menu = document.getElementById('main-menu');
-    const scrollableDiv = document.querySelector('#main-content');
-    let lastScrollTop = 0;
-    let isScrolling = false;
-    
-    // Throttle function to limit scroll event frequency
-    function throttle(func, wait) {
-        let timeout;
-        return function executedFunction(...args) {
-            const later = () => {
-                clearTimeout(timeout);
-                func(...args);
-            };
-            clearTimeout(timeout);
-            timeout = setTimeout(later, wait);
-        };
+    const main = document.getElementById('main-content');
+
+    if (!menu || !main) {
+        return;
     }
-    
-    // Handle scroll event
-    function handleScroll() {
-        if (isScrolling) return;
-        
-        isScrolling = true;
-        requestAnimationFrame(() => {
-            const scrollTop = scrollableDiv.scrollTop;
-            const screenHeight = window.innerHeight;
-            const scrollPercentage = (scrollTop / screenHeight) * 100;
-            
-            // Calculate opacity based on scroll percentage
-            // At 0% scroll: opacity = 1 (fully visible)
-            // At 20% scroll: opacity = 0 (completely hidden)
-            let opacity = 1;
-            
-            if (scrollPercentage >= 20) {
-                // Completely hide menu when scrolled 20% or more
-                menu.classList.add('hidden');
-                opacity = 0;
-            } else {
-                // Remove hidden class and calculate opacity
-                menu.classList.remove('hidden');
-                // Linear decrease from 1 to 0 as scroll goes from 0% to 20%
-                opacity = Math.max(0, 1 - (scrollPercentage / 20));
-            }
-            
-            // Apply the calculated opacity
-            menu.style.opacity = opacity;
-            
-            lastScrollTop = scrollTop;
-            isScrolling = false;
-        });
-    }
-    
-    // Add throttled scroll listener to the scrollable div
-    if (scrollableDiv) {
-        scrollableDiv.addEventListener('scroll', throttle(handleScroll, 10));
-    }
+
+    const state = { wasPastThreshold: false };
+
+    const onScrollOrResize = () => {
+        updateMenuFromScroll(menu, main, state);
+    };
+
+    let ticking = false;
+    const onScroll = () => {
+        if (!ticking) {
+            requestAnimationFrame(() => {
+                onScrollOrResize();
+                ticking = false;
+            });
+            ticking = true;
+        }
+    };
+
+    main.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScrollOrResize, { passive: true });
+    onScrollOrResize();
 });

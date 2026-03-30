@@ -1,6 +1,8 @@
 /* Cross-browser defaults (import before project styles) */
 @import "normalize.css";
 
+@import "gridlex/dist/gridlex.min.css";
+
 @import "variables";
 
 /* Roboto font (keeping as fallback) */
@@ -12,17 +14,26 @@
   font-display:swap;
 }
 
+@font-face{
+    font-family:"Roboto";
+    src:url("/public/fonts/roboto/Roboto.woff2") format("woff2");
+    font-weight:900;
+    font-style:normal;
+    font-display:swap;
+  }
+  
 
 html {
-    font-family:"Roboto Black", system-ui, sans-serif !important; 
-    font-size: 1vw;
+    font-family:"Roboto", system-ui, sans-serif !important; 
+    font-size: 1.2rem;
     margin: 0px;
     height: 100%;
     width: 100%;
  }
  
 body {
-    font-family:"Roboto Black", system-ui, sans-serif !important; 
+    font-family:"Roboto", system-ui, sans-serif !important; 
+    font-size: 1.2rem;
     margin: 0px;
     padding: 0;
     position: absolute;
@@ -38,10 +49,10 @@ body {
  }
 
  a:not(.button) {
-    font-size: 0.6rem;
+    font-size: 0.7rem;
     font-weight: normal;
     text-decoration: none;
-    color: $color-text;
+    color: $color-text-light;
     font-family: $font-family-one;
     font-weight: 400 !important;
     letter-spacing: 0.05em;
@@ -61,60 +72,81 @@ body {
 
 
 
-
-
-
-
-
- .my-menu {
-    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
-    opacity: 1;
-    transform: translateY(0);
- }
-
- .my-menu.hidden {
-    opacity: 0;
-    transform: translateY(-100%);
- }
-
-
- .color-dark {
-    color: #242121;
- }
-
- .color-light {
-    color: #fff;
- }
-
  h1, h2, h3, h4, h5, h6 {
     font-family: $font-family-one;
     font-weight: bold;
-    /*text-shadow: 0 0 10px black;*/
+    color: var(--color-text-light);
  }
 
  h1 {
-    font-size: 3rem;
+    font-size: 2.2rem;
+    text-shadow: 2px 2px 4px #000000;
  }
  h2 {
-    font-size: 2.5rem;
- }
- h3 {
-    font-size: 2rem;
- }
- h4 {
     font-size: 1.5rem;
  }
- h5 {
-    font-size: 1rem;
+ h3 {
+    font-size: 1.2rem;
  }
-
- h6 {
+ h4 {
+    font-size: 0.8rem;
+ }
+ h5 {
     font-size: 0.5rem;
+ }
+ h6 {
+    font-size: 0.3rem;
  }
 
  .font-family-one {
     font-family: "Roboto Black", sans-serif !important; 
  }
  .font-family-two {
-    font-family: "Roboto Black", sans-serif !important; 
+    font-family: "Roboto", sans-serif !important; 
  }
+
+
+ // BUTTONS
+button:not(.ignore-global) {
+  background-color: initial;
+  background-image: linear-gradient(var(--color-one) 0, var(--color-one) 100%);
+  border-radius: var(--border-radius-small);
+  border-style: none;
+  box-shadow: var(--color-one) 0 1px 1px inset;
+  color: var(--color-text-light);
+  cursor: pointer;
+  font-size: 0.5em;
+  outline: 0;
+  text-align: center;
+  transition: all .3s cubic-bezier(.05, .03, .35, 1);
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  vertical-align: bottom;
+  padding: var(--padding-small) var(--padding-medium);
+  text-transform: uppercase;
+  font-family: $font-family-one;
+}
+
+button:not(.ignore-global):hover {
+  opacity: .7;
+}
+
+
+// INPUTS
+input {
+  background-color: white;
+  border-radius: var(--border-radius-small);
+  border: 1px solid var(--color-border);
+  padding: calc(var(--padding-small) / 2) var(--padding-small);
+  font-size: 0.7em;
+  font-family: $font-family-one;
+  color: var(--color-text-dark);
+  &::placeholder {
+    color: var(--color-text-dark);
+    opacity: 0.5;
+    font-family: $font-family-two;
+    font-size: 1em;
+    font-weight: 400;
+  }
+}
