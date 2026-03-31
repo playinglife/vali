@@ -3,7 +3,7 @@
         <x-svg.logo mode="light" class="logo"/>
     </div>
     <a href="/" class="menu-item">{{ __('menu.home') }}</a>
-    <a href="/about" class="menu-item">{{ __('menu.service') }}</a>
+    <a href="/service" class="menu-item">{{ __('menu.service') }}</a>
     <a href="/contact" class="menu-item">{{ __('menu.business') }}</a>
     <a href="/contact" class="menu-item">{{ __('menu.custom') }}</a>
     <a href="/contact" class="menu-item">{{ __('menu.about_us') }}</a>

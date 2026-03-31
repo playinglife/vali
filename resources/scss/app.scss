@@ -3,7 +3,7 @@
 
 @import "gridlex/dist/gridlex.min.css";
 
-@import "variables";
+@import "variables.scss";
 
 /* Roboto font (keeping as fallback) */
 @font-face{
@@ -61,8 +61,21 @@ body {
         text-shadow: 0 0 10px var(--color-five-500);
     }
  }
+a.dark-mode {
+    color: $color-text-dark;
+    &:hover {
+        color: $color-action;
+        text-shadow: 0 0 10px var(--color-five-500);
+    }
+}
 
-
+a.light-mode {
+    color: $color-text-light;
+    &:hover {
+        color: $color-action;
+        text-shadow: 0 0 10px var(--color-five-500);
+    }
+}
 
 /* Remove focus outline */
 *:focus, *:focus-visible {
@@ -75,7 +88,7 @@ body {
  h1, h2, h3, h4, h5, h6 {
     font-family: $font-family-one;
     font-weight: bold;
-    color: var(--color-text-light);
+    color: $color-text-light;
  }
 
  h1 {

@@ -23,7 +23,7 @@ services:
             STARTUP_COMMAND_1: php -r "file_exists('.env') || copy('.env.example', '.env');"
             ###STARTUP_COMMAND_2: composer install
             #STARTUP_COMMAND_3: php artisan key:gen --env=production -n
-            STARTUP_COMMAND_4: php artisan migrate
+            #STARTUP_COMMAND_4: php artisan migrate
             #STARTUP_COMMAND_5: php artisan db:seed
             #STARTUP_COMMAND_6: php artisan horizon &
             #STARTUP_COMMAND_8: sudo service supervisor start

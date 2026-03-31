@@ -1,4 +1,4 @@
-@props(['title' => null, 'text' => null, 'type' => 'one'])
+@props(['title' => null, 'text' => null, 'content' => null, 'type' => 'one'])
 
 <div class="root-miniviews-section root-miniviews-section--{{ $type }}">
     @if($title)
@@ -8,6 +8,9 @@
     @endif
     @if($text)
         <div class="text">{{ $text }}</div>
+    @endif
+    @if($content)
+        <div class="content">{{ $content }}</div>
     @endif
     <x-dividers.divider1 color="var(--color-border)" height="3" :reverse="$type === 'two'" />
 </div>
@@ -36,11 +39,13 @@
                 color: var(--color-text-dark);
             }
         }
-        & > .text {
+        & > .text, & > .content {
             color: var(--color-text-dark);
             padding: 0 15% calc(var(--padding-large) * 2) 15%;
-            white-space: pre-wrap;
             font-size: 0.8em;
+        }
+        & > .text {
+            white-space: pre-wrap;
         }
     }
     </style>

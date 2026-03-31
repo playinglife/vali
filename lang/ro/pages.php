@@ -1,10 +1,8 @@
 <?php
 
 return [
-    'welcome' => [
+    'home' => [
         'title1' => 'Business To Business',
-
-
 
         'subtitle1' => 'Camasi de calitate pentru afacerile dumneavoastra',
         'text1' => 'La Shirthouse, redefinim standardele cămășii corporate prin eleganță, croială impecabilă și materiale premium. Oferim o colecție atent selectată de cămăși pentru bărbați și femei, creată special pentru mediul de afaceri modern – de la birourile executive până la echipele din prima linie.
@@ -32,8 +30,6 @@ Ne adresăm atât companiilor mici, cât și echipelor corporatiste extinse, cu 
 
 Poartă-ți marca cu încredere. Fii reprezentat de calitate.',
 
-
-
         'title2' => 'Aprovizionarea consumatorilor',
         'subtitle3' => 'Colecții de cămăși pentru magazine/comercianți cu amănuntul',
         'text3' => 'Dacă dețineți un magazin de haine sau sunteți distribuitor de modă, Shirthouse vă oferă colecții exclusive de cămăși pentru bărbați și femei, create special pentru segmentele business, office și smart casual.
@@ -48,8 +44,10 @@ Ce oferim partenerilor noștri de retail:
 Colaborăm cu comercianți cu amănuntul din întreaga țară care doresc să ofere clienților lor produse de tip fast fashion diferite – mai durabile, mai elegante și mai potrivite nevoilor actuale.
 What can we offer you?',
 
-
         'title3' => 'Newsletter',
 
-    ]
+    ],
+    'service' => [
+        'title1' => 'Camasi Service',
+    ],
 ];

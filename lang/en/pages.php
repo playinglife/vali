@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'welcome' => [
+    'home' => [
         'title1' => 'Business To Business',
         'subtitle1' => 'High Quality Shirts for your Business',
         'text1' => 'At Shirthouse, we redefine the standards of the corporate shirt through elegance, impeccable tailoring and premium materials. We offer a carefully selected collection of shirts for men and women, created specifically for the modern business environment – ​​from executive offices to front-line teams.
@@ -45,6 +45,11 @@ What can we offer you?',
 
 
         'title3' => 'Newsletter',
+    ],
 
-    ]
+
+
+    'service' => [
+        'title1' => 'Service Shirts',
+        
 ];
