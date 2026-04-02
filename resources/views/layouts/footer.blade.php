@@ -73,7 +73,7 @@
             padding-bottom: var(--padding-medium);
             text-align: center;
             text-decoration: none;
-            background-color: var(--color-background-transparent);
+            background-color: var(--color-background-transparent-dark);
             backdrop-filter: blur(10px);
             border-top: 1px solid var(--color-border);
             align-items: stretch;

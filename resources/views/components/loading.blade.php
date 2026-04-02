@@ -19,7 +19,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: var(--color-background-transparent);
+            background: var(--color-background-transparent-dark);
             backdrop-filter: blur(2px);
         }
 

@@ -1,6 +1,6 @@
-@props(['title' => null, 'text' => null, 'content' => null, 'type' => 'one'])
+@props(['title' => null, 'text' => null, 'content' => null, 'type' => 'one', 'background' => 'transparent'])
 
-<div class="root-miniviews-section root-miniviews-section--{{ $type }}">
+<div class="root-miniviews-section root-miniviews-section--{{ $type }} root-miniviews-section--{{ $background }}">
     @if($title)
         <div class="title">
             <h2> {{ $title }} </h2>
@@ -12,7 +12,6 @@
     @if($content)
         <div class="content">{{ $content }}</div>
     @endif
-    <x-dividers.divider1 color="var(--color-border)" height="3" :reverse="$type === 'two'" />
 </div>
 
 @once
@@ -24,13 +23,15 @@
         flex-direction: column;
         justify-content: start;
         align-items: center;
-        background-color: white;
         gap: var(--padding-large);
         &.root-miniviews-section--one {
             
         }
         &.root-miniviews-section--two {
             
+        }
+        &.root-miniviews-section--white {
+            background-color: white;
         }
         & > .title {   
             padding: var(--padding-large) calc(var(--padding-large) * 3) 0 calc(var(--padding-large) * 3);
@@ -40,6 +41,11 @@
             }
         }
         & > .text, & > .content {
+            /* align-items:center on the section shrinks flex children to content width; stretch so grids use full page width */
+            align-self: stretch;
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
             color: var(--color-text-dark);
             padding: 0 15% calc(var(--padding-large) * 2) 15%;
             font-size: 0.8em;

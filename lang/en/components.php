@@ -6,6 +6,12 @@ return [
         'out_of_stock' => 'Out of stock',
         'price' => 'Price',
         'currency' => 'RON',
+        'sku' => 'SKU',
+        'add_to_cart' => 'Add to cart',
+        'variant_photos' => 'Variant photos',
+        'show_variant_photo' => 'Show photo for :label',
+        'enlarge_photo' => 'Enlarge photo',
+        'close_lightbox' => 'Close',
     ],
     'products' => [
         'filter_category' => 'Category',

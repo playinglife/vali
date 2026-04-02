@@ -5,10 +5,10 @@
         <meta charset="utf-8">
         <script>document.documentElement.classList.add('js');</script>
         <meta name="viewport" content="width=device-width, initial-scale=1">
-
+        <meta name="robots" content="noindex, nofollow">
         <title>ShirtHouse - @yield('title')</title>
         @vite(['resources/scss/app.scss','resources/js/app.js'])
-        @livewireStyles
+        {{-- @livewireStyles --}}
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -23,7 +23,7 @@
                 @yield('content')
             </div>
         </div>
-        @livewireScripts
+        {{-- @livewireScripts --}}
     </body>
 </html>
 @once

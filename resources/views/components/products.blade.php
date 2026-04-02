@@ -1,3 +1,4 @@
+<!-- PROPS -->
 @props([
     'products' => null,
     /** null = link with route('products.show'); false = no links; string = custom base URL before slug */
@@ -5,6 +6,9 @@
     'instanceId' => 'products-grid',
 ])
 
+
+
+<!-- PHP -->
 @php
     /** @var \Illuminate\Support\Collection<int, \App\Models\Product>|null $products */
     $products = $products ?? \App\Models\Product::query()
@@ -69,6 +73,9 @@
     $totalCount = $products->count();
 @endphp
 
+
+
+<!-- TEMPLATE -->
 <div
     class="root-products"
     id="{{ $instanceId }}"
@@ -78,98 +85,93 @@
     @if ($products->isEmpty())
         <p class="root-products__catalog-empty">{{ __('components.products.catalog_empty') }}</p>
     @else
-        <div class="root-products__filters" role="region" aria-label="{{ __('components.products.filters_region') }}">
+        <p class="root-products__results transparent-blurred-background-light" role="status" aria-live="polite">
+            <span data-root-products-results>{{ str_replace(['__VISIBLE__', '__TOTAL__'], [$totalCount, $totalCount], $resultsShownTemplate) }}</span>
+            <button type="button" class="root-products__filter-button" data-root-products-filter-toggle aria-expanded="false" aria-controls="{{ $instanceId }}-filters">
+                <x-icon name="heroicon-s-funnel" class="filter-icon" aria-hidden="true" />
+            </button>
+        </p>
+
+        <div class="root-products__filters transparent-blurred-background-light" id="{{ $instanceId }}-filters" role="region" aria-label="{{ __('components.products.filters_region') }}">
+
+
+
             @if ($categories->isNotEmpty())
                 <fieldset class="root-products__filter-row" data-root-products-filter-categories>
                     <legend class="root-products__legend">{{ __('components.products.filter_categories') }}</legend>
                     <div class="root-products__checkbox-list">
                         @foreach ($categories as $category)
-                            <label class="root-products__check">
-                                <input
-                                    type="checkbox"
-                                    name="{{ $instanceId }}-category[]"
-                                    value="{{ $category->id }}"
-                                    id="{{ $instanceId }}-cat-{{ $category->id }}"
-                                />
-                                <span class="root-products__check-text">{{ $category->name }}</span>
-                            </label>
+                            <x-checkbox
+                                :id="$instanceId . '-cat-' . $category->id"
+                                :value="$category->id"
+                                :label="$category->name"
+                            />
                         @endforeach
                     </div>
                 </fieldset>
             @endif
 
+
+
             @if ($optionFilterRows->isNotEmpty())
+                @php
+                    $maxOptionValueCount = (int) $optionFilterRows->max(fn (array $row) => $row['values']->count());
+                @endphp
                 <fieldset class="root-products__filter-row" data-root-products-filter-options>
                     <legend class="root-products__legend">{{ __('components.products.filter_options') }}</legend>
-                    <div class="root-products__option-groups">
-                        @foreach ($optionFilterRows as $optIdx => $optRow)
-                            <div class="root-products__option-line">
-                                @if ($optRow['option_name'] !== '')
-                                    <span class="root-products__option-line-label">{{ $optRow['option_name'] }}:</span>
-                                @endif
-                                <div class="root-products__option-line-values">
-                                    @foreach ($optRow['values'] as $valIdx => $val)
+                    <div class="root-products__option-table-wrap">
+                        <table class="root-products__option-table">
+                            @foreach ($optionFilterRows as $optIdx => $optRow)
+                                @php
+                                    $optValues = $optRow['values'];
+                                    $optValueCount = $optValues->count();
+                                @endphp
+                                <tr class="root-products__option-row">
+                                    <th scope="row" class="root-products__option-line-label">
+                                        @if ($optRow['option_name'] !== '')
+                                            <span class="root-products__option-line-label-text">{{ $optRow['option_name'] }}</span>
+                                        @endif
+                                    </th>
+                                    @foreach ($optValues as $valIdx => $val)
                                         @php
                                             $optAria = $optRow['option_name'] !== ''
                                                 ? $optRow['option_name'].': '.$val['value_label']
                                                 : $val['value_label'];
                                         @endphp
-                                        <label class="root-products__check">
-                                            <input
-                                                type="checkbox"
-                                                name="{{ $instanceId }}-option[]"
-                                                value="{{ $val['ids'] }}"
-                                                id="{{ $instanceId }}-opt-{{ $optIdx }}-{{ $valIdx }}"
-                                                aria-label="{{ e($optAria) }}"
+                                        <td class="root-products__option-cell">
+                                            <x-checkbox
+                                                :id="$instanceId . '-opt-' . $optIdx . '-' . $valIdx"
+                                                :value="$val['ids']"
+                                                :data-option-group="$optIdx"
+                                                :label="$val['value_label']"
+                                                :aria-label="$optAria"
                                             />
-                                            <span class="root-products__check-text">{{ $val['value_label'] }}</span>
-                                        </label>
+                                        </td>
                                     @endforeach
-                                </div>
-                            </div>
-                        @endforeach
+                                    @for ($pad = $optValueCount; $pad < $maxOptionValueCount; $pad++)
+                                        <td class="root-products__option-cell root-products__option-cell--pad" aria-hidden="true"></td>
+                                    @endfor
+                                </tr>
+                            @endforeach
+                        </table>
                     </div>
                 </fieldset>
             @endif
 
+
+
             <fieldset class="root-products__filter-row" data-root-products-sort-row>
                 <legend class="root-products__legend">{{ __('components.products.sort_label') }}</legend>
                 <div class="root-products__radio-list">
-                    <label class="root-products__radio">
-                        <input
-                            type="radio"
-                            name="{{ $instanceId }}-sort"
-                            value="name_asc"
-                            checked
-                        />
-                        <span class="root-products__radio-text">{{ __('components.products.sort_name_asc') }}</span>
-                    </label>
-                    <label class="root-products__radio">
-                        <input type="radio" name="{{ $instanceId }}-sort" value="name_desc" />
-                        <span class="root-products__radio-text">{{ __('components.products.sort_name_desc') }}</span>
-                    </label>
-                    <label class="root-products__radio">
-                        <input type="radio" name="{{ $instanceId }}-sort" value="price_asc" />
-                        <span class="root-products__radio-text">{{ __('components.products.sort_price_asc') }}</span>
-                    </label>
-                    <label class="root-products__radio">
-                        <input type="radio" name="{{ $instanceId }}-sort" value="price_desc" />
-                        <span class="root-products__radio-text">{{ __('components.products.sort_price_desc') }}</span>
-                    </label>
+                    <x-radio :id="$instanceId . '-sort-name-asc'" :name="$instanceId . '-sort'" value="name_asc" :label="__('components.products.sort_name_asc')" checked />
+                    <x-radio :id="$instanceId . '-sort-name-desc'" :name="$instanceId . '-sort'" value="name_desc" :label="__('components.products.sort_name_desc')" />
+                    <x-radio :id="$instanceId . '-sort-price-asc'" :name="$instanceId . '-sort'" value="price_asc" :label="__('components.products.sort_price_asc')" />
+                    <x-radio :id="$instanceId . '-sort-price-desc'" :name="$instanceId . '-sort'" value="price_desc" :label="__('components.products.sort_price_desc')" />
                 </div>
             </fieldset>
         </div>
 
-        <p
-            class="root-products__results"
-            role="status"
-            aria-live="polite"
-            data-root-products-results
-        >
-            {{ str_replace(['__VISIBLE__', '__TOTAL__'], [$totalCount, $totalCount], $resultsShownTemplate) }}
-        </p>
-
-        <p class="root-products__no-matches" data-root-products-no-matches hidden>
+        <p class="root-products__no-matches transparent-blurred-background-light" data-root-products-no-matches hidden>
             {{ __('components.products.no_matches') }}
         </p>
 
@@ -203,6 +205,9 @@
     @endif
 </div>
 
+
+
+<!-- SCRIPT -->
 @once
     <script>
         (function () {
@@ -230,6 +235,25 @@
                 );
             }
 
+            /** Checked option checkboxes grouped by data-option-group (one row = one option type). */
+            function checkedOptionGroupsByRow(fieldset) {
+                var groups = {};
+                if (!fieldset) {
+                    return groups;
+                }
+                fieldset.querySelectorAll('input[type="checkbox"]:checked').forEach(function (input) {
+                    var g = input.getAttribute('data-option-group');
+                    if (g === null || g === '') {
+                        g = '0';
+                    }
+                    if (!groups[g]) {
+                        groups[g] = [];
+                    }
+                    groups[g].push(input.value);
+                });
+                return groups;
+            }
+
             function initRoot(root) {
                 var grid = root.querySelector('[data-root-products-grid]');
                 if (!grid) {
@@ -244,10 +268,24 @@
                 var template = root.getAttribute('data-results-shown-template') || '';
                 var total = items.length;
                 var sortRow = root.querySelector('[data-root-products-sort-row]');
+                var filterArea = root.querySelector('.root-products__filters');
+                var filterToggleBtn = root.querySelector('[data-root-products-filter-toggle]');
+                var showFilter = false;
+
+                if (filterArea) {
+                    filterArea.style.display = 'none';
+                }
+                if (filterToggleBtn && filterArea) {
+                    filterToggleBtn.addEventListener('click', function () {
+                        showFilter = !showFilter;
+                        filterArea.style.display = showFilter ? '' : 'none';
+                        filterToggleBtn.setAttribute('aria-expanded', showFilter ? 'true' : 'false');
+                    });
+                }
 
                 function update() {
                     var selectedCats = checkedValues(categoryFieldset);
-                    var selectedOpts = checkedValues(optionFieldset);
+                    var optionGroups = checkedOptionGroupsByRow(optionFieldset);
                     var sortInput = sortRow
                         ? sortRow.querySelector('input[type="radio"]:checked')
                         : null;
@@ -256,16 +294,25 @@
                     var visible = items.filter(function (el) {
                         var cats = parseIds(el.getAttribute('data-category-ids'));
                         var opts = parseIds(el.getAttribute('data-option-value-ids'));
+                        /* Categories: OR within selected categories. */
                         var matchCat =
                             selectedCats.length === 0 ||
                             selectedCats.some(function (id) {
                                 return cats.indexOf(id) !== -1;
                             });
+                        /*
+                         * Options: OR within each option row (e.g. S or M), AND between rows (e.g. (S|M) and (white|navy)).
+                         * Rows with no selection are ignored.
+                         */
+                        var groupKeys = Object.keys(optionGroups);
                         var matchOpt =
-                            selectedOpts.length === 0 ||
-                            selectedOpts.some(function (raw) {
-                                return parseIds(raw).some(function (id) {
-                                    return opts.indexOf(id) !== -1;
+                            groupKeys.length === 0 ||
+                            groupKeys.every(function (g) {
+                                var raws = optionGroups[g];
+                                return raws.some(function (raw) {
+                                    return parseIds(raw).some(function (id) {
+                                        return opts.indexOf(id) !== -1;
+                                    });
                                 });
                             });
                         return matchCat && matchOpt;
@@ -329,6 +376,12 @@
             }
         })();
     </script>
+@endonce
+
+
+
+<!-- STYLE -->
+ @once
     <style>
         .root-products {
             box-sizing: border-box;
@@ -338,7 +391,8 @@
             gap: var(--gap-medium);
             color: var(--color-text-dark);
             font-family: var(--font-family-two);
-            font-size: 0.85rem;
+            font-size: var(--text-size-small);
+            font-weight: var(--font-weight-bold);
         }
         .root-products__catalog-empty {
             margin: 0;
@@ -346,10 +400,14 @@
             color: var(--color-text-dark);
         }
         .root-products__filters {
+            box-sizing: border-box;
+            width: 100%;
+            padding: var(--padding-medium);
             display: flex;
             flex-direction: column;
-            width: 100%;
-            padding-top: var(--padding-medium);
+            gap: var(--gap-large);
+            align-items: stretch;
+            min-width: 0;
         }
         .root-products__filter-row {
             border: none;
@@ -358,13 +416,6 @@
             min-width: 0;
         }
         .root-products__legend {
-            font-family: var(--font-family-one);
-            font-size: 0.7rem;
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
-            opacity: 0.85;
-            padding: 0;
-            margin: 0 0 0.5em;
         }
         .root-products__checkbox-list,
         .root-products__radio-list {
@@ -373,34 +424,55 @@
             gap: 0.55em 1.25em;
             align-items: flex-start;
         }
-        .root-products__option-groups {
-            display: flex;
-            flex-direction: column;
-            gap: 0.65em;
+        .root-products__option-table-wrap {
             width: 100%;
+            max-width: 100%;
+            overflow-x: auto;
         }
-        .root-products__option-line {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: baseline;
-            gap: 0.35em 0.85em;
-            min-width: 0;
+        .root-products__option-table {
+            width: max-content;
+            max-width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 0.5em;
+            table-layout: auto;
         }
-        .root-products__option-line-label {
+        .root-products__option-row {
+            vertical-align: middle;
+        }
+        .root-products__option-table th.root-products__option-line-label {
+            text-align: start;
+            font-weight: inherit;
+            vertical-align: middle;
+            padding: 0 0.75em 0 0;
+            white-space: nowrap;
             font-family: var(--font-family-one);
-            font-size: 0.75rem;
+            font-size: var(--text-size-small);
             letter-spacing: 0.03em;
             text-transform: none;
             opacity: 0.95;
-            flex-shrink: 0;
             color: var(--color-text-dark);
         }
-        .root-products__option-line-values {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.55em 1.25em;
+        .root-products__option-line-label-text {
+            text-transform: uppercase;
+        }
+        .root-products__option-line-label-text::after {
+            content: ':';
+        }
+        .root-products__option-table td.root-products__option-cell {
+            vertical-align: middle;
+            padding: 0 0.65em;
+            white-space: nowrap;
+        }
+        .root-products__option-cell--pad {
+            padding: 0 !important;
+            border: none !important;
+        }
+        .root-products__check--option-table {
+            display: inline-flex;
             align-items: flex-start;
-            min-width: 0;
+            gap: 0.45em;
+            margin: 0;
+            vertical-align: middle;
         }
         .root-products__check,
         .root-products__radio {
@@ -419,53 +491,62 @@
             flex-shrink: 0;
             accent-color: var(--color-one);
         }
+        .root-products__check-text,
+        .root-products__radio-text {
+            font-size: var(--text-size-small);
+        }
+
         .root-products__results {
-            margin: 0;
-            font-size: 0.8rem;
-            opacity: 0.9;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: var(--padding-medium);
+            font-size: var(--text-size-small);
+            padding: var(--padding-medium);
+            margin-top: calc(var(--padding-large) * 3);
+            color: var(--color-text-dark);
+        }
+        .root-products__results [data-root-products-filter-toggle] {
+        }
+        .filter-icon {
         }
         .root-products__no-matches {
             margin: 0;
             padding: var(--padding-small);
             text-align: center;
-            border: 1px dashed var(--color-border);
-            border-radius: var(--border-radius-medium);
-            background: color-mix(in srgb, var(--color-background) 65%, white);
         }
+        /* Native CSS Grid: gap does not break column counts (unlike flex + flex-basis % + gap). */
         .root-products__grid {
             display: grid;
-            grid-template-columns: 1fr;
-            gap: var(--gap-large);
-            align-items: stretch;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: var(--gap-large) var(--gap-medium);
             width: 100%;
+            min-width: 0;
+            box-sizing: border-box;
+            margin: 0;
+            align-items: stretch;
         }
-        @media (min-width: 36rem) {
+        @media (max-width: 80em) {
             .root-products__grid {
                 grid-template-columns: repeat(2, minmax(0, 1fr));
             }
         }
-        @media (min-width: 56rem) {
+        @media (max-width: 48em) {
             .root-products__grid {
-                grid-template-columns: repeat(3, minmax(0, 1fr));
-            }
-        }
-        @media (min-width: 72rem) {
-            .root-products__grid {
-                grid-template-columns: repeat(4, minmax(0, 1fr));
+                grid-template-columns: minmax(0, 1fr);
             }
         }
         .root-products__item {
-            width: 100%;
-            min-width: 0;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
+            align-items: stretch;
+            min-height: 0;
         }
         .root-products__item[hidden] {
             display: none !important;
         }
-        .root-products__item .root-product-card {
-            width: 100%;
-            max-width: calc(22rem * var(--product-scale, 0.66));
+        .root-products__filter-button {
+            aspect-ratio: 1 / 1;
         }
     </style>
 @endonce

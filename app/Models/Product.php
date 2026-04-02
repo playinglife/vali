@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Support\Facades\Storage;
 
 #[ObservedBy([ProductObserver::class])]
 class Product extends Model
@@ -103,25 +102,31 @@ class Product extends Model
     }
 
     /**
-     * Public URL for the first variant image found on the public disk under product/variants/{id}.{ext}, or null.
+     * Public URL for the first variant image found on the public disk under product/variants/{id}.{ext},
+     * or {@see static::genericProductImageUrl()} when none exists.
      */
-    public function firstVariantStorageImageUrl(): ?string
+    public function firstVariantStorageImageUrl(): string
     {
-        $disk = Storage::disk('public');
         $variants = $this->relationLoaded('variants')
             ? $this->variants->sortBy('id')->values()
             : $this->variants()->orderBy('id')->get();
 
         foreach ($variants as $variant) {
-            foreach (['png', 'jpg', 'jpeg', 'webp'] as $ext) {
-                $path = 'product/variants/'.$variant->id.'.'.$ext;
-                if ($disk->exists($path)) {
-                    return asset('storage/'.$path);
-                }
+            $url = $variant->storageImageUrl();
+            if ($url !== null) {
+                return $url;
             }
         }
 
-        return null;
+        return static::genericProductImageUrl();
+    }
+
+    /**
+     * Fallback image URL when no variant file exists on disk.
+     */
+    public static function genericProductImageUrl(): string
+    {
+        return asset('images/generic.png');
     }
 
     /**

@@ -179,7 +179,8 @@ return [
     |
     */
 
-    'inject_assets' => true,
+    // Paired with commented @livewireStyles / @livewireScripts in layouts/app.blade.php — set true and uncomment when using Livewire again.
+    'inject_assets' => false,
 
     /*
     |---------------------------------------------------------------------------

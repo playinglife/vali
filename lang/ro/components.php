@@ -6,6 +6,12 @@ return [
         'out_of_stock' => 'Stoc epuizat',
         'price' => 'Preț',
         'currency' => 'RON',
+        'sku' => 'Cod',
+        'add_to_cart' => 'Adaugă în coș',
+        'variant_photos' => 'Fotografii variante',
+        'show_variant_photo' => 'Afișează fotografia pentru :label',
+        'enlarge_photo' => 'Mărește fotografia',
+        'close_lightbox' => 'Închide',
     ],
     'products' => [
         'filter_category' => 'Categorie',

@@ -30,11 +30,12 @@ services:
             ###STARTUP_COMMAND_9: sudo cron &
 
         volumes:
-            - ".:/var/www/html"
+            - ".:/var/www/html:delegated"
             - ./files:/var/www/html/files
             # - "./../frontend/assets/games:/var/www/html/frontend/games"
             - ./db_backups:/backups
-            - ./db-backup/restore.sh:/usr/local/bin/restore.sh      
+            - ./db-backup/restore.sh:/usr/local/bin/restore.sh     
+            - vendor:/var/www/html/vendor
         networks:
             - website
         depends_on:
@@ -83,7 +84,7 @@ services:
           - .:/app
         command: sh -c "npm i && npm run dev"
         ports:
-          - "7000:5173"   # uses your FRONTEND_URL port
+          - "5173:5173"   # uses your FRONTEND_URL port
         networks:
           - website
         depends_on:
@@ -94,5 +95,6 @@ networks:
         name: ${DOCKER_NAME}_website
         driver: bridge
 volumes:
+    vendor:
     sail-mariadb:
         driver: local

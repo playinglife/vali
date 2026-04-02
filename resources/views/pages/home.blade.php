@@ -11,7 +11,7 @@
             <h1> {{ __('pages.home.title1') }} </h1>
         </div>
 
-        <x-miniviews.section type="one">
+        <x-miniviews.section type="one" background="white">
             <x-slot:title>
                 {{ __('pages.home.subtitle1') }}
             </x-slot:title>
@@ -20,7 +20,7 @@
             </x-slot:text>
         </x-miniviews.section>
 
-        <x-miniviews.section type="two"> 
+        <x-miniviews.section type="two" background="white"> 
             <x-slot:title> {{ __('pages.home.subtitle2') }} </x-slot:title>
             <x-slot:text>
                 {{ __('pages.home.text2') }}
@@ -32,7 +32,7 @@
             <h1> {{ __('pages.home.title2') }} </h1>
         </div>
 
-        <x-miniviews.section type="one">
+        <x-miniviews.section type="one" background="white">
             <x-slot:title> {{ __('pages.home.subtitle3') }} </x-slot:title>
             <x-slot:text>
                 {{ __('pages.home.text3') }}
@@ -77,6 +77,7 @@
             background-size: cover;
             background-position: top;
             background-repeat: no-repeat;
+
             & > .page-1 {
                 width: 100%;
                 height: 100%;

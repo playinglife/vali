@@ -1,11 +1,14 @@
 <?php
 
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\LocaleController;
 use App\Models\Product;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/locale', [LocaleController::class, 'update'])->name('locale.update');
+
+Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
 
 Route::get('/', function () {
     return view('pages.home');
@@ -16,6 +19,8 @@ Route::get('/service', function () {
 
 Route::get('/products/{product:slug}', function (Product $product) {
     abort_unless($product->is_active, 404);
+
+    $product->load(['categories', 'variants']);
 
     return view('pages.product', ['product' => $product]);
 })->name('products.show');

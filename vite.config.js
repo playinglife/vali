@@ -8,17 +8,20 @@ export default defineConfig({
             refresh: true,
         }),
     ],
-    server: { 
-        host: true, 
-        port: 5173, 
-        hmr: { 
-            host: 'localhost', 
-            port: 5173 
-        } 
+    server: {
+        host: true,
+        port: 5173,
+        hmr: {
+            host: 'localhost',
+            port: 5173,
+        },
+        watch: {
+            usePolling: true,
+            interval: 1000,
+        },       
     },
-	build: {
-        outDir: 'public/build', // <- ensures build goes here
+    build: {
+        outDir: 'public/build',
         emptyOutDir: true,
     },
-	base: '/build/',
 });

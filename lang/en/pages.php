@@ -43,13 +43,10 @@ What we offer our retail partners:
 We collaborate with retailers across the country who want to offer their customers different fast fashion products – more durable, more elegant and more suitable for current needs.
 What can we offer you?',
 
-
         'title3' => 'Newsletter',
     ],
 
-
-
     'service' => [
         'title1' => 'Service Shirts',
-        
+    ],
 ];

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Facades\Storage;
 
 class ProductVariant extends Model
 {
@@ -57,5 +58,30 @@ class ProductVariant extends Model
             'product_variant_id',
             'product_option_value_id'
         )->withTimestamps();
+    }
+
+    /**
+     * Public URL for an image on the public disk under product/variants/{id}.{ext}, or null if none.
+     */
+    public function storageImageUrl(): ?string
+    {
+        $disk = Storage::disk('public');
+
+        foreach (['png', 'jpg', 'jpeg', 'webp'] as $ext) {
+            $path = 'product/variants/'.$this->id.'.'.$ext;
+            if ($disk->exists($path)) {
+                return asset('storage/'.$path);
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Image URL for this variant, or the product generic placeholder when no file exists.
+     */
+    public function displayImageUrl(): string
+    {
+        return $this->storageImageUrl() ?? Product::genericProductImageUrl();
     }
 }
