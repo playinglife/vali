@@ -1,6 +1,12 @@
 <?php
 
 return [
+    'flash' => [
+        'dismiss' => 'Închide notificarea',
+    ],
+    'contact' => [
+        'message_sent_flash' => 'Mesajul tău a fost trimis cu succes. De obicei răspundem în 24 de ore.',
+    ],
     'product' => [
         'featured' => 'Recomandat',
         'out_of_stock' => 'Stoc epuizat',
@@ -12,6 +18,16 @@ return [
         'show_variant_photo' => 'Afișează fotografia pentru :label',
         'enlarge_photo' => 'Mărește fotografia',
         'close_lightbox' => 'Închide',
+        'price_brackets' => 'Prețuri pe cantitate',
+        'quantity_range' => 'Cantitate',
+        'bracket_price' => 'Preț unitar',
+        'qty_from_to' => ':start - :end',
+        'qty_and_up' => ':start+',
+        'order_quantity' => 'Cantitate',
+        'qty_plus_open' => '+',
+        'cart_added_title' => 'Adăugat în coș',
+        'cart_added_ok' => 'OK',
+        'cart_added' => ':product — cantitate :qty — total :total :currency a fost adăugat în coș.',
     ],
     'products' => [
         'filter_category' => 'Categorie',
@@ -22,8 +38,8 @@ return [
         'all_categories' => 'Toate categoriile',
         'all_option_values' => 'Toate opțiunile',
         'sort_label' => 'Sortare',
-        'sort_name_asc' => 'Nume A–Z',
-        'sort_name_desc' => 'Nume Z–A',
+        'sort_name_asc' => 'Nume A-Z',
+        'sort_name_desc' => 'Nume Z-A',
         'sort_price_asc' => 'Preț: crescător',
         'sort_price_desc' => 'Preț: descrescător',
         'results' => '{0} Niciun produs|{1} :count produs|[2,*] :count produse',

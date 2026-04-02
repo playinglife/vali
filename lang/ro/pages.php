@@ -47,7 +47,22 @@ What can we offer you?',
         'title3' => 'Newsletter',
 
     ],
+
+
+
     'service' => [
         'title1' => 'Camasi Service',
+    ],
+
+
+    'cart' => [
+        'title1' => 'Coș de cumpărături',
+        'empty' => 'Coșul tău este gol.',
+        'quantity' => 'Cantitate',
+        'unit_price' => 'Preț unitar',
+        'line_total' => 'Subtotal',
+        'grand_total' => 'Total',
+        'default_line' => 'Standard',
+        'variant_fallback' => 'Variantă #:id',
     ],
 ];

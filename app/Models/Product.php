@@ -6,6 +6,7 @@ use App\Observers\ProductObserver;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -20,8 +21,8 @@ class Product extends Model
         'sku',
         'name',
         'slug',
-        'short_description',
-        'description',
+        'short_description_id',
+        'description_id',
         'price',
         'discount_type',
         'discount',
@@ -53,6 +54,29 @@ class Product extends Model
         return $query->where('is_active', true);
     }
 
+    public function shortDescriptionTranslation(): BelongsTo
+    {
+        return $this->belongsTo(Translation::class, 'short_description_id');
+    }
+
+    public function descriptionTranslation(): BelongsTo
+    {
+        return $this->belongsTo(Translation::class, 'description_id');
+    }
+
+    public function localizedShortDescription(?string $locale = null): ?string
+    {
+        return $this->shortDescriptionTranslation?->textForLocale($locale);
+    }
+
+    /**
+     * Long product description (body copy) for the given locale.
+     */
+    public function localizedDescription(?string $locale = null): ?string
+    {
+        return $this->descriptionTranslation?->textForLocale($locale);
+    }
+
     public function categories(): BelongsToMany
     {
         return $this->belongsToMany(Category::class)
@@ -69,6 +93,17 @@ class Product extends Model
     public function variants(): HasMany
     {
         return $this->hasMany(ProductVariant::class);
+    }
+
+    /**
+     * Volume pricing tiers for the product when no variant-specific brackets exist.
+     */
+    public function priceBrackets(): HasMany
+    {
+        return $this->hasMany(PriceBracket::class)
+            ->whereNull('product_variant_id')
+            ->orderBy('sort_order')
+            ->orderBy('start_quantity');
     }
 
     /**
@@ -159,5 +194,41 @@ class Product extends Model
         }
 
         return null;
+    }
+
+    /**
+     * Unit sale price for the given order quantity (volume brackets on the product when no variant-specific tiers).
+     */
+    public function unitPriceForQuantity(int $quantity): float
+    {
+        foreach ($this->priceBrackets as $b) {
+            $min = (int) $b->start_quantity;
+            if ($quantity < $min) {
+                continue;
+            }
+            $max = $b->end_quantity !== null ? (int) $b->end_quantity : null;
+            if ($max !== null && $quantity > $max) {
+                continue;
+            }
+
+            return round((float) $b->price, 2);
+        }
+
+        return round((float) $this->price, 2);
+    }
+
+    /**
+     * Per-unit discount amount when a compare-at list price exists.
+     */
+    public function discountPerUnitForQuantity(int $quantity): float
+    {
+        $list = $this->listPriceBeforeDiscount();
+        if ($list === null) {
+            return 0.0;
+        }
+        $unit = $this->unitPriceForQuantity($quantity);
+        $diff = round((float) $list - $unit, 2);
+
+        return $diff > 0 ? $diff : 0.0;
     }
 }

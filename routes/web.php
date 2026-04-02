@@ -20,10 +20,21 @@ Route::get('/service', function () {
 Route::get('/products/{product:slug}', function (Product $product) {
     abort_unless($product->is_active, 404);
 
-    $product->load(['categories', 'variants']);
+    $product->load([
+        'categories',
+        'shortDescriptionTranslation',
+        'descriptionTranslation',
+        'variants.priceBrackets',
+        'variants.descriptionTranslation',
+        'priceBrackets',
+    ]);
 
     return view('pages.product', ['product' => $product]);
 })->name('products.show');
+
+Route::get('/cart', function () {
+    return view('pages.cart');
+})->name('cart.index');
 
 Route::get('/teachers', function () {
     return view('pages.teachers');

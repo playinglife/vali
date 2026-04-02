@@ -17,7 +17,8 @@
 
     $inStock = $product->isInStock();
     $showBadges = $product->is_featured || ! $inStock;
-    $excerpt = $product->short_description ?? \Illuminate\Support\Str::limit(strip_tags((string) $product->description), 120);
+    $excerpt = $product->localizedShortDescription()
+        ?? \Illuminate\Support\Str::limit(strip_tags((string) ($product->localizedDescription() ?? '')), 120);
 @endphp
 
 <article class="root-product-card" data-product-id="{{ $product->id }}">

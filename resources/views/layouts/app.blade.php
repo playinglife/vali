@@ -15,6 +15,7 @@
     </head>
     <body>
         <div class="root-views-layouts-app">
+            <x-flash-messages />
             <!-- Menu -->
             @include('layouts.menu')
             <!-- Content -->
@@ -22,6 +23,33 @@
             <!--<div class="flex flex-1 relative">-->
                 @yield('content')
             </div>
+
+            @php
+                $cartAdded = session('cart_added');
+            @endphp
+            @if (filled($cartAdded))
+                <x-modal-dialog
+                    id="layout-cart-added-dialog"
+                    mode="message"
+                    :aria-label="__('components.product.cart_added_title')"
+                    :close-label="__('components.flash.dismiss')"
+                    :open-on-load="true"
+                    :show-close-button="false"
+                    :show-ok-button="true"
+                    :ok-label="__('components.product.cart_added_ok')"
+                    :dismiss-on-backdrop="true"
+                    :allow-escape-key="false"
+                >
+                    <p class="modal-dialog__cart-text" role="status">
+                        {{ __('components.product.cart_added', [
+                            'product' => $cartAdded['product_name'],
+                            'qty' => $cartAdded['quantity'],
+                            'total' => number_format((float) $cartAdded['line_total'], 2, '.', ''),
+                            'currency' => $cartAdded['currency'],
+                        ]) }}
+                    </p>
+                </x-modal-dialog>
+            @endif
         </div>
         {{-- @livewireScripts --}}
     </body>

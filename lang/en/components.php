@@ -1,6 +1,12 @@
 <?php
 
 return [
+    'flash' => [
+        'dismiss' => 'Dismiss notification',
+    ],
+    'contact' => [
+        'message_sent_flash' => 'Your message has been sent successfully. We typically respond within 24 hours.',
+    ],
     'product' => [
         'featured' => 'Featured',
         'out_of_stock' => 'Out of stock',
@@ -12,6 +18,16 @@ return [
         'show_variant_photo' => 'Show photo for :label',
         'enlarge_photo' => 'Enlarge photo',
         'close_lightbox' => 'Close',
+        'price_brackets' => 'Volume pricing',
+        'quantity_range' => 'Quantity',
+        'bracket_price' => 'Unit price',
+        'qty_from_to' => ':start - :end',
+        'qty_and_up' => ':start+',
+        'order_quantity' => 'Quantity',
+        'qty_plus_open' => '+',
+        'cart_added_title' => 'Added to cart',
+        'cart_added_ok' => 'OK',
+        'cart_added' => ':product — quantity :qty — total :total :currency added to your cart.',
     ],
     'products' => [
         'filter_category' => 'Category',
@@ -22,8 +38,8 @@ return [
         'all_categories' => 'All categories',
         'all_option_values' => 'All options',
         'sort_label' => 'Sort',
-        'sort_name_asc' => 'Name A–Z',
-        'sort_name_desc' => 'Name Z–A',
+        'sort_name_asc' => 'Name A-Z',
+        'sort_name_desc' => 'Name Z-A',
         'sort_price_asc' => 'Price: low to high',
         'sort_price_desc' => 'Price: high to low',
         'results' => '{0} No products|{1} :count product|[2,*] :count products',

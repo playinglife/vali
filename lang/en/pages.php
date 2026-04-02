@@ -46,7 +46,21 @@ What can we offer you?',
         'title3' => 'Newsletter',
     ],
 
+
+
     'service' => [
         'title1' => 'Service Shirts',
+    ],
+
+
+    'cart' => [
+        'title1' => 'Shopping Cart',
+        'empty' => 'Your cart is empty.',
+        'quantity' => 'Quantity',
+        'unit_price' => 'Unit price',
+        'line_total' => 'Line total',
+        'grand_total' => 'Total',
+        'default_line' => 'Standard',
+        'variant_fallback' => 'Variant #:id',
     ],
 ];

@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Models\ProductOption;
 use App\Models\ProductOptionValue;
 use App\Models\ProductVariant;
+use App\Models\Translation;
 use Illuminate\Database\Seeder;
 
 class ProductCatalogSeeder extends Seeder
@@ -48,12 +49,21 @@ class ProductCatalogSeeder extends Seeder
                 ? round(15 + ($i % 4) * 5, 2)
                 : (float) (10 + ($i % 5) * 2);
 
+            $shortTranslation = Translation::query()->create([
+                'english' => 'Tailored shirt for professional wear — model '.$i.'.',
+                'romanian' => 'Cămașă croită pentru ținută profesională — modelul '.$i.'.',
+            ]);
+            $longTranslation = Translation::query()->create([
+                'english' => "Full description for shirt model {$i}.\nPremium fabric, tailored fit, available in multiple sizes and colors.",
+                'romanian' => "Descriere completă pentru modelul de cămașă {$i}.\nMaterial premium, croi adaptat, disponibil în mai multe mărimi și culori.",
+            ]);
+
             $product = Product::query()->create([
                 'sku' => $sku,
                 'name' => 'Shirt model '.$i,
                 'slug' => $slug,
-                'short_description' => 'Tailored shirt for professional wear — model '.$i.'.',
-                'description' => "Full description for shirt model {$i}.\nPremium fabric, tailored fit, available in multiple sizes and colors.",
+                'short_description_id' => $shortTranslation->id,
+                'description_id' => $longTranslation->id,
                 'price' => $price,
                 'discount_type' => $discountType,
                 'discount' => $discount,

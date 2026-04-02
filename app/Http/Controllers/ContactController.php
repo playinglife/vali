@@ -32,6 +32,9 @@ class ContactController extends Controller
         );
 
         // Redirect to success page
-        return redirect()->route('contact.success')->with('success', 'Your message has been sent successfully. We typically respond within 24 hours.');
+        return redirect()->route('contact.success')->withNotify(
+            'success',
+            __('components.contact.message_sent_flash')
+        );
     }
 }

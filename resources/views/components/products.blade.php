@@ -13,7 +13,7 @@
     /** @var \Illuminate\Support\Collection<int, \App\Models\Product>|null $products */
     $products = $products ?? \App\Models\Product::query()
         ->active()
-        ->with(['categories', 'variants.optionValues.option'])
+        ->with(['categories', 'variants.optionValues.option', 'shortDescriptionTranslation', 'descriptionTranslation'])
         ->orderBy('name')
         ->get();
 
