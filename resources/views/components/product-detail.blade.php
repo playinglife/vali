@@ -1,10 +1,14 @@
-@props([
-    'product',
-    'image' => null,
-    'lightboxMaxZoom' => 12,
-    'lightboxMinZoom' => 1,
-])
+@props(['product', 'image' => null, 'lightboxMaxZoom' => 12, 'lightboxMinZoom' => 1])
 
+@once
+    @push('styles')
+        @vite(['resources/scss/product-detail.scss'])
+    @endpush
+@endonce
+
+
+
+<!-- PHP -->
 @php
     /** @var \App\Models\Product $product */
     $lightboxMinZoom = max(0.05, min(50.0, (float) $lightboxMinZoom));
@@ -51,6 +55,10 @@
     $variantDetailPayload = $variantsSorted->map(function ($v) use ($product, $productBrackets) {
         $brackets = $v->priceBrackets->isNotEmpty() ? $v->priceBrackets : $productBrackets;
         $before = $v->listPriceBeforeDiscount();
+        $optionValueIdsByOptionId = [];
+        foreach ($v->optionValues as $ov) {
+            $optionValueIdsByOptionId[$ov->product_option_id] = $ov->id;
+        }
 
         return [
             'id' => $v->id,
@@ -58,6 +66,8 @@
             'price' => round((float) ($v->price ?? $product->price), 2),
             'listPrice' => $before !== null ? round((float) $before, 2) : null,
             'description' => $v->localizedDescription() ?? '',
+            'imageUrl' => $v->displayImageUrl(),
+            'optionValueIdsByOptionId' => $optionValueIdsByOptionId,
             'brackets' => $brackets->map(fn ($b) => [
                 'start' => (int) $b->start_quantity,
                 'end' => $b->end_quantity !== null ? (int) $b->end_quantity : null,
@@ -65,6 +75,95 @@
             ])->values()->all(),
         ];
     })->values()->all();
+
+    $usedOptionValueIds = $variantsSorted->flatMap(fn ($v) => $v->optionValues->pluck('id'))->unique();
+    $optionsConfig = [];
+    $optionsForProduct = $product->options->sortBy('sort_order')->values();
+    foreach ($optionsForProduct as $opt) {
+        $vals = $opt->values
+            ->filter(fn ($v) => $usedOptionValueIds->contains($v->id))
+            ->sortBy('sort_order')
+            ->values();
+        if ($vals->isEmpty()) {
+            continue;
+        }
+
+        $optionsConfig[] = [
+            'id' => $opt->id,
+            'name' => $opt->name,
+            'values' => $vals->map(function ($v) use ($variantsSorted) {
+                $imageUrl = null;
+                $useImage = false;
+                foreach ($variantsSorted as $var) {
+                    $pivOv = $var->optionValues->firstWhere('id', $v->id);
+                    if (! $pivOv || ! $pivOv->pivot) {
+                        continue;
+                    }
+                    if ($pivOv->pivot->with_image !== null) {
+                        $useImage = true;
+                        $path = $pivOv->pivot->with_image;
+                        if ($path !== '' && $imageUrl === null) {
+                            $imageUrl = asset('storage/'.ltrim((string) $path, '/'));
+                        }
+                    }
+                }
+
+                return [
+                    'id' => $v->id,
+                    'label' => $v->value,
+                    'imageUrl' => $imageUrl,
+                    'useImage' => $useImage,
+                ];
+            })->all(),
+        ];
+    }
+
+    $optionsOrphan = [];
+    foreach ($optionsForProduct as $opt) {
+        $optionValueIds = $opt->values->pluck('id');
+        $anyValueUsedOnVariant = $optionValueIds->intersect($usedOptionValueIds)->isNotEmpty();
+        if ($anyValueUsedOnVariant) {
+            continue;
+        }
+        $vals = $opt->values->sortBy('sort_order')->values();
+        if ($vals->isEmpty()) {
+            continue;
+        }
+        $optionsOrphan[] = [
+            'id' => $opt->id,
+            'name' => $opt->name,
+            'values' => $vals->map(fn ($v) => [
+                'id' => $v->id,
+                'label' => $v->value,
+            ])->all(),
+        ];
+    }
+
+    $initialSelectionByOptionId = [];
+    if ($variantsSorted->isNotEmpty()) {
+        $iv = $activeThumbIndex !== null
+            ? $variantsSorted->get($activeThumbIndex)
+            : $variantsSorted->first();
+        foreach ($iv->optionValues as $ov) {
+            $initialSelectionByOptionId[$ov->product_option_id] = $ov->id;
+        }
+    }
+
+    $optionsUiEnabled = $variantsSorted->isNotEmpty() && $optionsConfig !== [];
+
+    $hasOptionSwatches = false;
+    foreach ($optionsConfig as $oc) {
+        foreach ($oc['values'] as $v) {
+            if (! empty($v['useImage'])) {
+                $hasOptionSwatches = true;
+                break 2;
+            }
+        }
+    }
+    $showProductHeroSwatch = $optionsUiEnabled && $hasOptionSwatches && $variantsSorted->isNotEmpty();
+    $productHeroVariantIndex = $variantsSorted->isEmpty()
+        ? null
+        : ($activeThumbIndex !== null ? $activeThumbIndex : 0);
 
     $detailI18n = [
         'currency' => __('components.product.currency'),
@@ -77,9 +176,16 @@
         'hasVariants' => $variantsSorted->isNotEmpty(),
         'variants' => $variantDetailPayload,
         'detailI18n' => $detailI18n,
+        'optionsUi' => $optionsUiEnabled,
+        'options' => $optionsConfig,
+        'productHeroImageUrl' => $showProductHeroSwatch ? $imageUrl : null,
+        'productHeroVariantIndex' => $showProductHeroSwatch ? $productHeroVariantIndex : null,
     ];
 @endphp
 
+
+
+<!-- TEMPLATE -->
 <div class="root-product-detail">
     {{-- JSON in a script tag avoids HTML-attribute encoding issues that break JSON.parse on variant click --}}
     <script type="application/json" class="product-detail-json">
@@ -107,7 +213,132 @@
                     />
                 </button>
             </div>
-            @if ($variantsSorted->isNotEmpty())
+            @if ($optionsUiEnabled)
+                <div class="root-product-detail__options" role="group" aria-label="{{ __('components.product.product_options') }}">
+                    @if ($showProductHeroSwatch)
+                        <div class="root-product-detail__option root-product-detail__option--product-hero">
+                            <div
+                                class="root-product-detail__product-hero-row"
+                                role="group"
+                                aria-label="{{ __('components.product.product_photo') }}"
+                            >
+                                <button
+                                    type="button"
+                                    class="root-product-detail__option-swatch root-product-detail__option-swatch--active"
+                                    data-product-hero-swatch="1"
+                                    aria-pressed="true"
+                                    aria-label="{{ __('components.product.product_default_photo') }}"
+                                >
+                                    <img
+                                        class="root-product-detail__option-swatch-img"
+                                        src="{{ $imageUrl }}"
+                                        alt=""
+                                        width="72"
+                                        height="108"
+                                        loading="eager"
+                                        decoding="async"
+                                    />
+                                </button>
+                            </div>
+                        </div>
+                    @endif
+                    @foreach ($optionsConfig as $opt)
+                        @php
+                            $imageVals = [];
+                            $selectVals = [];
+                            foreach ($opt['values'] as $v) {
+                                if (! empty($v['useImage'])) {
+                                    $imageVals[] = $v;
+                                } else {
+                                    $selectVals[] = $v;
+                                }
+                            }
+                            $mixed = $imageVals !== [] && $selectVals !== [];
+                            $selId = $initialSelectionByOptionId[$opt['id']] ?? null;
+                            $selectIdSet = array_fill_keys(array_map('intval', array_column($selectVals, 'id')), true);
+                            $selectHasSelection = $selId !== null && isset($selectIdSet[(int) $selId]);
+                        @endphp
+                        <div class="root-product-detail__option" data-product-option-block="{{ $opt['id'] }}">
+                            <h3 class="root-product-detail__option-heading">{{ $opt['name'] }}</h3>
+                            @if ($imageVals !== [] || $selectVals !== [])
+                                <div
+                                    class="root-product-detail__option-interactive"
+                                    data-product-option-interactive="{{ $opt['id'] }}"
+                                >
+                                    @if ($imageVals !== [])
+                                        <div
+                                            class="root-product-detail__option-images"
+                                            data-product-option-images="{{ $opt['id'] }}"
+                                            role="group"
+                                            aria-label="{{ $opt['name'] }}"
+                                        >
+                                            @foreach ($imageVals as $val)
+                                                @php
+                                                    $isActive = $selId !== null && (int) $selId === (int) $val['id'];
+                                                @endphp
+                                                <button
+                                                    type="button"
+                                                    class="root-product-detail__option-swatch {{ $isActive ? 'root-product-detail__option-swatch--active' : '' }}"
+                                                    data-option-id="{{ $opt['id'] }}"
+                                                    data-option-value-id="{{ $val['id'] }}"
+                                                    aria-pressed="{{ $isActive ? 'true' : 'false' }}"
+                                                    aria-label="{{ __('components.product.option_value_label', ['option' => $opt['name'], 'value' => $val['label']]) }}"
+                                                >
+                                                    @if (! empty($val['imageUrl']))
+                                                        <img
+                                                            class="root-product-detail__option-swatch-img"
+                                                            src="{{ $val['imageUrl'] }}"
+                                                            alt=""
+                                                            width="72"
+                                                            height="108"
+                                                            loading="lazy"
+                                                            decoding="async"
+                                                        />
+                                                    @else
+                                                        <span class="root-product-detail__option-swatch-label">{{ $val['label'] }}</span>
+                                                    @endif
+                                                </button>
+                                            @endforeach
+                                        </div>
+                                    @endif
+                                    @if ($selectVals !== [])
+                                        <select
+                                            class="root-product-detail__option-select {{ $mixed ? 'root-product-detail__option-select--after-images' : '' }}"
+                                            data-product-option-select="{{ $opt['id'] }}"
+                                            aria-label="{{ $opt['name'] }}"
+                                        >
+                                            @if ($mixed)
+                                                <option
+                                                    value=""
+                                                    @selected(! $selectHasSelection)
+                                                >
+                                                    {{ __('components.product.option_select_placeholder', ['option' => $opt['name']]) }}
+                                                </option>
+                                            @endif
+                                            @foreach ($selectVals as $val)
+                                                <option
+                                                    value="{{ $val['id'] }}"
+                                                    @selected($selectHasSelection && (int) $selId === (int) $val['id'])
+                                                >
+                                                    {{ $val['label'] }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    @endif
+                                </div>
+                                <div
+                                    class="root-product-detail__option-locked"
+                                    hidden
+                                    data-product-option-locked="{{ $opt['id'] }}"
+                                    data-option-value-id=""
+                                >
+                                    <span class="root-product-detail__option-locked-text"></span>
+                                </div>
+                            @endif
+                        </div>
+                    @endforeach
+                </div>
+            @elseif ($variantsSorted->isNotEmpty())
                 <div class="root-product-detail__thumbs" role="group" aria-label="{{ __('components.product.variant_photos') }}">
                     @foreach ($variantsSorted as $variant)
                         @php
@@ -178,15 +409,17 @@
                     <span class="root-product-detail__sku-value">{{ $displaySku }}</span>
                 </p>
                 <div class="root-product-detail__prices" aria-label="{{ __('components.product.price') }}">
-                    <span class="root-product-detail__price"
-                        ><span class="root-product-detail__price-value">{{ number_format($displayPrice, 2) }}</span
-                        >&nbsp;<span class="root-product-detail__currency">{{ __('components.product.currency') }}</span></span
-                    >
                     <span
                         class="root-product-detail__compare"
                         @if (! $showCompareDisplay) hidden @endif
-                        ><span class="root-product-detail__compare-value">{{ $showCompareDisplay ? number_format($displayList, 2) : '' }}</span
-                        >&nbsp;<span class="root-product-detail__compare-currency">{{ __('components.product.currency') }}</span></span
+                        ><s class="root-product-detail__compare-strike"
+                            ><span class="root-product-detail__compare-value">{{ $showCompareDisplay ? number_format($displayList, 2) : '' }}</span
+                            >&nbsp;<span class="root-product-detail__compare-currency">{{ __('components.product.currency') }}</span></s
+                        ></span
+                    >
+                    <span class="root-product-detail__price"
+                        ><span class="root-product-detail__price-value">{{ number_format($displayPrice, 2) }}</span
+                        >&nbsp;<span class="root-product-detail__currency">{{ __('components.product.currency') }}</span></span
                     >
                 </div>
             </div>
@@ -251,6 +484,25 @@
                     min="1" max="999" maxlength="3" value="1" @disabled(! $inStock) inputmode="numeric" autocomplete="off"
                 />
             </div>
+
+            @if ($optionsOrphan !== [])
+                <section
+                    class="root-product-detail__options-extra"
+                    aria-label="{{ __('components.product.options_extra_region') }}"
+                >
+                    <h3 class="root-product-detail__options-extra-heading">{{ __('components.product.options_extra_heading') }}</h3>
+                    @foreach ($optionsOrphan as $group)
+                        <div class="root-product-detail__options-extra-group" data-product-option-extra="{{ $group['id'] }}">
+                            <h4 class="root-product-detail__options-extra-name">{{ $group['name'] }}</h4>
+                            <ul class="root-product-detail__options-extra-values">
+                                @foreach ($group['values'] as $val)
+                                    <li class="root-product-detail__options-extra-value">{{ $val['label'] }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endforeach
+                </section>
+            @endif
         </div>
     </div>
 
@@ -300,304 +552,9 @@
     </x-modal-dialog>
 </div>
 
-@once
-    <style>
-        .root-product-detail {
-            box-sizing: border-box;
-            width: 100%;
-            max-width: 56rem;
-            margin: 0 auto;
-            padding: var(--padding-large);
-            color: var(--color-text-dark);
-        }
-        .root-product-detail__grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: var(--gap-large);
-            align-items: start;
-        }
-        @media (min-width: 48rem) {
-            .root-product-detail__grid {
-                grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
-                gap: var(--padding-large);
-            }
-        }
-        .root-product-detail__media-col {
-            display: flex;
-            flex-direction: column;
-            gap: var(--gap-medium);
-            min-width: 0;
-        }
-        .root-product-detail__media {
-            position: relative;
-            width: 100%;
-            aspect-ratio: 2 / 3;
-            border-radius: var(--border-radius-medium);
-            overflow: hidden;
-        }
-        button.root-product-detail__media-open {
-            position: absolute;
-            inset: 0;
-            display: block;
-            width: 100%;
-            height: 100%;
-            margin: 0;
-            padding: 0;
-            border: 0;
-            border-radius: inherit;
-            background: transparent;
-            cursor: zoom-in;
-            background-color: none;
-            border: none;
-        }
-        .root-product-detail__media-open:focus-visible {
-            outline: 2px solid var(--color-one);
-            outline-offset: 2px;
-        }
-        .root-product-detail__img {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: center;
-            display: block;
-            pointer-events: none;
-        }
-        .root-product-detail__thumbs {
-            display: flex;
-            flex-wrap: wrap;
-            gap: var(--gap-small);
-            justify-content: center;
-        }
-        button.root-product-detail__thumb {
-            flex: 0 0 auto;
-            margin: 0;
-            padding: 0;
-            border: 0.1em solid var(--color-background-transparent-light-border);
-            border-radius: var(--border-radius-small);
-            background: var(--color-background-transparent-light);
-            cursor: pointer;
-            overflow: hidden;
-            width: 4rem;
-            aspect-ratio: 2 / 3;
-            transition: border-color 0.15s ease, box-shadow 0.15s ease;
-        }
-        .root-product-detail__thumb:hover {
-            border-color: color-mix(in srgb, var(--color-one) 45%, var(--color-border));
-        }
-        .root-product-detail__thumb--active {
-            border-color: var(--color-one);
-            box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-one) 35%, transparent);
-        }
-        .root-product-detail__thumb-img {
-            display: block;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: center;
-        }
-        .root-product-detail__info {
-            display: flex;
-            flex-direction: column;
-            gap: var(--gap-medium);
-            min-width: 0;
-        }
-        .root-product-detail__badges {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.35em;
-        }
-        .root-product-detail__badge {
-            font-family: var(--font-family-one);
-            font-size: 0.65rem;
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
-            padding: 0.2em 0.55em;
-            border-radius: var(--border-radius-small);
-        }
-        .root-product-detail__badge--featured {
-            background: color-mix(in srgb, var(--color-two) 22%, white);
-            color: var(--color-text-dark);
-        }
-        .root-product-detail__badge--out {
-            background: color-mix(in srgb, var(--color-error) 25%, white);
-            color: var(--color-text-dark);
-        }
-        .root-product-detail__title {
-            color: var(--color-one);
-        }
-        .root-product-detail__variant-description {
-            margin: 0;
-            font-size: 0.95rem;
-            line-height: 1.5;
-            opacity: 0.92;
-            white-space: pre-line;
-            color: var(--color-one);
-        }
-        .root-product-detail__categories {
-            margin: 0;
-            font-size: 0.8rem;
-            opacity: 0.85;
-            font-family: var(--font-family-two);
-        }
-        .root-product-detail__lead {
-            margin: 0;
-            font-size: 1rem;
-            opacity: 0.92;
-            line-height: 1.45;
-        }
-        .root-product-detail__body {
-            font-size: 0.9rem;
-            line-height: 1.55;
-            margin: 0;
-        }
-        .root-product-detail__meta {
-            margin-top: auto;
-            padding-top: var(--gap-medium);
-            border-top: 1px solid color-mix(in srgb, var(--color-border) 50%, transparent);
-        }
-        .root-product-detail__sku {
-            margin: 0 0 var(--gap-small);
-            font-size: 0.65rem;
-            letter-spacing: 0.04em;
-            opacity: 0.8;
-        }
-        .root-product-detail__meta-label {
-            margin-right: 0.35em;
-            text-transform: uppercase;
-            font-family: var(--font-family-one);
-        }
-        .root-product-detail__prices {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: baseline;
-            gap: 0.5em;
-        }
-        .root-product-detail__price {
-            font-family: var(--font-family-one);
-            font-size: 1.35rem;
-            color: var(--color-one);
-        }
-        .root-product-detail__compare {
-            font-size: 0.95rem;
-            text-decoration: line-through;
-            opacity: 0.65;
-        }
-        .root-product-detail__actions {
-            display: flex;
-            justify-content: center;
-            margin-top: var(--padding-large);
-            padding-top: var(--gap-medium);
-            border-top: 1px solid color-mix(in srgb, var(--color-border) 40%, transparent);
-        }
-        .root-product-detail__cart-form {
-            margin: 0;
-        }
-        .root-product-detail__add-btn {
 
-        }
-        .root-product-detail__add-btn:hover:not(:disabled) {
-        }
-        .root-product-detail__add-btn:disabled {
-        }
-        .root-product-detail__brackets-wrap {
-            margin-top: var(--gap-medium);
-            padding-top: var(--gap-medium);
-            border-top: 1px solid color-mix(in srgb, var(--color-border) 50%, transparent);
-        }
-        .root-product-detail__brackets-heading {
-            margin: 0 0 var(--gap-small);
-            font-family: var(--font-family-one);
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            color: var(--color-text-dark);
-            opacity: 0.9;
-        }
-        .root-product-detail__brackets-table {
-            width: 100%;
-            table-layout: auto;
-            border-collapse: collapse;
-            font-size: 0.9rem;
-        }
-        /* Last column grows; quantity columns size to content (never zero-width) */
-        .root-product-detail__brackets-col-price {
-            width: 100%;
-        }
-        .root-product-detail__brackets-table th,
-        .root-product-detail__brackets-table td {
-            padding: 0.35em 0.45em;
-            border-bottom: 1px solid color-mix(in srgb, var(--color-border) 35%, transparent);
-            vertical-align: baseline;
-        }
-        .root-product-detail__brackets-table th {
-            font-family: var(--font-family-one);
-            font-size: 0.65rem;
-            text-transform: uppercase;
-            opacity: 0.85;
-        }
-        .root-product-detail__brackets-th-qty {
-            text-align: center;
-        }
-        .root-product-detail__brackets-th-price {
-            text-align: right;
-        }
-        .root-product-detail__brackets-q-start,
-        .root-product-detail__brackets-q-sep,
-        .root-product-detail__brackets-q-end {
-            text-align: right;
-            font-variant-numeric: tabular-nums;
-            font-family: ui-monospace, 'Cascadia Code', 'Consolas', monospace;
-            font-size: 0.92em;
-            white-space: nowrap;
-            width: auto;
-            min-width: min-content;
-        }
-        .root-product-detail__brackets-q-sep {
-            padding-left: 0.2em;
-            padding-right: 0.2em;
-        }
-        .root-product-detail__brackets-price {
-            text-align: right;
-            font-family: var(--font-family-one);
-            font-variant-numeric: tabular-nums;
-            color: var(--color-one);
-        }
-        .root-product-detail__brackets-table tbody tr.root-product-detail__brackets-row--active td {
-            background: color-mix(in srgb, var(--color-one) 12%, transparent);
-        }
-        .root-product-detail__order-qty {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: var(--gap-small);
-            margin-top: var(--gap-medium);
-            padding-top: var(--gap-medium);
-            border-top: 1px solid color-mix(in srgb, var(--color-border) 50%, transparent);
-        }
-        .root-product-detail__order-qty-label {
-            font-family: var(--font-family-one);
-            font-size: 0.75rem;
-            letter-spacing: 0.04em;
-            text-transform: uppercase;
-            opacity: 0.9;
-        }
-        .root-product-detail__order-qty-input {
-            box-sizing: border-box;
-            width: 3.5rem;
-            max-width: 100%;
-        }
-        .root-product-detail__order-qty-input:focus-visible {
-            outline: 2px solid var(--color-one);
-            outline-offset: 2px;
-        }
-        .root-product-detail__order-qty-input:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-    </style>
-@endonce
 
+<!-- SCRIPT -->
 @once
     <script>
         function resetProductDetailLightboxZoom(lbImg) {
@@ -807,7 +764,390 @@
             tbody.appendChild(tr);
         }
 
-        function applyProductDetailVariant(root, variantIndex) {
+        function variantOptionMapGet(map, optId) {
+            if (!map) {
+                return null;
+            }
+            const m = map[optId] != null ? map[optId] : map[String(optId)];
+            return m != null ? Number(m) : null;
+        }
+
+        function variantIsComplete(cfg, v) {
+            const map = v.optionValueIdsByOptionId;
+            if (!map || !cfg.options) {
+                return false;
+            }
+            for (let i = 0; i < cfg.options.length; i++) {
+                const oid = cfg.options[i].id;
+                const m = variantOptionMapGet(map, oid);
+                if (!Number.isFinite(m)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        function matchesPartialVariant(v, partialSelection) {
+            const map = v.optionValueIdsByOptionId;
+            if (!map) {
+                return false;
+            }
+            const keys = Object.keys(partialSelection);
+            for (let k = 0; k < keys.length; k++) {
+                const oid = keys[k];
+                const sel = partialSelection[oid];
+                if (!Number.isFinite(sel)) {
+                    continue;
+                }
+                const m = variantOptionMapGet(map, oid);
+                if (m == null || String(m) !== String(sel)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        function getFilteredCompleteVariants(cfg, partialSelection) {
+            return cfg.variants.filter(function (v) {
+                return variantIsComplete(cfg, v) && matchesPartialVariant(v, partialSelection);
+            });
+        }
+
+        function getAvailableValueIdsForOption(cfg, selection, optId) {
+            const partial = {};
+            cfg.options.forEach(function (opt) {
+                if (Number(opt.id) === Number(optId)) {
+                    return;
+                }
+                const s = selection[opt.id] != null ? selection[opt.id] : selection[String(opt.id)];
+                if (Number.isFinite(s)) {
+                    partial[opt.id] = s;
+                }
+            });
+            const filtered = getFilteredCompleteVariants(cfg, partial);
+            const ids = [];
+            const seen = {};
+            filtered.forEach(function (v) {
+                const vid = variantOptionMapGet(v.optionValueIdsByOptionId, optId);
+                if (vid != null && !seen[vid]) {
+                    seen[vid] = true;
+                    ids.push(Number(vid));
+                }
+            });
+            return ids;
+        }
+
+        function propagateSelection(cfg, selection) {
+            let changed = true;
+            while (changed) {
+                changed = false;
+                cfg.options.forEach(function (opt) {
+                    const avail = getAvailableValueIdsForOption(cfg, selection, opt.id);
+                    if (avail.length === 1) {
+                        const only = avail[0];
+                        const cur = selection[opt.id] != null ? selection[opt.id] : selection[String(opt.id)];
+                        if (!Number.isFinite(cur) || Number(cur) !== Number(only)) {
+                            selection[opt.id] = only;
+                            changed = true;
+                        }
+                    }
+                });
+            }
+        }
+
+        function findOptionValueLabel(cfg, optId, valueId) {
+            for (let i = 0; i < cfg.options.length; i++) {
+                if (Number(cfg.options[i].id) !== Number(optId)) {
+                    continue;
+                }
+                const vals = cfg.options[i].values;
+                if (!vals) {
+                    return '';
+                }
+                for (let j = 0; j < vals.length; j++) {
+                    if (Number(vals[j].id) === Number(valueId)) {
+                        return String(vals[j].label != null ? vals[j].label : '');
+                    }
+                }
+            }
+            return '';
+        }
+
+        function applyOptionControlsFromSelection(root, cfg, selection) {
+            if (!cfg || !cfg.options) {
+                return;
+            }
+            cfg.options.forEach(function (opt) {
+                const interactive = root.querySelector('[data-product-option-interactive="' + opt.id + '"]');
+                const locked = root.querySelector('[data-product-option-locked="' + opt.id + '"]');
+                if (!interactive || !locked) {
+                    return;
+                }
+                const avail = getAvailableValueIdsForOption(cfg, selection, opt.id);
+                const availSet = {};
+                avail.forEach(function (id) {
+                    availSet[id] = true;
+                });
+                const imgWrap = interactive.querySelector('[data-product-option-images="' + opt.id + '"]');
+                const sel = interactive.querySelector('[data-product-option-select="' + opt.id + '"]');
+                const lockedText = locked.querySelector('.root-product-detail__option-locked-text');
+
+                if (avail.length <= 1) {
+                    interactive.hidden = true;
+                    locked.hidden = false;
+                    if (avail.length === 1) {
+                        const valId = avail[0];
+                        locked.setAttribute('data-option-value-id', String(valId));
+                        if (lockedText) {
+                            lockedText.textContent = findOptionValueLabel(cfg, opt.id, valId);
+                        }
+                    } else {
+                        locked.setAttribute('data-option-value-id', '');
+                        if (lockedText) {
+                            lockedText.textContent = '\u2014';
+                        }
+                    }
+                    return;
+                }
+
+                interactive.hidden = false;
+                locked.hidden = true;
+                locked.setAttribute('data-option-value-id', '');
+
+                if (imgWrap) {
+                    imgWrap.querySelectorAll('.root-product-detail__option-swatch').forEach(function (btn) {
+                        const id = parseInt(btn.getAttribute('data-option-value-id'), 10);
+                        const show = availSet[id];
+                        btn.hidden = !show;
+                        if (!show) {
+                            btn.classList.remove('root-product-detail__option-swatch--active');
+                            btn.setAttribute('aria-pressed', 'false');
+                        }
+                    });
+                }
+                if (sel) {
+                    sel.querySelectorAll('option').forEach(function (optEl) {
+                        const v = optEl.value;
+                        if (v === '') {
+                            const hasActiveImg =
+                                imgWrap && imgWrap.querySelector('.root-product-detail__option-swatch--active');
+                            optEl.hidden = !!(hasActiveImg || sel.value !== '');
+                            return;
+                        }
+                        const id = parseInt(v, 10);
+                        optEl.hidden = !availSet[id];
+                    });
+                }
+
+                const valId = selection[opt.id] != null ? selection[opt.id] : selection[String(opt.id)];
+                const valStr = Number.isFinite(valId) ? String(valId) : null;
+                if (imgWrap && valStr) {
+                    const swatchForVal = availSet[Number(valId)]
+                        ? imgWrap.querySelector('.root-product-detail__option-swatch[data-option-value-id="' + valStr + '"]')
+                        : null;
+                    imgWrap.querySelectorAll('.root-product-detail__option-swatch').forEach(function (btn) {
+                        if (btn.hidden) {
+                            return;
+                        }
+                        const on = swatchForVal != null && btn === swatchForVal;
+                        btn.classList.toggle('root-product-detail__option-swatch--active', on);
+                        btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+                    });
+                }
+                if (sel && valStr) {
+                    const optEl = sel.querySelector('option[value="' + valStr + '"]');
+                    if (optEl && !optEl.hidden) {
+                        sel.value = valStr;
+                    } else {
+                        sel.value = '';
+                    }
+                }
+            });
+        }
+
+        function setOptionControlsFromVariant(root, cfg, variantIndex) {
+            const v = cfg.variants[variantIndex];
+            if (!v || !v.optionValueIdsByOptionId || !cfg.options) {
+                return;
+            }
+            const selection = {};
+            cfg.options.forEach(function (opt) {
+                const m = variantOptionMapGet(v.optionValueIdsByOptionId, opt.id);
+                if (m != null) {
+                    selection[opt.id] = m;
+                }
+            });
+            propagateSelection(cfg, selection);
+            applyOptionControlsFromSelection(root, cfg, selection);
+        }
+
+        function collectSelectionFromControls(root, cfg) {
+            const selection = {};
+            if (!cfg || !cfg.options) {
+                return selection;
+            }
+            cfg.options.forEach(function (opt) {
+                const locked = root.querySelector('[data-product-option-locked="' + opt.id + '"]');
+                if (locked && !locked.hidden) {
+                    const raw = locked.getAttribute('data-option-value-id');
+                    const n = parseInt(raw, 10);
+                    if (Number.isFinite(n)) {
+                        selection[opt.id] = n;
+                    }
+                    return;
+                }
+                const sel = root.querySelector('[data-product-option-select="' + opt.id + '"]');
+                const imgWrap = root.querySelector('[data-product-option-images="' + opt.id + '"]');
+                if (imgWrap) {
+                    const active = imgWrap.querySelector('.root-product-detail__option-swatch--active');
+                    if (active && !active.hidden) {
+                        const n = parseInt(active.getAttribute('data-option-value-id'), 10);
+                        if (Number.isFinite(n)) {
+                            selection[opt.id] = n;
+                            return;
+                        }
+                    }
+                }
+                if (sel && sel.value !== '') {
+                    const n = parseInt(sel.value, 10);
+                    if (Number.isFinite(n)) {
+                        selection[opt.id] = n;
+                    }
+                }
+            });
+            return selection;
+        }
+
+        function variantMatchesSelection(v, cfg, selection) {
+            const map = v.optionValueIdsByOptionId;
+            if (!map || !cfg.options) {
+                return false;
+            }
+            for (let i = 0; i < cfg.options.length; i++) {
+                const oid = cfg.options[i].id;
+                const sel = selection[oid] != null ? selection[oid] : selection[String(oid)];
+                if (!Number.isFinite(sel)) {
+                    return false;
+                }
+                const m = variantOptionMapGet(map, oid);
+                if (m == null || String(m) !== String(sel)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        function findVariantIndexBySelection(cfg, selection) {
+            for (let i = 0; i < cfg.variants.length; i++) {
+                if (variantMatchesSelection(cfg.variants[i], cfg, selection)) {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
+        function refreshOptionAvailability(root) {
+            const cfg = parseProductDetailConfig(root);
+            if (!cfg || !cfg.optionsUi) {
+                return;
+            }
+            const selection = collectSelectionFromControls(root, cfg);
+            propagateSelection(cfg, selection);
+            applyOptionControlsFromSelection(root, cfg, selection);
+            const idx = findVariantIndexBySelection(cfg, selection);
+            if (idx < 0) {
+                return;
+            }
+            applyProductDetailVariant(root, idx, { skipOptionControls: true });
+            syncProductDetailLightbox(root);
+        }
+
+        function initProductDetailOptions(root) {
+            const cfg = parseProductDetailConfig(root);
+            if (!cfg || !cfg.optionsUi) {
+                return;
+            }
+            root.addEventListener('change', function (e) {
+                if (!e.target || !e.target.matches || !e.target.matches('.root-product-detail__option-select')) {
+                    return;
+                }
+                const optId = e.target.getAttribute('data-product-option-select');
+                const imgWrap = root.querySelector('[data-product-option-images="' + optId + '"]');
+                if (imgWrap) {
+                    imgWrap.querySelectorAll('.root-product-detail__option-swatch').forEach(function (btn) {
+                        btn.classList.remove('root-product-detail__option-swatch--active');
+                        btn.setAttribute('aria-pressed', 'false');
+                    });
+                }
+                refreshOptionAvailability(root);
+            });
+            root.addEventListener('click', function (e) {
+                const heroBtn = e.target.closest('[data-product-hero-swatch]');
+                if (heroBtn && root.contains(heroBtn)) {
+                    e.preventDefault();
+                    const cfgHero = parseProductDetailConfig(root);
+                    const hIdx = cfgHero && cfgHero.productHeroVariantIndex;
+                    if (cfgHero && hIdx != null && cfgHero.variants && cfgHero.variants[hIdx]) {
+                        applyProductDetailVariant(root, hIdx);
+                        if (cfgHero.productHeroImageUrl) {
+                            const mainImg = root.querySelector('.root-product-detail__img');
+                            if (mainImg) {
+                                mainImg.removeAttribute('srcset');
+                                mainImg.src = cfgHero.productHeroImageUrl;
+                            }
+                        }
+                        syncProductDetailLightbox(root);
+                    }
+                    return;
+                }
+                const sw = e.target.closest('.root-product-detail__option-swatch');
+                if (!sw || !root.contains(sw)) {
+                    return;
+                }
+                e.preventDefault();
+                const wrap = sw.closest('[data-product-option-images]');
+                if (!wrap) {
+                    return;
+                }
+                wrap.querySelectorAll('.root-product-detail__option-swatch').forEach(function (btn) {
+                    const on = btn === sw;
+                    btn.classList.toggle('root-product-detail__option-swatch--active', on);
+                    btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+                });
+                const optId = wrap.getAttribute('data-product-option-images');
+                const sel = optId != null ? root.querySelector('[data-product-option-select="' + optId + '"]') : null;
+                if (sel) {
+                    sel.value = '';
+                }
+                refreshOptionAvailability(root);
+                const swImg = sw.querySelector('.root-product-detail__option-swatch-img');
+                if (swImg) {
+                    const mainImg = root.querySelector('.root-product-detail__img');
+                    if (mainImg) {
+                        const url = swImg.currentSrc || swImg.src || swImg.getAttribute('src');
+                        if (url) {
+                            mainImg.removeAttribute('srcset');
+                            mainImg.src = url;
+                        }
+                    }
+                }
+                syncProductDetailLightbox(root);
+            });
+            refreshOptionAvailability(root);
+        }
+
+        function updateProductHeroSwatchState(root, cfg, variantIndex) {
+            const hero = root.querySelector('[data-product-hero-swatch]');
+            if (!hero || !cfg || cfg.productHeroVariantIndex == null) {
+                return;
+            }
+            const on = Number(variantIndex) === Number(cfg.productHeroVariantIndex);
+            hero.classList.toggle('root-product-detail__option-swatch--active', on);
+            hero.setAttribute('aria-pressed', on ? 'true' : 'false');
+        }
+
+        function applyProductDetailVariant(root, variantIndex, opts) {
+            opts = opts || {};
             const cfg = parseProductDetailConfig(root);
             if (!cfg || !cfg.hasVariants || !cfg.variants[variantIndex]) {
                 return;
@@ -860,6 +1200,14 @@
             if (variantIdInput && v.id != null) {
                 variantIdInput.value = String(v.id);
             }
+            const mainImg = root.querySelector('.root-product-detail__img');
+            if (mainImg && v.imageUrl) {
+                mainImg.src = v.imageUrl;
+            }
+            if (cfg.optionsUi && cfg.options && v.optionValueIdsByOptionId && !opts.skipOptionControls) {
+                setOptionControlsFromVariant(root, cfg, variantIndex);
+            }
+            updateProductHeroSwatchState(root, cfg, variantIndex);
             updateBracketRowHighlight(root);
         }
 
@@ -899,6 +1247,7 @@
 
         document.querySelectorAll('.root-product-detail').forEach(function (root) {
             initProductDetailBracketHighlight(root);
+            initProductDetailOptions(root);
         });
 
         document.addEventListener('click', function (e) {

@@ -54,10 +54,12 @@
 
         <div class="root-product-card__footer">
             <div class="root-product-card__prices" aria-label="{{ __('components.product.price') }}">
-                <span class="root-product-card__price">{{ number_format($price, 2) }}&nbsp;{{ __('components.product.currency') }}</span>
                 @if ($showCompare)
-                    <span class="root-product-card__compare">{{ number_format($list, 2) }}&nbsp;{{ __('components.product.currency') }}</span>
+                    <span class="root-product-card__compare"
+                        ><s class="root-product-card__compare-strike">{{ number_format($list, 2) }}&nbsp;{{ __('components.product.currency') }}</s></span
+                    >
                 @endif
+                <span class="root-product-card__price">{{ number_format($price, 2) }}&nbsp;{{ __('components.product.currency') }}</span>
             </div>
             <span class="root-product-card__sku">{{ $product->sku }}</span>
         </div>
@@ -182,8 +184,11 @@
         }
         .root-product-card__compare {
             font-size: calc(0.85rem * 0.66);
-            text-decoration: line-through;
             opacity: 0.65;
+        }
+        .root-product-card__compare-strike {
+            text-decoration: line-through;
+            text-decoration-thickness: from-font;
         }
         .root-product-card__sku {
             font-size: calc(0.7rem * 0.66);

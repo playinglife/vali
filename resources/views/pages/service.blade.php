@@ -34,17 +34,18 @@
             flex: 1;
             min-height: 0;
             overflow: auto;
-            background-image: url("{{ asset('images/service.jpg') }}");
-            background-size: cover;
-            background-position: top;
-            background-repeat: no-repeat;
-            & > .page-1 {
-                width: 100%;
-                height: 15em;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
+            position: relative;
+            isolation: isolate;
+            &::before {
+                position: absolute;
+                inset: 0;
+                z-index: 0;
+                content: '';
+                background-image: url("{{ asset('images/service.jpg') }}");
+                background-size: cover;
+                background-position: top;
+                background-repeat: no-repeat;
+                filter: blur(10px);
             }
         }
     </style>

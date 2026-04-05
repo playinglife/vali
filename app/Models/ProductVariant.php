@@ -111,7 +111,8 @@ class ProductVariant extends Model
             'product_variant_option_values',
             'product_variant_id',
             'product_option_value_id'
-        )->withTimestamps();
+        )->withPivot('with_image')
+            ->withTimestamps();
     }
 
     /**

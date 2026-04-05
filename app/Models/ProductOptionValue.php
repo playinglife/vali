@@ -69,6 +69,7 @@ class ProductOptionValue extends Model
             'product_variant_option_values',
             'product_option_value_id',
             'product_variant_id'
-        )->withTimestamps();
+        )->withPivot('with_image')
+            ->withTimestamps();
     }
 }

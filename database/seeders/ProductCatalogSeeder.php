@@ -124,8 +124,8 @@ class ProductCatalogSeeder extends Seeder
             $sizeForDefault = $sizeValues[($i - 1) % $sizeValues->count()];
             $colorForDefault = $colorValues[($i + 1) % $colorValues->count()];
             $defaultVariant->optionValues()->sync([
-                $sizeForDefault->id,
-                $colorForDefault->id,
+                $sizeForDefault->id => [],
+                $colorForDefault->id => ['with_image' => ''],
             ]);
 
             if ($i % 2 === 0) {
@@ -143,8 +143,8 @@ class ProductCatalogSeeder extends Seeder
                 $sizeAlt = $sizeValues[($i) % $sizeValues->count()];
                 $colorAlt = $colorValues[($i * 2) % $colorValues->count()];
                 $extra->optionValues()->sync([
-                    $sizeAlt->id,
-                    $colorAlt->id,
+                    $sizeAlt->id => [],
+                    $colorAlt->id => ['with_image' => ''],
                 ]);
             }
         }

@@ -51,6 +51,7 @@
                 </x-modal-dialog>
             @endif
         </div>
+        @stack('styles')
         {{-- @livewireScripts --}}
     </body>
 </html>

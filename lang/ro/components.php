@@ -28,6 +28,13 @@ return [
         'cart_added_title' => 'Adăugat în coș',
         'cart_added_ok' => 'OK',
         'cart_added' => ':product — cantitate :qty — total :total :currency a fost adăugat în coș.',
+        'product_options' => 'Opțiuni produs',
+        'option_value_label' => ':option — :value',
+        'option_select_placeholder' => 'Alege :option…',
+        'product_photo' => 'Fotografie produs',
+        'product_default_photo' => 'Fotografia principală a produsului',
+        'options_extra_region' => 'Opțiuni produs suplimentare',
+        'options_extra_heading' => 'Opțiuni suplimentare',
     ],
     'products' => [
         'filter_category' => 'Categorie',

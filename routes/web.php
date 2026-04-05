@@ -24,8 +24,10 @@ Route::get('/products/{product:slug}', function (Product $product) {
         'categories',
         'shortDescriptionTranslation',
         'descriptionTranslation',
+        'options.values',
         'variants.priceBrackets',
         'variants.descriptionTranslation',
+        'variants.optionValues.option',
         'priceBrackets',
     ]);
 

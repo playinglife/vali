@@ -28,6 +28,13 @@ return [
         'cart_added_title' => 'Added to cart',
         'cart_added_ok' => 'OK',
         'cart_added' => ':product — quantity :qty — total :total :currency added to your cart.',
+        'product_options' => 'Product options',
+        'option_value_label' => ':option — :value',
+        'option_select_placeholder' => 'Choose :option…',
+        'product_photo' => 'Product photo',
+        'product_default_photo' => 'Default product photo',
+        'options_extra_region' => 'Additional product options',
+        'options_extra_heading' => 'Additional options',
     ],
     'products' => [
         'filter_category' => 'Category',
