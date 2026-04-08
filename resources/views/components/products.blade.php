@@ -13,7 +13,7 @@
     /** @var \Illuminate\Support\Collection<int, \App\Models\Product>|null $products */
     $products = $products ?? \App\Models\Product::query()
         ->active()
-        ->with(['categories', 'variants.optionValues.option', 'options.values', 'shortDescriptionTranslation', 'descriptionTranslation'])
+        ->with(['Categories', 'Variants.Values.Option', 'Options.Values', 'ShortDescriptionTranslation', 'DescriptionTranslation'])
         ->orderBy('name')
         ->get();
 
@@ -24,8 +24,8 @@
         ->get();
 
     $optionValueChoices = \App\Models\ProductOptionValue::query()
-        ->with('option')
-        ->whereHas('variants')
+        ->with('Option')
+        ->whereHas('Variants')
         ->orderBy('product_option_id')
         ->orderBy('sort_order')
         ->get();
@@ -33,20 +33,20 @@
     /** One entry per distinct option name + value; ids = all DB ids for that label across products. */
     $optionValueGroups = $optionValueChoices
         ->groupBy(function (\App\Models\ProductOptionValue $ov) {
-            $name = $ov->option?->name ?? '';
+            $name = $ov->Option?->name ?? '';
 
             return mb_strtolower($name."\u{001e}".$ov->value);
         })
         ->map(function (\Illuminate\Support\Collection $group) {
             $first = $group->first();
-            $optName = $first->option?->name ?? '';
+            $optName = $first->Option?->name ?? '';
 
             return [
                 'option_name' => $optName,
                 'value_label' => $first->value,
                 'ids' => $group->pluck('id')->unique()->sort()->values()->implode(','),
                 'value_sort_order' => (int) ($first->sort_order ?? 0),
-                'option_sort_order' => (int) ($first->option?->sort_order ?? 0),
+                'option_sort_order' => (int) ($first->Option?->sort_order ?? 0),
             ];
         })
         ->values();
@@ -178,9 +178,9 @@
         <div class="root-products__grid" data-root-products-grid>
             @foreach ($products as $product)
                 @php
-                    $categoryIds = $product->categories->pluck('id')->implode(',');
-                    $optionValueIds = $product->variants
-                        ->flatMap(fn ($v) => $v->optionValues->pluck('id'))
+                    $categoryIds = $product->Categories->pluck('id')->implode(',');
+                    $optionValueIds = $product->Variants
+                        ->flatMap(fn ($v) => $v->Values->pluck('id'))
                         ->unique()
                         ->sort()
                         ->values()

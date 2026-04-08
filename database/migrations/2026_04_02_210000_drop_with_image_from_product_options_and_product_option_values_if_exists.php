@@ -8,7 +8,7 @@ return new class extends Migration
 {
     /**
      * Removes with_image from product_options / product_option_values when a prior migration
-     * had added them; swatch paths live only on product_variant_option_values.with_image.
+     * had added them; variant swatch paths use product_variants.image.
      */
     public function up(): void
     {

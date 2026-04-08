@@ -15,7 +15,7 @@
     $list = $product->listPriceBeforeDiscount();
     $showCompare = $list !== null && $list > $price;
 
-    $inStock = $product->isInStock();
+    $inStock = $product->resolvedStockQuantity() > 0;
     $showBadges = $product->is_featured || ! $inStock;
     $excerpt = $product->localizedShortDescription()
         ?? \Illuminate\Support\Str::limit(strip_tags((string) ($product->localizedDescription() ?? '')), 120);

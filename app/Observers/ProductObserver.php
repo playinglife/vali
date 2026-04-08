@@ -8,7 +8,7 @@ class ProductObserver
 {
     public function created(Product $product): void
     {
-        $product->variants()->create([
+        $product->Variants()->create([
             'sku' => $product->sku,
             'price' => null,
             'discount_type' => null,

@@ -2,11 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class ProductOption extends Model
+class ProductOption extends BaseModel
 {
     /**
      * @var list<string>
@@ -17,12 +16,12 @@ class ProductOption extends Model
         'sort_order',
     ];
 
-    public function product(): BelongsTo
+    public function Product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
     }
 
-    public function values(): HasMany
+    public function Values(): HasMany
     {
         return $this->hasMany(ProductOptionValue::class)->orderBy('sort_order');
     }

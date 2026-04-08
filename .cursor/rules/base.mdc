@@ -1,0 +1,7 @@
+---
+description: Short summary of what this rule does
+globs: "**/*.blade.php"   # optional: only when matching files matter
+alwaysApply: false        # true = always include in context
+---
+
+Don't add new lines except when the line is very long, over 100 characters

@@ -2,13 +2,15 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Casts\DiscountTypeCast;
+use App\Enums\DiscountType;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Storage;
 
-class ProductVariant extends Model
+class ProductVariant extends BaseModel
 {
     /**
      * @var list<string>
@@ -22,6 +24,7 @@ class ProductVariant extends Model
         'stock_quantity',
         'weight',
         'barcode',
+        'image',
         'description_id',
         'is_active',
     ];
@@ -33,10 +36,16 @@ class ProductVariant extends Model
     {
         return [
             'price' => 'decimal:2',
+            'discount_type' => DiscountTypeCast::class,
             'discount' => 'decimal:2',
             'is_active' => 'boolean',
             'weight' => 'decimal:3',
         ];
+    }
+
+    protected function image(): Attribute
+    {
+        return Attribute::get(fn (): ?string => $this->storageImageUrl());
     }
 
     /**
@@ -47,12 +56,12 @@ class ProductVariant extends Model
         return $this->stock_quantity !== null;
     }
 
-    public function product(): BelongsTo
+    public function Product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
     }
 
-    public function descriptionTranslation(): BelongsTo
+    public function DescriptionTranslation(): BelongsTo
     {
         return $this->belongsTo(Translation::class, 'description_id');
     }
@@ -62,10 +71,10 @@ class ProductVariant extends Model
      */
     public function localizedDescription(?string $locale = null): ?string
     {
-        return $this->descriptionTranslation?->textForLocale($locale);
+        return $this->DescriptionTranslation?->textForLocale($locale);
     }
 
-    public function priceBrackets(): HasMany
+    public function PriceBrackets(): HasMany
     {
         return $this->hasMany(PriceBracket::class)
             ->orderBy('sort_order')
@@ -77,7 +86,7 @@ class ProductVariant extends Model
      */
     public function listPriceBeforeDiscount(): ?float
     {
-        $product = $this->product;
+        $product = $this->Product;
         $price = (float) ($this->price ?? $product->price);
         $type = $this->discount_type;
         if ($type === null || $this->discount === null) {
@@ -89,7 +98,7 @@ class ProductVariant extends Model
             return null;
         }
 
-        if ($type === 'percentage') {
+        if ($type === DiscountType::Percentage) {
             if ($discount >= 100) {
                 return null;
             }
@@ -97,39 +106,40 @@ class ProductVariant extends Model
             return round($price / (1 - $discount / 100), 2);
         }
 
-        if ($type === 'fix') {
+        if ($type === DiscountType::Fixed) {
             return round($price + $discount, 2);
         }
 
         return null;
     }
 
-    public function optionValues(): BelongsToMany
+    public function Values(): BelongsToMany
     {
         return $this->belongsToMany(
             ProductOptionValue::class,
             'product_variant_option_values',
             'product_variant_id',
-            'product_option_value_id'
-        )->withPivot('with_image')
-            ->withTimestamps();
+            'product_option_value_id',
+        )->withTimestamps();
     }
 
-    /**
-     * Public URL for an image on the public disk under product/variants/{id}.{ext}, or null if none.
-     */
     public function storageImageUrl(): ?string
     {
+        $path = $this->attributes['image'] ?? null;
+        if (is_string($path) && $path !== '') {
+            return asset('storage/'.$path);
+        }
+
         $disk = Storage::disk('public');
 
         foreach (['png', 'jpg', 'jpeg', 'webp'] as $ext) {
-            $path = 'product/variants/'.$this->id.'.'.$ext;
-            if ($disk->exists($path)) {
-                return asset('storage/'.$path);
+            $legacyPath = 'product/variants/'.$this->id.'.'.$ext;
+            if ($disk->exists($legacyPath)) {
+                return asset('storage/'.$legacyPath);
             }
         }
 
-        return null;
+        return asset('images/generic.png');
     }
 
     /**
@@ -145,10 +155,10 @@ class ProductVariant extends Model
      */
     public function unitPriceForQuantity(int $quantity): float
     {
-        $product = $this->product;
-        $brackets = $this->priceBrackets->isNotEmpty()
-            ? $this->priceBrackets
-            : $product->priceBrackets;
+        $product = $this->Product;
+        $brackets = $this->PriceBrackets->isNotEmpty()
+            ? $this->PriceBrackets
+            : $product->PriceBrackets;
 
         foreach ($brackets as $b) {
             $min = (int) $b->start_quantity;

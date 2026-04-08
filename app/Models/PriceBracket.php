@@ -2,10 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class PriceBracket extends Model
+class PriceBracket extends BaseModel
 {
     /**
      * @var list<string>
@@ -29,12 +28,12 @@ class PriceBracket extends Model
         ];
     }
 
-    public function product(): BelongsTo
+    public function Product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
     }
 
-    public function productVariant(): BelongsTo
+    public function ProductVariant(): BelongsTo
     {
         return $this->belongsTo(ProductVariant::class);
     }

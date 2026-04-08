@@ -21,14 +21,14 @@ Route::get('/products/{product:slug}', function (Product $product) {
     abort_unless($product->is_active, 404);
 
     $product->load([
-        'categories',
-        'shortDescriptionTranslation',
-        'descriptionTranslation',
-        'options.values',
-        'variants.priceBrackets',
-        'variants.descriptionTranslation',
-        'variants.optionValues.option',
-        'priceBrackets',
+        'Categories',
+        'ShortDescriptionTranslation',
+        'DescriptionTranslation',
+        'Options.Values',
+        'Variants.PriceBrackets',
+        'Variants.DescriptionTranslation',
+        'Variants.Values.Option',
+        'PriceBrackets',
     ]);
 
     return view('pages.product', ['product' => $product]);

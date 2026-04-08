@@ -9,7 +9,7 @@
 
         <!-- Page 1 -->
         <x-miniviews.panel>
-            <x-product-detail :product="$product" />
+            <x-product-detail :Product="$product" />
         </x-miniviews.panel>
 
         <!-- Footer -->

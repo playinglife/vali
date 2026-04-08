@@ -35,7 +35,7 @@ class CartItems extends Component
 
         $products = Product::query()
             ->whereIn('id', $productIds)
-            ->with(['variants.optionValues.option'])
+            ->with(['Variants.Values.Option'])
             ->get()
             ->keyBy('id');
 
@@ -70,7 +70,7 @@ class CartItems extends Component
 
                 $variantId = isset($line['product_variant_id']) ? (int) $line['product_variant_id'] : null;
                 $variant = $variantId !== null && $variantId !== 0
-                    ? $product->variants->firstWhere('id', $variantId)
+                    ? $product->Variants->firstWhere('id', $variantId)
                     : null;
 
                 if ($variant instanceof ProductVariant) {
@@ -78,7 +78,7 @@ class CartItems extends Component
                     $label = $this->variantLabel($variant);
                 } else {
                     $imageUrl = $product->firstVariantStorageImageUrl();
-                    if ($product->variants->isEmpty()) {
+                    if ($product->Variants->isEmpty()) {
                         $label = __('pages.cart.default_line');
                     } elseif ($variantId !== null && $variantId !== 0) {
                         $label = __('pages.cart.variant_fallback', ['id' => $variantId]);
@@ -111,17 +111,17 @@ class CartItems extends Component
 
     private function variantLabel(ProductVariant $variant): string
     {
-        if ($variant->relationLoaded('optionValues') && $variant->optionValues->isNotEmpty()) {
+        if ($variant->relationLoaded('Values') && $variant->Values->isNotEmpty()) {
             /** @var Collection<int, \App\Models\ProductOptionValue> $sorted */
-            $sorted = $variant->optionValues->sortBy(function ($ov) {
-                $optOrder = (int) ($ov->option?->sort_order ?? 0);
+            $sorted = $variant->Values->sortBy(function ($ov) {
+                $optOrder = (int) ($ov->Option?->sort_order ?? 0);
                 $valOrder = (int) ($ov->sort_order ?? 0);
 
                 return sprintf('%04d-%04d-%s', $optOrder, $valOrder, $ov->value ?? '');
             })->values();
 
             return $sorted->map(function ($ov) {
-                $name = $ov->option?->name ?? '';
+                $name = $ov->Option?->name ?? '';
 
                 return trim($name) !== '' ? $name.': '.$ov->value : (string) $ov->value;
             })->implode(', ');

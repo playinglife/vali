@@ -42,21 +42,22 @@
         border-top: none;
         border-right: none;
         content: "";
-        height: calc(0.5 * var(--text-size-small));
-        left: calc(0.25 * var(--text-size-small));
-        top: calc(0.42 * var(--text-size-small));
+        width: calc(0.75 * var(--text-size-tiny));
+        height: calc(0.25 * var(--text-size-tiny));
+        left: calc(0.56 * var(--text-size-tiny));
+        top: calc(0.76 * var(--text-size-tiny));
         opacity: 0;
         position: absolute;
         transform: rotate(-45deg);
-        width: calc(1 * var(--text-size-small));
     }
 
-    .root-products__checkbox-text {
-        flex: 1;
-        min-width: 0;
-        line-height: 1.35;
-        padding-top: 0.15em;
-        font-weight: normal;
+
+    .root-products__radio .round label.root-products__radio-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5em;
+        justify-content: center;
+        text-align: center;
     }
 
     .root-products__checkbox .round input[type="checkbox"],

@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\DiscountType;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\ProductOption;
@@ -44,8 +45,8 @@ class ProductCatalogSeeder extends Seeder
             $slug = sprintf('shirt-model-%d', $i);
 
             $price = round(89 + ($i * 7) % 240 + ($i % 5) * 3, 2);
-            $discountType = $i % 2 === 0 ? 'fix' : 'percentage';
-            $discount = $discountType === 'fix'
+            $discountType = $i % 2 === 0 ? DiscountType::Fixed : DiscountType::Percentage;
+            $discount = $discountType === DiscountType::Fixed
                 ? round(15 + ($i % 4) * 5, 2)
                 : (float) (10 + ($i % 5) * 2);
 
@@ -83,7 +84,7 @@ class ProductCatalogSeeder extends Seeder
             if ($i % 3 === 0) {
                 $pivot[$secondary->id] = ['sort_order' => 1];
             }
-            $product->categories()->sync($pivot);
+            $product->Categories()->sync($pivot);
 
             $sizeOption = ProductOption::query()->create([
                 'product_id' => $product->id,
@@ -116,16 +117,16 @@ class ProductCatalogSeeder extends Seeder
                 ]);
             });
 
-            $defaultVariant = $product->variants()->where('sku', $product->sku)->firstOrFail();
+            $defaultVariant = $product->Variants()->where('sku', $product->sku)->firstOrFail();
             $defaultVariant->update([
                 'stock_quantity' => 10 + $i,
             ]);
 
             $sizeForDefault = $sizeValues[($i - 1) % $sizeValues->count()];
             $colorForDefault = $colorValues[($i + 1) % $colorValues->count()];
-            $defaultVariant->optionValues()->sync([
-                $sizeForDefault->id => [],
-                $colorForDefault->id => ['with_image' => ''],
+            $defaultVariant->Values()->sync([
+                $sizeForDefault->id,
+                $colorForDefault->id,
             ]);
 
             if ($i % 2 === 0) {
@@ -142,9 +143,9 @@ class ProductCatalogSeeder extends Seeder
 
                 $sizeAlt = $sizeValues[($i) % $sizeValues->count()];
                 $colorAlt = $colorValues[($i * 2) % $colorValues->count()];
-                $extra->optionValues()->sync([
-                    $sizeAlt->id => [],
-                    $colorAlt->id => ['with_image' => ''],
+                $extra->Values()->sync([
+                    $sizeAlt->id,
+                    $colorAlt->id,
                 ]);
             }
         }

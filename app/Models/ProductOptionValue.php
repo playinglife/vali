@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Facades\Storage;
 
-class ProductOptionValue extends Model
+class ProductOptionValue extends BaseModel
 {
     /**
      * @var list<string>
@@ -27,6 +28,11 @@ class ProductOptionValue extends Model
         return [
             'price_adjustment' => 'decimal:2',
         ];
+    }
+
+    protected function image(): Attribute
+    {
+        return Attribute::get(fn (): ?string => $this->storageImageUrl());
     }
 
     /**
@@ -57,19 +63,32 @@ class ProductOptionValue extends Model
         return 0.0;
     }
 
-    public function option(): BelongsTo
+    public function Option(): BelongsTo
     {
         return $this->belongsTo(ProductOption::class, 'product_option_id');
     }
 
-    public function variants(): BelongsToMany
+    public function Variants(): BelongsToMany
     {
         return $this->belongsToMany(
             ProductVariant::class,
             'product_variant_option_values',
             'product_option_value_id',
             'product_variant_id'
-        )->withPivot('with_image')
-            ->withTimestamps();
+        )->withTimestamps();
+    }
+
+    public function storageImageUrl(): ?string
+    {
+        $disk = Storage::disk('public');
+
+        foreach (['png', 'jpg', 'jpeg', 'webp'] as $ext) {
+            $path = 'product/variants/'.$this->id.'.'.$ext;
+            if ($disk->exists($path)) {
+                return asset('storage/'.$path);
+            }
+        }
+
+        return asset('images/generic.png');
     }
 }

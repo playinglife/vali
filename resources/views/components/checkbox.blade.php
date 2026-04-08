@@ -14,7 +14,7 @@
     <input {{ $attributes->except('class')->merge($merge) }} />
     <label for="{{ $id }}">
       <span class="root-products__checkbox-visual" aria-hidden="true"></span>
-      <span class="root-products__checkbox-text">{{ $label }}</span>
+      <span class="">{{ $label }}</span>
     </label>
   </div>
 </div>

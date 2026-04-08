@@ -102,13 +102,21 @@ a.light-mode {
     font-size: 1.2rem;
  }
  h4 {
-    font-size: 0.8rem;
+    font-size: 1rem;
  }
  h5 {
-    font-size: 0.5rem;
+    font-size: 0.8rem;
  }
  h6 {
-    font-size: 0.3rem;
+    font-size: 0.6rem;
+ }
+ h1.label, 
+ h2.label,
+ h3.label,
+ h4.label,
+ h5.label,
+ h6.label {
+    margin-bottom: var(--padding-tiny);
  }
 
  .font-family-one {
@@ -124,6 +132,7 @@ a.light-mode {
     letter-spacing: 0.05em;
     text-transform: uppercase;
     padding: var(--padding-tiny) var(--padding-tiny) var(--padding-tiny) 0;
+    color: var(--color-text-dark);
 }
 
 
@@ -195,4 +204,49 @@ input {
   border-radius: var(--border-radius-small);
   backdrop-filter: blur(10px);
   border: 1px solid var(--color-background-transparent-dark-border);
+}
+
+
+[invisible] {
+    visibility: hidden;
+}
+
+.light {
+    color: $color-text-light;
+}
+
+.dark {
+    color: $color-one;
+}
+
+
+// Texts across website
+.text-tiny {
+    font-size: var(--text-size-tiny);
+    color: var(--color-text-dark);
+}
+.text-small {
+    font-size: var(--text-size-small);
+    color: var(--color-text-dark);
+}
+.text-normal {
+    font-size: var(--text-size-normal);
+    color: var(--color-text-dark);
+}
+.text-medium {
+    font-size: var(--text-size-medium);
+    color: var(--color-text-dark);
+}
+.text-large {
+    font-size: var(--text-size-large);
+    color: var(--color-text-dark);
+}
+
+
+// Fieldset styling
+fieldset {
+    border: none;
+    margin: 0;
+    padding: 0;
+    min-width: 0;
 }

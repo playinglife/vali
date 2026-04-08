@@ -18,7 +18,7 @@ class CartController extends Controller
         ]);
 
         $product = Product::query()
-            ->with(['variants.priceBrackets', 'priceBrackets'])
+            ->with(['Variants.PriceBrackets', 'PriceBrackets'])
             ->findOrFail($validated['product_id']);
         abort_unless($product->is_active, 404);
 
@@ -30,11 +30,11 @@ class CartController extends Controller
         $variantId = $validated['product_variant_id'] ?? null;
 
         $variant = null;
-        if ($product->variants->isNotEmpty()) {
+        if ($product->Variants->isNotEmpty()) {
             if ($variantId === null) {
                 return redirect()->back()->withInput();
             }
-            $variant = $product->variants->firstWhere('id', $variantId);
+            $variant = $product->Variants->firstWhere('id', $variantId);
             if ($variant === null || ! $variant->is_active) {
                 return redirect()->back()->withInput();
             }

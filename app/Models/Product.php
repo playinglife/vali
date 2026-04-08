@@ -2,18 +2,26 @@
 
 namespace App\Models;
 
+use App\Casts\DiscountTypeCast;
+use App\Enums\DiscountType;
 use App\Observers\ProductObserver;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Facades\Storage;
 
 #[ObservedBy([ProductObserver::class])]
-class Product extends Model
+class Product extends BaseModel
 {
+    /**
+     * @var list<string>
+     */
+    protected $appends = ['image'];
+
     /**
      * @var list<string>
      */
@@ -41,6 +49,7 @@ class Product extends Model
     {
         return [
             'price' => 'decimal:2',
+            'discount_type' => DiscountTypeCast::class,
             'discount' => 'decimal:2',
             'cost' => 'decimal:2',
             'is_active' => 'boolean',
@@ -54,19 +63,19 @@ class Product extends Model
         return $query->where('is_active', true);
     }
 
-    public function shortDescriptionTranslation(): BelongsTo
+    public function ShortDescriptionTranslation(): BelongsTo
     {
         return $this->belongsTo(Translation::class, 'short_description_id');
     }
 
-    public function descriptionTranslation(): BelongsTo
+    public function DescriptionTranslation(): BelongsTo
     {
         return $this->belongsTo(Translation::class, 'description_id');
     }
 
     public function localizedShortDescription(?string $locale = null): ?string
     {
-        return $this->shortDescriptionTranslation?->textForLocale($locale);
+        return $this->ShortDescriptionTranslation?->textForLocale($locale);
     }
 
     /**
@@ -74,10 +83,10 @@ class Product extends Model
      */
     public function localizedDescription(?string $locale = null): ?string
     {
-        return $this->descriptionTranslation?->textForLocale($locale);
+        return $this->DescriptionTranslation?->textForLocale($locale);
     }
 
-    public function categories(): BelongsToMany
+    public function Categories(): BelongsToMany
     {
         return $this->belongsToMany(Category::class)
             ->withPivot('sort_order')
@@ -85,12 +94,12 @@ class Product extends Model
             ->orderByPivot('sort_order');
     }
 
-    public function options(): HasMany
+    public function Options(): HasMany
     {
         return $this->hasMany(ProductOption::class)->orderBy('sort_order');
     }
 
-    public function variants(): HasMany
+    public function Variants(): HasMany
     {
         return $this->hasMany(ProductVariant::class);
     }
@@ -98,7 +107,7 @@ class Product extends Model
     /**
      * Volume pricing tiers for the product when no variant-specific brackets exist.
      */
-    public function priceBrackets(): HasMany
+    public function PriceBrackets(): HasMany
     {
         return $this->hasMany(PriceBracket::class)
             ->whereNull('product_variant_id')
@@ -109,9 +118,17 @@ class Product extends Model
     /**
      * The first variant created for the product (auto-created with the product, same SKU as the product).
      */
-    public function defaultVariant(): HasOne
+    public function DefaultVariant(): HasOne
     {
         return $this->hasOne(ProductVariant::class)->oldest('id');
+    }
+
+    /**
+     * Resolved public image URL from {@see storageImageUrl()} (not a database column).
+     */
+    protected function image(): Attribute
+    {
+        return Attribute::get(fn (): ?string => $this->storageImageUrl());
     }
 
     /**
@@ -119,7 +136,7 @@ class Product extends Model
      */
     public function resolvedStockQuantity(): int
     {
-        return (int) ($this->variants()->sum('stock_quantity') ?? 0);
+        return (int) ($this->Variants()->sum('stock_quantity') ?? 0);
     }
 
     /**
@@ -128,7 +145,7 @@ class Product extends Model
      */
     public function isInStock(): bool
     {
-        return $this->variants()
+        return $this->Variants()
             ->where(function ($query) {
                 $query->whereNull('stock_quantity')
                     ->orWhere('stock_quantity', '>', 0);
@@ -142,9 +159,9 @@ class Product extends Model
      */
     public function firstVariantStorageImageUrl(): string
     {
-        $variants = $this->relationLoaded('variants')
-            ? $this->variants->sortBy('id')->values()
-            : $this->variants()->orderBy('id')->get();
+        $variants = $this->relationLoaded('Variants')
+            ? $this->Variants->sortBy('id')->values()
+            : $this->Variants()->orderBy('id')->get();
 
         foreach ($variants as $variant) {
             $url = $variant->storageImageUrl();
@@ -181,7 +198,7 @@ class Product extends Model
             return null;
         }
 
-        if ($type === 'percentage') {
+        if ($type === DiscountType::Percentage) {
             if ($discount >= 100) {
                 return null;
             }
@@ -189,7 +206,7 @@ class Product extends Model
             return round($price / (1 - $discount / 100), 2);
         }
 
-        if ($type === 'fix') {
+        if ($type === DiscountType::Fixed) {
             return round($price + $discount, 2);
         }
 
@@ -201,7 +218,7 @@ class Product extends Model
      */
     public function unitPriceForQuantity(int $quantity): float
     {
-        foreach ($this->priceBrackets as $b) {
+        foreach ($this->PriceBrackets as $b) {
             $min = (int) $b->start_quantity;
             if ($quantity < $min) {
                 continue;
@@ -230,5 +247,19 @@ class Product extends Model
         $diff = round((float) $list - $unit, 2);
 
         return $diff > 0 ? $diff : 0.0;
+    }
+
+    public function storageImageUrl(): ?string
+    {
+        $disk = Storage::disk('public');
+
+        foreach (['png', 'jpg', 'jpeg', 'webp'] as $ext) {
+            $path = 'product/variants/'.$this->id.'.'.$ext;
+            if ($disk->exists($path)) {
+                return asset('storage/'.$path);
+            }
+        }
+
+        return null;
     }
 }
