@@ -48,7 +48,7 @@
 
 
     <!-- PRODUCT DETAIL -->
-    <div class="grid">
+    <div class="grid root-product-detail__grid">
         <div class="col">
 
 
@@ -62,13 +62,13 @@
 
             <!-- VARIANTS IMAGES -->
             <div class="root-product-detail__thumbs" role="group" aria-label="{{ __('components.product.variant_photos') }}">
-                <button type="button" class="root-product-detail__thumb root-product-detail__thumb--active" aria-pressed="true" onclick="updateMainImage(event, this)"
+                <button type="button" data-reference="product-detail-thumb" class="root-product-detail__thumb root-product-detail__thumb--active" aria-pressed="true" onclick="updateMainImage(event, this)"
                     aria-label="{{ __('components.product.show_variant_photo', ['label' => $Product->sku ?: '#' . $Product->id]) }}"
                     data-variant-id="null" data-variant-description="null" data-thumb-index="0" >
                     <img src="{{ $Product->image }}" alt="" width="80" height="120" loading="lazy" decoding="async" class="root-product-detail__thumb-img" />
                 </button>
                 @foreach ($Product->Variants as $variant)
-                    <button type="button" class="root-product-detail__thumb root-product-detail__thumb--active" aria-pressed="true" aria-label="{{ __('components.product.show_variant_photo', ['label' => $variant->sku ?: '#' . $variant->id]) }}" onclick="updateMainImage(event, this)"
+                    <button type="button" data-reference="product-detail-thumb" class="root-product-detail__thumb root-product-detail__thumb--active" aria-pressed="true" aria-label="{{ __('components.product.show_variant_photo', ['label' => $variant->sku ?: '#' . $variant->id]) }}" onclick="updateMainImage(event, this)"
                         data-variant-id="{{ $variant->id }}" data-variant-description="{{ $variant->localizedDescription() }}" data-thumb-index="{{ $loop->index }}">
                         <img src="{{ $variant->image }}" alt="" width="80" height="120" loading="lazy" decoding="async" class="root-product-detail__thumb-img" />
                     </button>
@@ -138,20 +138,17 @@
             </x-miniviews.panel>
 
 
-            <!-- Price brackets -->
-            @foreach ($Product->Variants as $variant)
-            <x-price-brackets :variant="$variant" :price_brackets="$variant->PriceBrackets" :show="$selectedVariant->id == $variant->id" />
-            @endforeach
-
-
             <!-- PRODUCT OPTIONS -->
             @if ($Product->Options->isNotEmpty())
                 <div data-reference="product-detail-options" class="root-product-detail__options">
                     <h4 class="dark label">{{ __('components.product.product_options') }}</h4>
                     <div class="root-product-detail__options-content">
                         @foreach ($Product->Options as $option)
-                            <fieldset>
-                                <legend class="text-tiny">{{ $option->name }}</legend>
+                            <fieldset data-reference="product-detail-option-{{ $option->id }}">
+                                <legend class="text-tiny">
+                                    {{ $option->name }}
+                                     <span data-reference="product-detail-option-note" class="root-product-detail__options-legend-note hidden"> - Does not apply to this variant</span>
+                                </legend>
                                 <div class="root-products__radio-list">
                                     @foreach ($option->Values as $val)
                                         <x-radio :id="'product-detail-' . $Product->id . '-opt-' . $option->id . '-v-' . $val->id" :name="'product-detail-' . $Product->id . '-opt-' . $option->id" 
@@ -164,6 +161,12 @@
                     </div>
                 </div>
             @endif
+
+
+            <!-- Price brackets -->
+            @foreach ($Product->Variants as $variant)
+            <x-price-brackets :variant="$variant" :price_brackets="$variant->PriceBrackets" :show="$selectedVariant->id == $variant->id" />
+            @endforeach
 
 
             <!-- ORDER QUANTITY -->
@@ -222,7 +225,7 @@
 <!-- SCRIPT -->
 @once
     <script>
-        /** Backing values of {@see \App\Enums\DiscountType} — PHP enums are not available in the browser. */
+        /** Backing values of App\Enums\DiscountType — PHP enums are not available in the browser. */
         const DISCOUNT_TYPE_FIXED = @json(\App\Enums\DiscountType::Fixed->value);
         const DISCOUNT_TYPE_PERCENTAGE = @json(\App\Enums\DiscountType::Percentage->value);
 
@@ -265,7 +268,7 @@
 
 
         function syncVariantThumbHighlight() {
-            const thumbs = root.querySelectorAll('.root-product-detail__thumb');
+            const thumbs = root.querySelectorAll('[data-reference="product-detail-thumb"]');
             const activeKey = selectedVariant ? String(selectedVariant.id) : 'null';
             thumbs.forEach(function (btn) {
                 const vid = btn.dataset.variantId;
@@ -311,7 +314,8 @@
 
 
         // Main image zoom in/out
-        function resetProductDetailLightboxZoom(lbImg) {
+        function resetProductDetailLightboxZoom() {
+            const lbImg = root.querySelector('.modal-dialog__lightbox-img');
             if (!lbImg) {
                 return;
             }
@@ -335,6 +339,11 @@
         function onVariantSelect(variantId) {
             selectedVariant = data.Product.Variants.find(variant => variant.id == variantId);
             if (selectedVariant) {
+                //Update main image
+                const mainImg = root.querySelector('.root-product-detail__img');
+                mainImg.src = selectedVariant.image;
+                mainImg.alt = selectedVariant.name;
+                
                 const variantDescription = root.querySelector('.root-product-detail__variant-description');
                 const variant = root.querySelector(`[data-variant-id="${variantId}"]`);
                 if (variant && variantDescription)  {
@@ -357,10 +366,56 @@
                 }
             }else{
                 selectedVariant = null;
+                const mainImg = root.querySelector('.root-product-detail__img');
+                mainImg.src = data.Product.image;
+                mainImg.alt = data.Product.name;
             }
+            syncSelectedvariantWithProductOptions();
             syncVariantThumbHighlight();
             updateVisiblePriceBracket();
             updateVisiblePriceBracketRowHighlight();
+        }
+
+
+        function syncSelectedvariantWithProductOptions() {
+            if (selectedVariant === null) {
+                data.Product.Options.forEach(function (option) {
+                    const optionSectionElem = root.querySelector(`[data-reference="product-detail-option-${option.id}"]`);
+                    const optionRadioListElem = optionSectionElem.querySelector('.root-products__radio-list');
+                    enableRadio(optionSectionElem, optionRadioListElem, true, false);
+                });
+            }else{
+                const variantOptions = [...new Set(selectedVariant.Values.map(value => value.Option.id))];
+                data.Product.Options.forEach(function (option) {
+                    const optionSectionElem = root.querySelector(`[data-reference="product-detail-option-${option.id}"]`);
+                    const optionRadioListElem = optionSectionElem.querySelector('.root-products__radio-list');
+                    if (variantOptions.includes(option.id) && optionSectionElem) {
+                        const variantValue = selectedVariant.Values.find(value => value.Option.id == option.id);
+                        if (variantValue) {
+                            enableRadio(optionSectionElem, optionRadioListElem, true, variantValue.id);
+                        }
+                    }else{
+                        enableRadio(optionSectionElem, optionRadioListElem, false, false);
+                    }
+                });
+            }
+        }
+
+        function enableRadio(optionSectionElem, element, enable, select) {
+            element.querySelectorAll('input[type="radio"]').forEach(function (radio) {
+                if (enable) {
+                    optionSectionElem.querySelector('[data-reference="product-detail-option-note"]').classList.add('hidden');
+                    //radio.disabled = true;
+                    //element.style.opacity = enable ? 1 : 0.5;
+                    if (select) {
+                        radio.checked = select;
+                    }
+                }else{
+                    optionSectionElem.querySelector('[data-reference="product-detail-option-note"]').classList.remove('hidden');
+                    radio.checked = false;
+                    //element.style.opacity = 0.5;
+                }
+            });
         }
 
 
@@ -374,11 +429,7 @@
         // Update main image from variant image
         function updateMainImage(event, element) {
             const variantId = element.dataset.variantId;
-            const mainImg = root.querySelector('.root-product-detail__img');
-            const lbImg = element.querySelector('img');
-            mainImg.src = lbImg.src;
-            mainImg.alt = lbImg.alt;
-            resetProductDetailLightboxZoom(mainImg);
+            resetProductDetailLightboxZoom();
             onVariantSelect(variantId);
         }
 
@@ -432,7 +483,60 @@
 
         // Update product option selection
         function onOptionChange(event, element) {
-            
+            if (!data || !data.Product || !Array.isArray(data.Product.Variants)) {
+                onVariantSelect(null);
+                return;
+            }
+
+            // Build map: optionId -> selected valueId (from checked radios)
+            const selected = new Map();
+            root.querySelectorAll('[data-reference^="product-detail-option-"]').forEach(function (fieldset) {
+                const checked = fieldset.querySelector('input[type="radio"]:checked');
+                if (!checked) {
+                    return;
+                }
+                const name = checked.getAttribute('name') || '';
+                // name format: product-detail-{productId}-opt-{optionId}
+                const m = name.match(/-opt-(\d+)$/);
+                if (!m) {
+                    return;
+                }
+                const optionId = parseInt(m[1], 10);
+                const valueId = parseInt(checked.value, 10);
+                if (Number.isFinite(optionId) && Number.isFinite(valueId)) {
+                    selected.set(optionId, valueId);
+                }
+            });
+
+            // Find variant whose option/value pairs match exactly
+            const match = data.Product.Variants.find(function (variant) {
+                if (!variant || !Array.isArray(variant.Values)) {
+                    return false;
+                }
+
+                const variantMap = new Map();
+                variant.Values.forEach(function (val) {
+                    const optionId = val && val.Option ? parseInt(val.Option.id, 10) : NaN;
+                    const valueId = val ? parseInt(val.id, 10) : NaN;
+                    if (Number.isFinite(optionId) && Number.isFinite(valueId)) {
+                        variantMap.set(optionId, valueId);
+                    }
+                });
+
+                if (variantMap.size !== selected.size) {
+                    return false;
+                }
+
+                for (const [optId, valId] of selected.entries()) {
+                    if (variantMap.get(optId) !== valId) {
+                        return false;
+                    }
+                }
+
+                return true;
+            });
+
+            onVariantSelect(match ? match.id : null);
         }
 
 

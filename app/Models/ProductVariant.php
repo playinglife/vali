@@ -15,6 +15,11 @@ class ProductVariant extends BaseModel
     /**
      * @var list<string>
      */
+    protected $appends = ['image'];
+
+    /**
+     * @var list<string>
+     */
     protected $fillable = [
         'product_id',
         'sku',

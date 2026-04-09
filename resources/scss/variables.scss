@@ -46,6 +46,7 @@ $color-interact-2-border: rgba(164, 169, 173, 1);
 $color-interact-3: rgba(140, 147, 152, 1);
 $color-interact-3-border: #d9dfe450;
 
+$text-size-micro: 0.5rem;
 $text-size-tiny: 0.7rem;
 $text-size-small: 0.85rem;
 $text-size-normal: 1rem;
@@ -56,6 +57,9 @@ $font-weight-normal: 400;
 $font-weight-medium: 500;
 $font-weight-bold: 700;
 
+$border-width-small: 0.1em;
+$border-width-medium: 0.2em;
+$border-width-large: 0.3em;
 
 
 /* Exposed to Blade / inline <style> via var(...) — SCSS $vars are not compiled there */
@@ -109,6 +113,7 @@ $font-weight-bold: 700;
     --color-interact-3: #{$color-interact-3};
     --color-interact-3-border: #{$color-interact-3-border};
 
+    --text-size-micro: #{$text-size-micro};
     --text-size-tiny: #{$text-size-tiny};
     --text-size-small: #{$text-size-small};
     --text-size-normal: #{$text-size-normal};
@@ -118,4 +123,8 @@ $font-weight-bold: 700;
     --font-weight-normal: #{$font-weight-normal};
     --font-weight-medium: #{$font-weight-medium};
     --font-weight-bold: #{$font-weight-bold};
+
+    --border-width-small: #{$border-width-small};
+    --border-width-medium: #{$border-width-medium};
+    --border-width-large: #{$border-width-large};
 }

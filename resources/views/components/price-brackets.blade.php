@@ -1,4 +1,10 @@
 @props(['variant', 'price_brackets', 'show' => false])
+
+@once
+    @push('styles')
+        @vite(['resources/scss/price-brackets.scss'])
+    @endpush
+@endonce
 <div class="root-product-detail__brackets-wrap" data-variant-price-brackets-id="{{ $variant->id }}" @if ($price_brackets->isEmpty() || !$show) hidden @endif>
     <x-miniviews.group>
         <h4 class="dark label">{{ __('components.product.price_brackets') }}</h4>

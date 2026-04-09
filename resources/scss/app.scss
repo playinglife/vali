@@ -221,6 +221,10 @@ input {
 
 
 // Texts across website
+.text-micro {
+    font-size: var(--text-size-micro);
+    color: var(--color-text-dark);
+}
 .text-tiny {
     font-size: var(--text-size-tiny);
     color: var(--color-text-dark);
@@ -249,4 +253,12 @@ fieldset {
     margin: 0;
     padding: 0;
     min-width: 0;
+}
+
+.hidden {
+    display: none;
+}
+
+.invisible {
+    visibility: hidden;
 }

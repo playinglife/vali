@@ -1,0 +1,65 @@
+/* Price brackets table (x-price-brackets) */
+.root-product-detail__brackets-table {
+    width: 100%;
+    table-layout: auto;
+    border-collapse: collapse;
+}
+
+.root-product-detail__brackets-col-price {
+    width: 100%;
+}
+
+.root-product-detail__brackets-table th,
+.root-product-detail__brackets-table td {
+    padding: var(--padding-tiny);
+    border-bottom: 1px solid color-mix(in srgb, var(--color-border) 35%, transparent);
+    vertical-align: baseline;
+}
+
+.root-product-detail__brackets-table tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+.root-product-detail__brackets-table th {
+    text-transform: uppercase;
+}
+
+.root-product-detail__brackets-th-qty {
+    text-align: left;
+    font-family: var(--font-family-one);
+    font-weight: var(--font-weight-bold);
+}
+
+.root-product-detail__brackets-th-price {
+    text-align: right;
+    font-family: var(--font-family-one);
+    font-weight: var(--font-weight-bold);
+}
+
+.root-product-detail__brackets-q-start,
+.root-product-detail__brackets-q-sep,
+.root-product-detail__brackets-q-end {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    font-family: ui-monospace, 'Cascadia Code', 'Cascadia Mono', 'Consolas', monospace;
+    font-size: var(--text-size-tiny);
+    white-space: nowrap;
+    width: auto;
+    min-width: min-content;
+}
+
+.root-product-detail__brackets-q-sep {
+    padding-left: 0.2em;
+    padding-right: 0.2em;
+}
+
+.root-product-detail__brackets-price {
+    text-align: right;
+    font-family: var(--font-family-one);
+    font-variant-numeric: tabular-nums;
+    color: var(--color-one);
+}
+
+.root-product-detail__brackets-table tbody tr.root-product-detail__brackets-row--active td {
+    background: color-mix(in srgb, var(--color-one) 12%, transparent);
+}
