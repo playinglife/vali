@@ -13,7 +13,7 @@
     /** @var \Illuminate\Support\Collection<int, \App\Models\Product>|null $products */
     $products = $products ?? \App\Models\Product::query()
         ->active()
-        ->with(['Categories', 'Variants.Values.Option', 'Options.Values', 'ShortDescriptionTranslation', 'DescriptionTranslation'])
+        ->with(['Categories', 'Variants.Values.Option', 'OptionValues.Option', 'ShortDescriptionTranslation', 'DescriptionTranslation'])
         ->orderBy('name')
         ->get();
 
@@ -25,7 +25,7 @@
 
     $optionValueChoices = \App\Models\ProductOptionValue::query()
         ->with('Option')
-        ->whereHas('Variants')
+        ->whereHas('Products')
         ->orderBy('product_option_id')
         ->orderBy('sort_order')
         ->get();
@@ -87,7 +87,7 @@
     @else
         <p class="root-products__results transparent-blurred-background-light" role="status" aria-live="polite">
             <span data-root-products-results>{{ str_replace(['__VISIBLE__', '__TOTAL__'], [$totalCount, $totalCount], $resultsShownTemplate) }}</span>
-            <button type="button" class="root-products__filter-button" data-root-products-filter-toggle aria-expanded="false" aria-controls="{{ $instanceId }}-filters">
+            <button type="button" class="root-products__filter-button button-icon" data-root-products-filter-toggle aria-expanded="false" aria-controls="{{ $instanceId }}-filters">
                 <x-icon name="heroicon-s-funnel" class="filter-icon" aria-hidden="true" />
             </button>
         </p>
@@ -179,8 +179,8 @@
             @foreach ($products as $product)
                 @php
                     $categoryIds = $product->Categories->pluck('id')->implode(',');
-                    $optionValueIds = $product->Variants
-                        ->flatMap(fn ($v) => $v->Values->pluck('id'))
+                    $optionValueIds = $product->OptionValues
+                        ->pluck('id')
                         ->unique()
                         ->sort()
                         ->values()
@@ -453,7 +453,7 @@
             color: var(--color-text-dark);
         }
         .root-products__option-line-label-text {
-            text-transform: uppercase;
+            font-size: var(--text-size-tiny);            
         }
         .root-products__option-line-label-text::after {
             content: ':';
@@ -502,7 +502,7 @@
             align-items: center;
             gap: var(--padding-medium);
             font-size: var(--text-size-small);
-            padding: var(--padding-medium);
+            padding: var(--padding-small);
             margin-top: calc(var(--padding-large) * 3);
             color: var(--color-text-dark);
         }

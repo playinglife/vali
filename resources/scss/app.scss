@@ -129,8 +129,6 @@ a.light-mode {
  legend {
     font-family: var(--font-family-one);
     font-size: var(--text-size-small);
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
     padding: var(--padding-tiny) var(--padding-tiny) var(--padding-tiny) 0;
     color: var(--color-text-dark);
 }
@@ -156,6 +154,10 @@ button:not(.ignore-global) {
   padding: var(--padding-small) var(--padding-medium);
   text-transform: uppercase;
   font-family: $font-family-one;
+}
+
+button:not(.ignore-global).button-icon {
+    font-size: 0.35em;
 }
 
 button:not(.ignore-global):hover {

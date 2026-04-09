@@ -17,7 +17,7 @@
         height: auto;
         width: auto;
         padding: 0;
-        font-size: var(--text-size-small);
+        font-size: var(--text-size-tiny);
     }
 
     /*
@@ -52,7 +52,7 @@
     }
 
 
-    .root-products__radio .round label.root-products__radio-label {
+    .root-products__radio .round label {
         display: inline-flex;
         align-items: center;
         gap: 0.5em;
@@ -77,5 +77,15 @@
     .root-products__radio .round input[type="radio"]:checked + label .root-products__checkbox-visual:after {
         opacity: 1;
     }
+
+    .root-products__checkbox .round label {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5em;
+        justify-content: center;
+        text-align: center;
+        color: var(--color-text-dark);
+    }
+
     </style>
 @endonce

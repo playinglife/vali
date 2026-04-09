@@ -12,7 +12,7 @@
             <h1> {{ __('pages.service.title1') }} </h1>
         </div>-->
 
-        <x-miniviews.section type="one">
+        <x-miniviews.section type="one" blur="true">
             <x-slot:content>
                 <x-products />
             </x-slot:content>
@@ -36,16 +36,17 @@
             overflow: auto;
             position: relative;
             isolation: isolate;
+            background-image: url("{{ asset('images/service.jpg') }}");
+            background-size: cover;
+            background-position: top;
+            background-repeat: no-repeat;
             &::before {
-                position: absolute;
-                inset: 0;
-                z-index: 0;
-                content: '';
-                background-image: url("{{ asset('images/service.jpg') }}");
-                background-size: cover;
-                background-position: top;
-                background-repeat: no-repeat;
-                filter: blur(10px);
+                width: 100%;
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
             }
         }
     </style>

@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ProductOption extends BaseModel
@@ -11,14 +10,20 @@ class ProductOption extends BaseModel
      * @var list<string>
      */
     protected $fillable = [
-        'product_id',
         'name',
+        'show_on_products',
+        'image',
         'sort_order',
     ];
 
-    public function Product(): BelongsTo
+    /**
+     * @return array<string, string>
+     */
+    protected function casts(): array
     {
-        return $this->belongsTo(Product::class);
+        return [
+            'show_on_products' => 'boolean',
+        ];
     }
 
     public function Values(): HasMany

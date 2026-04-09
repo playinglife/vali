@@ -19,14 +19,45 @@
     $showBadges = $product->is_featured || ! $inStock;
     $excerpt = $product->localizedShortDescription()
         ?? \Illuminate\Support\Str::limit(strip_tags((string) ($product->localizedDescription() ?? '')), 120);
+
+    $transferData = [
+        'product' => $product,
+    ];
+
+    $productOptions = $product->groupedOptions();
 @endphp
 
 <article class="root-product-card" data-product-id="{{ $product->id }}">
+    <script type="application/json" class="product-card-json">
+        @json($transferData)
+    </script>
+
     @if ($href)
-        <a href="{{ $href }}" class="root-product-card__media root-product-card__media-link" tabindex="-1" aria-hidden="true"><img src="{{ $imageUrl }}" alt="{{ $product->name }}" class="root-product-card__img" loading="lazy" decoding="async" width="640" height="960" /></a>
+        <a href="{{ $href }}" class="root-product-card__media root-product-card__media-link" tabindex="-1" aria-hidden="true">
+            <img src="{{ $imageUrl }}" alt="{{ $product->name }}" class="root-product-card__img" loading="lazy" decoding="async" width="640" height="960" />
+        </a>
     @else
         <div class="root-product-card__media" aria-hidden="true"><img src="{{ $imageUrl }}" alt="{{ $product->name }}" class="root-product-card__img" loading="lazy" decoding="async" width="640" height="960" /></div>
     @endif
+
+    <!-- PRODUCT OPTIONS THAT SHOW ON PRODUCTS -->
+    @foreach ($productOptions as $option)
+        @if ($option->show_on_products)
+            <div class="root-product-card__option">
+                <span class="root-product-card__option-title">{{ $option->name }}</span>
+                <div class="root-product-card__option-values">
+                    @foreach ($option->Values as $value)
+                        @if (filled($value->image))
+                            <img src="{{ $value->image }}" alt="{{ $value->value }}" class="root-product-card__option-value-image" loading="lazy" decoding="async" />
+                        @else
+                            <span class="root-product-card__option-value">{{ $value->value }}</span>
+                        @endif
+                    @endforeach
+                </div>
+            </div>
+        @endif
+    @endforeach
+
 
     <div class="root-product-card__body">
         @if ($showBadges)
@@ -67,6 +98,8 @@
         {{ $slot }}
     </div>
 </article>
+
+
 
 @once
     <style>
@@ -179,11 +212,11 @@
         }
         .root-product-card__price {
             font-family: var(--font-family-one);
-            font-size: calc(1.15rem * 0.66);
+            font-size: var(--text-size-normal);
             color: var(--color-one);
         }
         .root-product-card__compare {
-            font-size: calc(0.85rem * 0.66);
+            font-size: var(--text-size-small);
             opacity: 0.65;
         }
         .root-product-card__compare-strike {
@@ -191,9 +224,54 @@
             text-decoration-thickness: from-font;
         }
         .root-product-card__sku {
-            font-size: calc(0.7rem * 0.66);
-            letter-spacing: 0.04em;
-            opacity: 0.75;
+            font-size: var(--text-size-tiny);
+        }
+        .root-product-card__option-title {
+            font-family: var(--font-family-one);
+            font-size: var(--text-size-small);
+            font-weight: var(--font-weight-bold);
+        }
+        .root-product-card__option-values {
+            font-size: var(--text-size-tiny);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.35rem;
+            align-items: center;
+        }
+        .root-product-card__option-value-image {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid color-mix(in srgb, var(--color-border) 60%, transparent);
         }
     </style>
+@endonce
+
+
+<!-- SCRIPT -->
+@once
+    <script>
+        const root = document.querySelector('[data-product-id="{{ $product->id }}"]');
+        let data = null;
+
+
+        // Initialization
+        function pageInitializationBefore() {
+            const scriptEl = root.querySelector('script.product-card-json[type="application/json"]');
+            if (scriptEl && scriptEl.textContent) {
+                try {
+                    data = JSON.parse(scriptEl.textContent.trim());
+                    console.log(data);
+                } catch (err) {
+                    data = null;
+                }
+            }
+            quantityElem = root.querySelector('#product-detail-qty-{{ $product->id }}');
+        }
+        function pageInitializationAfter() {}
+
+        pageInitializationBefore();
+        pageInitializationAfter();
+    </script>
 @endonce

@@ -1,4 +1,4 @@
-@props(['title' => null, 'text' => null, 'content' => null, 'type' => 'one', 'background' => 'transparent'])
+@props(['title' => null, 'text' => null, 'content' => null, 'type' => 'one', 'background' => 'transparent', 'blur' => false])
 
 <div class="root-miniviews-section root-miniviews-section--{{ $type }} root-miniviews-section--{{ $background }}">
     @if($title)
@@ -24,6 +24,9 @@
         justify-content: start;
         align-items: center;
         gap: var(--padding-large);
+        @if($blur)
+            backdrop-filter: blur(10px);
+        @endif
         &.root-miniviews-section--one {
             
         }

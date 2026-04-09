@@ -11,7 +11,8 @@
 <!-- PHP -->
 @php
     /** @var \App\Models\Product $Product */
-    $Product->load(['Variants.Values.Option', 'Variants.PriceBrackets', 'PriceBrackets', 'Options.Values']);
+    $Product->load(['Variants.Values.Option', 'Variants.PriceBrackets', 'PriceBrackets', 'OptionValues.Option']);
+    $productOptions = $Product->groupedOptions();
 
     $lightboxMinZoom = max(0.05, min(50.0, (float) $lightboxMinZoom));
     $lightboxMaxZoom = max(1.0, min(50.0, (float) $lightboxMaxZoom));
@@ -33,6 +34,7 @@
     $transferData = [
         'config' => $config,
         'Product' => $Product,
+        'ProductOptions' => $productOptions,
         'detailI18n' => $detailI18n,
         'selectedVariant' => $selectedVariant,
     ];
@@ -139,11 +141,11 @@
 
 
             <!-- PRODUCT OPTIONS -->
-            @if ($Product->Options->isNotEmpty())
-                <div data-reference="product-detail-options" class="root-product-detail__options">
+            @if ($productOptions->isNotEmpty())
+                <div data-reference="product-detail-options" class="root-product-detail__meta">
                     <h4 class="dark label">{{ __('components.product.product_options') }}</h4>
                     <div class="root-product-detail__options-content">
-                        @foreach ($Product->Options as $option)
+                        @foreach ($productOptions as $option)
                             <fieldset data-reference="product-detail-option-{{ $option->id }}">
                                 <legend class="text-tiny">
                                     {{ $option->name }}
@@ -379,14 +381,14 @@
 
         function syncSelectedvariantWithProductOptions() {
             if (selectedVariant === null) {
-                data.Product.Options.forEach(function (option) {
+                data.ProductOptions.forEach(function (option) {
                     const optionSectionElem = root.querySelector(`[data-reference="product-detail-option-${option.id}"]`);
                     const optionRadioListElem = optionSectionElem.querySelector('.root-products__radio-list');
                     enableRadio(optionSectionElem, optionRadioListElem, true, false);
                 });
             }else{
                 const variantOptions = [...new Set(selectedVariant.Values.map(value => value.Option.id))];
-                data.Product.Options.forEach(function (option) {
+                data.ProductOptions.forEach(function (option) {
                     const optionSectionElem = root.querySelector(`[data-reference="product-detail-option-${option.id}"]`);
                     const optionRadioListElem = optionSectionElem.querySelector('.root-products__radio-list');
                     if (variantOptions.includes(option.id) && optionSectionElem) {

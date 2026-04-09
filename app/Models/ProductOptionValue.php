@@ -15,6 +15,7 @@ class ProductOptionValue extends BaseModel
     protected $fillable = [
         'product_option_id',
         'value',
+        'image',
         'price_adjustment_type',
         'price_adjustment',
         'sort_order',
@@ -32,7 +33,14 @@ class ProductOptionValue extends BaseModel
 
     protected function image(): Attribute
     {
-        return Attribute::get(fn (): ?string => $this->storageImageUrl());
+        return Attribute::get(function (): ?string {
+            $path = (string) ($this->getAttributeFromArray('image') ?? '');
+            if ($path !== '') {
+                return asset('storage/'.ltrim($path, '/'));
+            }
+
+            return $this->storageImageUrl();
+        });
     }
 
     /**
@@ -78,6 +86,16 @@ class ProductOptionValue extends BaseModel
         )->withTimestamps();
     }
 
+    public function Products(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Product::class,
+            'product_product_option_value',
+            'product_option_value_id',
+            'product_id'
+        )->withTimestamps();
+    }
+
     public function storageImageUrl(): ?string
     {
         $disk = Storage::disk('public');
@@ -89,6 +107,6 @@ class ProductOptionValue extends BaseModel
             }
         }
 
-        return asset('images/generic.png');
+        return null;
     }
 }

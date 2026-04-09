@@ -40,6 +40,37 @@ class ProductCatalogSeeder extends Seeder
         $sizes = ['S', 'M', 'L', 'XL'];
         $colors = ['White', 'Navy', 'Sky Blue', 'Black'];
 
+        $sizeOption = ProductOption::query()->create([
+            'name' => 'Size',
+            'show_on_products' => true,
+            'sort_order' => 0,
+        ]);
+        $colorOption = ProductOption::query()->create([
+            'name' => 'Color',
+            'show_on_products' => true,
+            'sort_order' => 1,
+        ]);
+
+        $sizeValues = collect($sizes)->map(function (string $label, int $order) use ($sizeOption) {
+            return ProductOptionValue::query()->create([
+                'product_option_id' => $sizeOption->id,
+                'value' => $label,
+                'price_adjustment_type' => 'fix',
+                'price_adjustment' => (float) ($order * 4),
+                'sort_order' => $order,
+            ]);
+        });
+
+        $colorValues = collect($colors)->map(function (string $label, int $order) use ($colorOption) {
+            return ProductOptionValue::query()->create([
+                'product_option_id' => $colorOption->id,
+                'value' => $label,
+                'price_adjustment_type' => 'percentage',
+                'price_adjustment' => (float) (2 + $order * 1.5),
+                'sort_order' => $order,
+            ]);
+        });
+
         for ($i = 1; $i <= 20; $i++) {
             $sku = sprintf('SH-%04d', $i);
             $slug = sprintf('shirt-model-%d', $i);
@@ -86,36 +117,12 @@ class ProductCatalogSeeder extends Seeder
             }
             $product->Categories()->sync($pivot);
 
-            $sizeOption = ProductOption::query()->create([
-                'product_id' => $product->id,
-                'name' => 'Size',
-                'sort_order' => 0,
-            ]);
-            $colorOption = ProductOption::query()->create([
-                'product_id' => $product->id,
-                'name' => 'Color',
-                'sort_order' => 1,
-            ]);
-
-            $sizeValues = collect($sizes)->map(function (string $label, int $order) use ($sizeOption) {
-                return ProductOptionValue::query()->create([
-                    'product_option_id' => $sizeOption->id,
-                    'value' => $label,
-                    'price_adjustment_type' => 'fix',
-                    'price_adjustment' => (float) ($order * 4),
-                    'sort_order' => $order,
-                ]);
-            });
-
-            $colorValues = collect($colors)->map(function (string $label, int $order) use ($colorOption) {
-                return ProductOptionValue::query()->create([
-                    'product_option_id' => $colorOption->id,
-                    'value' => $label,
-                    'price_adjustment_type' => 'percentage',
-                    'price_adjustment' => (float) (2 + $order * 1.5),
-                    'sort_order' => $order,
-                ]);
-            });
+            $product->OptionValues()->sync(
+                $sizeValues->pluck('id')
+                    ->concat($colorValues->pluck('id'))
+                    ->values()
+                    ->all()
+            );
 
             $defaultVariant = $product->Variants()->where('sku', $product->sku)->firstOrFail();
             $defaultVariant->update([

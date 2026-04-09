@@ -24,7 +24,7 @@ Route::get('/products/{product:slug}', function (Product $product) {
         'Categories',
         'ShortDescriptionTranslation',
         'DescriptionTranslation',
-        'Options.Values',
+        'OptionValues.Option',
         'Variants.PriceBrackets',
         'Variants.DescriptionTranslation',
         'Variants.Values.Option',

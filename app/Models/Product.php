@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 
 #[ObservedBy([ProductObserver::class])]
@@ -94,9 +95,44 @@ class Product extends BaseModel
             ->orderByPivot('sort_order');
     }
 
-    public function Options(): HasMany
+    public function OptionValues(): BelongsToMany
     {
-        return $this->hasMany(ProductOption::class)->orderBy('sort_order');
+        return $this->belongsToMany(ProductOptionValue::class, 'product_product_option_value')
+            ->withTimestamps()
+            ->orderBy('product_option_values.sort_order');
+    }
+
+    /**
+     * Product option groups built from assigned option values.
+     *
+     * @return Collection<int, object{id:int,name:string,show_on_products:bool,sort_order:int,Values:Collection<int, ProductOptionValue>}>
+     */
+    public function groupedOptions(): Collection
+    {
+        $values = $this->relationLoaded('OptionValues')
+            ? $this->OptionValues
+            : $this->OptionValues()->with('Option')->get();
+
+        return $values
+            ->filter(fn (ProductOptionValue $value) => $value->Option !== null)
+            ->groupBy('product_option_id')
+            ->map(function (Collection $group): object {
+                /** @var ProductOptionValue $first */
+                $first = $group->first();
+                $option = $first->Option;
+
+                return (object) [
+                    'id' => (int) $option->id,
+                    'name' => (string) $option->name,
+                    'show_on_products' => (bool) $option->show_on_products,
+                    'sort_order' => (int) ($option->sort_order ?? 0),
+                    'Values' => $group
+                        ->sortBy('sort_order')
+                        ->values(),
+                ];
+            })
+            ->sortBy('sort_order')
+            ->values();
     }
 
     public function Variants(): HasMany

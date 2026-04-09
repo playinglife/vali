@@ -88,11 +88,11 @@ button.root-product-detail__thumb {
 }
 
 .root-product-detail__thumb:hover {
-    border-color: color-mix(in srgb, var(--color-one) 45%, var(--color-border));
+
 }
 
 button.root-product-detail__thumb--active {
-    border: var(--border-width-small) color-mix(in srgb, var(--color-one) 45%, var(--color-border)) solid;
+    border: var(--border-width-small) color-mix(in srgb, var(--color-border) 20%, transparent) solid;
 }
 
 .root-product-detail__thumb-img {
@@ -172,7 +172,6 @@ button.root-product-detail__thumb--active {
     flex-wrap: wrap;
     align-items: center;
     gap: var(--gap-small);
-    margin-top: var(--gap-medium);
     padding-top: var(--gap-medium);
     border-top: 1px solid color-mix(in srgb, var(--color-border) 20%, transparent);
 }
