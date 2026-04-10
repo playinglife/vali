@@ -6,6 +6,7 @@ export default defineConfig({
         laravel({
             input: [
                 'resources/scss/app.scss',
+                'resources/scss/ag-grid.scss',
                 'resources/scss/product-detail.scss',
                 'resources/js/app.js',
             ],

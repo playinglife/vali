@@ -1,0 +1,292 @@
+/* Ag-Grid dark scheme override */
+@use "./variables.scss" as *;
+@use "sass:color";
+
+// Borders and shadows of the cells when editing
+:where(.ag-theme-inputStyle-7) {
+  & .ag-input-field-input:where(input:not([type]), input[type="text"], input[type="number"], input[type="tel"], input[type="date"], input[type="datetime-local"], textarea) {
+    &:focus {
+      box-shadow: none !important;
+    }
+  }
+}
+.ag-body-viewport .ag-cell-inline-editing, .ag-floating-top-viewport .ag-cell-inline-editing {
+  box-shadow: none !important;
+  background-color: black !important;
+}
+
+/* Make border radius zero */
+.ag-root-wrapper {
+  border-radius: 0 !important;
+  border: none !important;
+}
+
+/* Show loading overlay fill up the whole grid space */
+.ag-overlay-loading-wrapper > div {
+  position: relative !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Hide ag-grid overlay backdrop */
+.ag-overlay-exporting-wrapper, .ag-overlay-loading-wrapper, .ag-overlay-modal-wrapper {
+    background-color: transparent !important;
+}
+
+.ag-header-cell-text {
+  font-family: "Oswald", sans-serif !important;
+}
+
+/* Remove padding from header cells */
+.ag-header-cell {
+  padding: 0 !important;
+}
+
+/* Row mouse hover and row selected */
+.ag-row-hover::before {
+  background-color: #ffffff70 !important;
+  opacity: 0.8 !important;
+}
+
+.ag-row-selected {
+  //border: none !important;
+  //border-top: 0.01em solid #d9dfe450 !important;
+  //border-bottom: 0.01em solid #d9dfe450 !important;
+}
+
+.ag-row-selected::before {
+  background-color: #ffffff90 !important;
+  opacity: 0.8 !important;
+}
+
+.ag-row-hover.ag-row-selected {
+  background-color: #ffffff90 !important;
+  background-image: none !important;
+  //border-color: white !important;
+  opacity: 1 !important;
+}
+
+/* Padding for text in column header */
+.ag-header-cell-text {
+  padding: 0.75em !important;
+}
+
+/* Sorting icons colors */
+.ag-sort-indicator-container > .ag-sort-indicator-icon > .ag-icon.ag-icon-asc,
+.ag-sort-indicator-container > .ag-sort-indicator-icon > .ag-icon.ag-icon-desc {
+  color: var(--color-one-500) !important;
+  margin-right: 0.5em !important;
+}
+
+// Borders set for row editing
+.ag-body-viewport, .ag-floating-top-viewport {
+  .ag-cell-inline-editing {
+    border-style: none !important;
+    border-radius: 0px !important;
+    box-shadow: 0 0px 4px 1px rgba(#000, 0.5);
+    border: 0.05em solid #8c9398 !important;
+    .ag-wrapper {
+      border-style: none;
+      border-radius: 0px;
+      .ag-theme-alpine input[class^="ag-"]:not([type]), .ag-theme-alpine input[class^="ag-"][type="text"], .ag-theme-alpine input[class^="ag-"][type="number"], .ag-theme-alpine input[class^="ag-"][type="tel"], .ag-theme-alpine input[class^="ag-"][type="date"], .ag-theme-alpine input[class^="ag-"][type="datetime-local"], .ag-theme-alpine textarea[class^="ag-"] {
+        border-radius: 0;
+      }
+
+      .ag-theme-alpine .ag-cell-inline-editing {
+        border-radius: 0;
+      }
+
+      .ag-theme-alpine .ag-picker-field-wrapper {
+        border-radius: 0;
+      }
+      input {
+        border-radius: 0 !important;
+        border-style: none !important;
+        &:focus {
+          border-radius: 0 !important;
+        }
+      }
+      &.ag-cell-focus {
+        border: 0.01em solid #fff !important;
+      }
+    }
+  }
+}
+
+// Change the background color of the row that is being edited
+/*.ag-row-selected::before
+    background-color: transparent !important;
+    opacity: 0.8 !important;*/
+
+.ag-cell-focus:not(.ag-cell-range-selected):focus-within {
+  border: none !important;
+  //border-left: 0.01em solid #fff !important
+  //border-right: 0.01em solid #fff !important
+}
+
+// set border to the edited focused grid cell
+.ag-theme-material-dark.ag-has-focus .ag-cell-inline-editing,
+.ag-theme-material-dark .ag-has-focus .ag-cell-inline-editing {
+  border: 1px solid $color-border !important;
+}
+
+// when editing a cell, the ag-cell-wrapper and ag-cell-value divs take up the whole width and don't stretch behind that width
+.ag-cell-wrapper, 
+.ag-cell-value {
+  width: 100% !important;
+}
+
+// Header text should not wrap to next line
+.ag-header-cell {
+  .ag-header-cell-text {
+    text-wrap: nowrap !important;
+  }
+}
+
+// A red line at the bottom of the cells that are required
+.ag-header-cell.ag-required-header {
+  border-bottom: 1px solid rgba(255, 0, 0, 0.5);
+}
+
+// 
+.ag-cell.ag-cell-not-inline-editing:focus-within {
+  //border-bottom: 0.1em solid $color-one !important;
+}
+
+// Mark row as unavailable
+.ag-row.unavailable {
+    cursor: not-allowed;
+}
+.unavailable:not(.ag-row-editing)::after {
+    content: "";
+    border: none;
+    background-color: $color-background-transparent-light;
+    backdrop-filter: blur(1px);
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    cursor: not-allowed;
+}
+
+// Highlight of row when dragging over it - border fades transparent → full opacity → transparent
+@keyframes highligthed-animation {
+    0%, 100% { opacity: 0; }
+    50% { opacity: 1; }
+}
+.highligthed:not(.ag-row-editing)::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 2px solid $color-text-light;
+    pointer-events: none;
+    animation: highligthed-animation 1.5s ease-out infinite;
+    will-change: opacity;
+    contain: layout style paint;
+}
+
+// Mark unvalidated rows (use ::after so ::before stays free for AG Grid hover/selected overlay)
+.unvalidated:not(.ag-row-editing)::after {
+    content: "";
+    display: block;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 0.3em;
+    width: 0;
+    background: linear-gradient(to bottom left, transparent, $color-error);
+    animation: highligthed-animation 1.5s ease-out infinite;
+    pointer-events: none;
+}
+// Hover/selected overlay for unvalidated rows (AG Grid excludes them via :not(.unvalidated))
+.ag-row-hover.unvalidated:not(.ag-row-editing)::before,
+.ag-row-selected.unvalidated:not(.ag-row-editing)::before {
+    content: "";
+    display: block;
+    position: absolute;
+    inset: 0;
+    background-color: #5f656a;
+    pointer-events: none;
+}
+.ag-row-hover.unvalidated:not(.ag-row-editing)::before {
+    opacity: 0.3;
+}
+.ag-row-selected.unvalidated:not(.ag-row-editing)::before {
+    opacity: 0.8;
+}
+// Exclude unvalidated styling from pinned columns sections
+.ag-pinned-left-cols-container .unvalidated:not(.ag-row-editing)::after,
+.ag-pinned-right-cols-container .unvalidated:not(.ag-row-editing)::after,
+.ag-pinned-left-cols-container .ag-row-hover.unvalidated:not(.ag-row-editing)::before,
+.ag-pinned-left-cols-container .ag-row-selected.unvalidated:not(.ag-row-editing)::before,
+.ag-pinned-right-cols-container .ag-row-hover.unvalidated:not(.ag-row-editing)::before,
+.ag-pinned-right-cols-container .ag-row-selected.unvalidated:not(.ag-row-editing)::before {
+    content: none !important;
+    display: none !important;
+}
+.readonly:not(.ag-row-editing) {
+  .ag-cell {
+    background-color: rgba(128, 128, 128, 0.5);
+    opacity: 0.5;
+  }
+}
+
+/* Hide small tooltip arow in ag-grid*/
+.tippy-arrow {
+  display: none !important;
+}
+
+// Make all the ag-grid background transparent and blur the background
+.ag-root-wrapper,
+.ag-root,
+.ag-header,
+.ag-body,
+.ag-row,
+.ag-cell,
+.ag-overlay {
+  background: transparent !important;
+}
+.ag-cell,
+.ag-header {
+  background: rgba(0, 0, 0, 0.5) !important;
+}
+.ag-header {
+    margin-bottom: 0.03em !important;
+}
+// .ag-root-wrapper
+// backdrop-filter: blur(15px) saturate(1) !important
+
+// Important for when we hide and show rows. If this is not set, when a row is made with height 0, cell contents are still visible
+.ag-row {
+    overflow: hidden;
+}
+
+// remove border-top from header cells
+.ag-header-cell:where(.ag-header-cell:not(.ag-header-span-height.ag-header-span-total, .ag-header-parent-hidden), .ag-header-group-cell.ag-header-group-cell-with-group) {
+    border-top: none;
+  }
+
+
+// Row drag over
+.ag-row.ag-row-drag-over {
+    background-color: rgba(66, 133, 244, 0.25);
+    outline: 1px solid rgba(66, 133, 244, 0.5);
+}
+
+// Remove border on rows
+.ag-row {
+  border: none !important;
+}
+
+// No border for input elements inside ag-grid
+.ag-root-wrapper input:not([type="checkbox"]):not([type="radio"]) {
+  border: none !important;
+  box-shadow: none !important;
+  background-color: transparent !important;
+}
