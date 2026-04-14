@@ -1,186 +1,266 @@
 @php
-    $cartIsEmpty = $cartIsEmpty ?? true;
-    $groups = $groups ?? [];
-    $grandTotal = $grandTotal ?? 0.0;
-    $currency = $currency ?? __('components.product.currency');
+
+use App\Http\Controllers\CartController;
+use App\Models\Product;
+use App\Models\ProductVariant;
+use App\Models\ProductOptionValue;
+use App\Models\ProductOption;
+    
+    $currency = __('components.product.currency');
+    $sessionLines = session('cart', []);
+    $lines = [];
+
+//dd($sessionLines);
+
+    $cartIsEmpty = $sessionLines === [];
+    $total = 0;
+    $totalItems = 0;
+
+    if (!$cartIsEmpty) {
+        foreach ($sessionLines as &$sessionLine) {
+            $product = Product::find($sessionLine['product_id']);
+            $variant = ProductVariant::with('Values.Option')->find($sessionLine['product_variant_id']);
+            if (!isset($lines[$sessionLine['product_id']])) {
+                $lines[$sessionLine['product_id']] = [
+                    'product' => $product,
+                    'items' => [],
+                ];
+            }
+            $lines[$sessionLine['product_id']]['items'][] = [
+                'variant' => $variant,
+                'sessionLine' => $sessionLine,
+            ];
+
+            $totalItems += $sessionLine['quantity'];
+            $total += $sessionLine['quantity'] * $variant->price;
+        }
+    }
+
+    $transferData = [
+        'cartIsEmpty' => $cartIsEmpty,
+        'lines' => $lines,
+        'currency' => $currency,
+        'total' => $total,
+        'totalItems' => $totalItems,
+    ];
+    //(new CartController())->clear();
 @endphp
 
-<div class="cart-items">
-    @if ($cartIsEmpty)
-        <p class="cart-items__empty">{{ __('pages.cart.empty') }}</p>
-    @else
-        @foreach ($groups as $group)
-            @php($product = $group['product'])
-            <section class="cart-items__product-group" aria-labelledby="cart-product-heading-{{ $product->id }}">
-                <h2 id="cart-product-heading-{{ $product->id }}" class="cart-items__product-name">
-                    {{ $product->name }}
-                </h2>
-                <ul class="cart-items__lines" role="list">
-                    @foreach ($group['rows'] as $row)
-                        <li class="cart-items__line">
-                            <div class="cart-items__thumb-wrap">
-                                <img
-                                    class="cart-items__thumb"
-                                    src="{{ $row['image_url'] }}"
-                                    alt=""
-                                    width="96"
-                                    height="96"
-                                    loading="lazy"
-                                    decoding="async"
-                                />
-                            </div>
-                            <div class="cart-items__line-body">
-                                <span class="cart-items__variant-label">{{ $row['label'] }}</span>
-                                <div class="cart-items__meta">
-                                    <span class="cart-items__qty">
-                                        <span class="cart-items__meta-label">{{ __('pages.cart.quantity') }}</span>
-                                        {{ $row['quantity'] }}
-                                    </span>
-                                    <span class="cart-items__unit-price">
-                                        <span class="cart-items__meta-label">{{ __('pages.cart.unit_price') }}</span>
-                                        {{ number_format($row['unit_price'], 2, '.', '') }} {{ $currency }}
-                                    </span>
-                                    <span class="cart-items__line-total">
-                                        <span class="cart-items__meta-label">{{ __('pages.cart.line_total') }}</span>
-                                        {{ number_format($row['line_total'], 2, '.', '') }} {{ $currency }}
-                                    </span>
+
+
+<!-- TEMPLATE -->
+<x-menu-height-compensator />
+<div data-reference="cart-items" class="root-cart-items">
+    <script type="application/json" class="product-detail-json">
+        @json($transferData)
+    </script>
+    <div class="grid root-cart-items__grid">
+        <div class="grid grid-middle grid-center root-cart-items__main-title">
+            <h2 class="dark"> {{ __('pages.cart.title1') }} </h2>
+        </div>
+
+
+
+        <!-- Lines -->
+        @foreach ($lines as $line)
+            <x-miniviews.panel :padding="false">
+                <div class="root-cart-items__line">
+                    <div class="root-cart-items__title">
+                        <h3 class="dark"> {{ $line['product']->name }} </h3>
+                    </div>
+                    @foreach ($line['items'] as $item)
+                        @php
+                            $variant = $item['variant'];
+                            $sessionLine = $item['sessionLine'];
+                        @endphp
+                        <div class="root-cart-items__group grid">
+                            <div class="col">
+                                <div class="grid grid-column grid-middle">
+                                    <img src="{{ $variant->storageImageUrl() }}" alt="{{ $line['product']->name }}" width="150em" />
                                 </div>
                             </div>
-                        </li>
+                            <div class="col">
+                                <div class="grid grid-noGutter root-cart-items__remove-button">
+                                    <form method="post" action="{{ route('cart.remove') }}">
+                                        @csrf
+                                        <input type="hidden" name="id" value="{{ $sessionLine['id'] ?? 0 }}">
+                                        <x-button type="submit" icon="gmdi-close" class="button-icon root-cart-items__remove" aria-label="{{ __('pages.cart.remove_item') }}" />
+                                    </form>
+                                </div>
+                                <p class="text-small"> {{ $variant->product->localizedDescription() }} </p>
+                                <p class="text-small"> {{ $variant->localizedDescription() }} </p>
+                                <p class="root-cart-items__line-total"> {{ $sessionLine['quantity'] }}  {{ __('pages.cart.unit') }}  x  {{ $variant->price }} {{ __('components.product.currency') }} = {{ $sessionLine['quantity'] * $variant->price }} {{ __('components.product.currency') }} </p>
+
+                                <div class="root-cart-items__options">
+                                    @foreach ($variant->Values as $value)
+                                    <fieldset data-reference="product-detail-option-{{ $value->Option->id }}">
+                                        <legend class="text-tiny">
+                                            {{ $value->Option->name }}
+                                        </legend>
+                                        @if ($value->Option->type === \App\Enums\ProductOptionType::Icon->value)
+                                            @php $className = 'root-products__icon-list'; @endphp
+                                        @else
+                                            @php $className = 'root-products__radio-list'; @endphp
+                                        @endif
+                                        <div data-reference="product-detail-option-list" class="{{ $className }}">
+                                            @if ($value->Option->type->value === \App\Enums\ProductOptionType::Image->value)
+                                                <img src="{{ $value->image }}" alt="{{ $value->value }}" class="root-product-detail__option-image" />
+                                            @elseif ($value->Option->type->value === \App\Enums\ProductOptionType::Icon->value)
+                                                @php
+                                                    [$iconName, $iconColor] = array_pad(explode(':', $value->icon, 2), 2, '');
+                                                @endphp
+                                                <x-radio :name="'product-detail-' . $variant->id . '-opt-' . $value->Option->id" :value="(string) $value->id" :label="$value->value" :checked="false" :displayOnly="true">
+                                                    @if ($iconColor !== '')
+                                                        <x-icon name="{{ $iconName }}" aria-hidden="true" class="medium-icon" style="color: {{ $iconColor }};" />
+                                                    @else
+                                                        <x-icon name="{{ $iconName }}" aria-hidden="true" class="medium-icon" />
+                                                    @endif
+                                                </x-radio>
+                                            @else
+                                            <x-radio :name="'product-detail-' . $variant->id . '-opt-' . $value->Option->id" :value="(string) $value->id" :label="$value->value" :checked="true" />
+                                            @endif
+                                        </div>
+                                    </fieldset>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
                     @endforeach
-                </ul>
-            </section>
+
+                </div>
+            </x-miniviews.panel>
         @endforeach
 
-        <div class="cart-items__grand-total-wrap">
-            <p class="cart-items__grand-total">
-                <span class="cart-items__grand-total-label">{{ __('pages.cart.grand_total') }}</span>
-                {{ number_format($grandTotal, 2, '.', '') }} {{ $currency }}
-            </p>
-        </div>
-    @endif
+
+
+        <!-- Total -->
+        <x-miniviews.panel :padding="false">
+            <div class="grid grid-row grid-middle grid-noGutter grid-center root-cart-items__total">
+                <div class="col">
+                    <table>
+                        <tr>
+                            <td class="root-cart-items__total-text"> 
+                                {{ __('pages.cart.unit') }}:
+                            <td class="root-cart-items__total-value"> 
+                                {{ $totalItems }} 
+                            </td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td class="root-cart-items__total-text"> 
+                                {{ __('pages.cart.grand_total') }}:
+                            </td>
+                            <td class="root-cart-items__total-value"> 
+                                {{ $total }}
+                            </td>
+                            <td> {{ __('components.product.currency') }} </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="col">
+                    <x-button text="Checkout" aria-label="{{ __('pages.cart.remove_item') }}" />
+                </div>
+            </div>
+        </x-miniviews.panel>
+    </div>
 </div>
 
+
+
+<!-- STYLES -->
 @once
     <style lang="scss" scoped>
-        .cart-items {
-            width: 100%;
-            max-width: 100%;
+        .root-cart-items__title {
+            padding: var(--padding-large);
+        }
+        .root-cart-items {
             box-sizing: border-box;
-        }
-
-        .cart-items__empty {
-            color: var(--color-text-dark);
-            text-align: center;
-            margin: 0;
-            padding: var(--padding-large) 0;
-        }
-
-        .cart-items__product-group {
-            margin-bottom: calc(var(--padding-large) * 1.5);
-        }
-
-        .cart-items__product-name {
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--color-text-dark);
-            margin: 0 0 var(--padding-large);
-            letter-spacing: 0.05em;
-        }
-
-        .cart-items__lines {
-            list-style: none;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            gap: var(--padding-large);
-        }
-
-        .cart-items__line {
-            display: flex;
-            flex-direction: row;
-            align-items: flex-start;
-            gap: var(--padding-large);
-        }
-
-        .cart-items__thumb-wrap {
-            flex-shrink: 0;
-            width: 6rem;
-            height: 6rem;
-            border-radius: 4px;
-            overflow: hidden;
-            background: rgba(0, 0, 0, 0.06);
-        }
-
-        .cart-items__thumb {
             width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
-
-        .cart-items__line-body {
-            flex: 1;
-            min-width: 0;
             display: flex;
             flex-direction: column;
-            gap: 0.5rem;
+            gap: var(--gap-medium);
         }
-
-        .cart-items__variant-label {
-            font-size: 0.85em;
-            color: var(--color-text-dark);
-            line-height: 1.35;
+        .root-cart-items__grid {
+            gap: var(--gap-large);
+            padding: 0 25% var(--padding-huge) 25%;
         }
+        .root-cart-items__group {
+            padding: var(--padding-small) var(--padding-large);
+            gap: var(--gap-large);
 
-        .cart-items__meta {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: baseline;
-            gap: 1rem 1.5rem;
-            font-weight: 400;
-            font-variant-numeric: tabular-nums;
-            color: var(--color-text-dark);
-            font-size: 0.85em;
+            &.grid > .col:first-child {
+                flex: 0 1 auto;
+                max-width: none;
+            }
+
+            &.grid > .col:last-child {
+                flex: 1 1 0%;
+                min-width: 0;
+            }
         }
-
-        .cart-items__meta-label {
-            display: block;
-            font-size: 0.75em;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-            opacity: 0.75;
-            margin-bottom: 0.15rem;
+        .root-cart-items__main-title {
+            flex: 1 1 auto;
+            min-width: 0;
+            padding-right: var(--gap-medium);
+            padding-top: var(--padding-medium);
         }
-
-        .cart-items__grand-total-wrap {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-top: calc(var(--padding-large) * 2);
-            padding-top: var(--padding-large);
-            border-top: 1px solid rgba(0, 0, 0, 0.12);
+        .root-cart-items__line {
+            padding-bottom: var(--padding-medium);
         }
-
-        .cart-items__grand-total {
+        .root-cart-items__line-title {
+            flex: 1 1 auto;
+            min-width: 0;
             margin: 0;
-            font-size: 1.1em;
-            font-weight: 600;
-            color: var(--color-text-dark);
-            font-variant-numeric: tabular-nums;
-            text-align: center;
+            padding-right: var(--gap-medium);
         }
 
-        .cart-items__grand-total-label {
-            display: block;
-            font-size: 0.75em;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            margin-bottom: 0.35rem;
-            opacity: 0.85;
+        .root-cart-items__remove {
+            flex-shrink: 0;
+        }
+
+        .root-cart-items__line-total {
+            font-family: var(--font-family-one);
+            font-weight: var(--font-weight-bold);
+            font-size: var(--text-size-small);
+            color: var(--color-text-dark);
+        }
+
+        .root-cart-items__remove-button {
+            justify-content: flex-end;
+        }
+
+        .root-cart-items__total {
+            width: 100%;
+            gap: var(--gap-medium);
+            & > .col {
+                display: flex;
+            }
+            & > .col:last-child {
+                justify-content: flex-end;
+            }
+            & > .col:first-child > table > tbody > tr > td {
+                font-family: var(--font-family-one);
+                font-weight: var(--font-weight-bold);
+                font-size: var(--text-size-normal);
+                color: var(--color-text-dark);
+                padding: 0 var(--padding-tiny);
+            }
+        }
+
+        .root-cart-items__total-text {
+            text-align: right;
+        }
+        .root-cart-items__total-value {
+            text-align: right;
+        }
+        .root-cart-items__total {
+            padding: var(--padding-large);
+        }
+        .root-cart-items__options {
+            display: flex;
+            flex-direction: column;
+            font-size: var(--text-size-tiny);
+            gap: var(--gap-medium);
         }
     </style>
 @endonce

@@ -48,8 +48,8 @@ What can we offer you?',
 
 
 
-    'service' => [
-        'title1' => 'Service Shirts',
+    'products' => [
+        'title1' => 'Products',
     ],
 
 
@@ -62,5 +62,6 @@ What can we offer you?',
         'grand_total' => 'Total',
         'default_line' => 'Standard',
         'variant_fallback' => 'Variant #:id',
+        'unit' => 'Items',
     ],
 ];

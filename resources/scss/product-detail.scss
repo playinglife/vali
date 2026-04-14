@@ -58,7 +58,13 @@ button.root-product-detail__media-open {
     width: 100%;
     min-width: 0;
 }
-
+.root-products__icon-list {
+    display: flex;
+    flex-direction: row;
+    gap: var(--gap-small);
+    width: 100%;
+    min-width: 0;
+}
 .root-product-detail__options-content {
     display: flex;
     flex-direction: column;
@@ -195,9 +201,4 @@ button.root-product-detail__thumb--active {
 .root-product-detail__order-qty-input:disabled {
     opacity: 0.5;
     cursor: not-allowed;
-}
-
-.root-product-detail__options-legend-note {
-    font-size: var(--text-size-micro);
-    color: var(--color-error);
 }

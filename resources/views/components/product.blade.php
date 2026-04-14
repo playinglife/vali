@@ -47,8 +47,10 @@
                 <span class="root-product-card__option-title">{{ $option->name }}</span>
                 <div class="root-product-card__option-values">
                     @foreach ($option->Values as $value)
-                        @if (filled($value->image))
+                        @if (($option->type ?? 'text') === 'image' && filled($value->image))
                             <img src="{{ $value->image }}" alt="{{ $value->value }}" class="root-product-card__option-value-image" loading="lazy" decoding="async" />
+                        @elseif (($option->type ?? 'text') === 'icon' && filled($value->icon))
+                            <x-icon name="{{ explode(':', $value->icon)[0] }}" aria-hidden="true" class="medium-icon" style="color: {{ explode(':', $value->icon)[1] }};" />
                         @else
                             <span class="root-product-card__option-value">{{ $value->value }}</span>
                         @endif
@@ -142,7 +144,7 @@
             display: flex;
             flex-direction: column;
             gap: calc(var(--gap-small) * 0.66);
-            padding: calc(var(--padding-medium) * 0.66);
+            padding-top: calc(var(--padding-medium) * 0.66);
             flex: 1;
             color: var(--color-text-dark);
             font-family: var(--font-family-two);
@@ -244,6 +246,14 @@
             border-radius: 50%;
             object-fit: cover;
             border: 1px solid color-mix(in srgb, var(--color-border) 60%, transparent);
+        }
+        .root-product-card__option-value-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 1.75rem;
+            min-height: 1.75rem;
+            font-size: var(--text-size-small);
         }
     </style>
 @endonce

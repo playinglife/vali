@@ -83,8 +83,8 @@
                 font-family: var(--font-family-one);
                 font-size: 0.65rem;
                 letter-spacing: 0.05em;
-                color: var(--color-text-light);
-                background-color: var(--color-background-transparent-dark);
+                color: var(--color-text-dark);
+                background-color: var(--color-background-light);
                 border: 1px solid var(--color-border);
                 backdrop-filter: blur(10px);
                 border-radius: var(--border-radius-small);
@@ -116,7 +116,7 @@
                 display: inline-block;
                 width: 0.65em;
                 height: 0.65em;
-                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23ffffff' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23546A6F' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
                 background-repeat: no-repeat;
                 background-position: center;
                 background-size: contain;
@@ -155,8 +155,8 @@
                 font-family: var(--font-family-one);
                 font-size: 0.65rem;
                 letter-spacing: 0.05em;
-                color: var(--color-text-light);
-                background: var(--color-background-transparent-dark);
+                color: var(--color-text-dark);
+                background: var(--color-background-light);
                 backdrop-filter: blur(10px);
                 border: none;
                 padding: var(--padding-small);

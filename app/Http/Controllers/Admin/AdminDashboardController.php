@@ -12,7 +12,9 @@ class AdminDashboardController extends Controller
     {
         $products = Product::query()
             ->with([
+                'ProductImages',
                 'OptionValues.Option',
+                'Variants.VariantImages',
                 'Variants.Values',
             ])
             ->orderByDesc('id')

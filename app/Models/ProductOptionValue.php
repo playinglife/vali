@@ -15,6 +15,7 @@ class ProductOptionValue extends BaseModel
     protected $fillable = [
         'product_option_id',
         'value',
+        'icon',
         'image',
         'price_adjustment_type',
         'price_adjustment',

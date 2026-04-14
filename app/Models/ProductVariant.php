@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Facades\Storage;
 
 class ProductVariant extends BaseModel
 {
@@ -29,7 +28,6 @@ class ProductVariant extends BaseModel
         'stock_quantity',
         'weight',
         'barcode',
-        'image',
         'description_id',
         'is_active',
     ];
@@ -48,9 +46,12 @@ class ProductVariant extends BaseModel
         ];
     }
 
+    /**
+     * First gallery image URL for this variant, or generic when none exist on disk.
+     */
     protected function image(): Attribute
     {
-        return Attribute::get(fn (): ?string => $this->storageImageUrl());
+        return Attribute::get(fn (): string => $this->displayImageUrl());
     }
 
     /**
@@ -84,6 +85,36 @@ class ProductVariant extends BaseModel
         return $this->hasMany(PriceBracket::class)
             ->orderBy('sort_order')
             ->orderBy('start_quantity');
+    }
+
+    /**
+     * Gallery images for the variant, ordered for display (same pattern as {@see Product::ProductImages()}).
+     */
+    public function VariantImages(): HasMany
+    {
+        return $this->hasMany(ProductVariantImage::class)
+            ->orderBy('sort_order')
+            ->orderBy('id');
+    }
+
+    /**
+     * Public URL for the first variant image file on disk, or null when none exist.
+     */
+    public function storageImageUrl(): ?string
+    {
+        $first = $this->relationLoaded('VariantImages')
+            ? $this->VariantImages->first()
+            : $this->VariantImages()->first();
+
+        return $first?->resolvedUrl();
+    }
+
+    /**
+     * Image URL for this variant, or the product generic placeholder when no file exists.
+     */
+    public function displayImageUrl(): string
+    {
+        return $this->storageImageUrl() ?? Product::genericProductImageUrl();
     }
 
     /**
@@ -126,33 +157,6 @@ class ProductVariant extends BaseModel
             'product_variant_id',
             'product_option_value_id',
         )->withTimestamps();
-    }
-
-    public function storageImageUrl(): ?string
-    {
-        $path = $this->attributes['image'] ?? null;
-        if (is_string($path) && $path !== '') {
-            return asset('storage/'.$path);
-        }
-
-        $disk = Storage::disk('public');
-
-        foreach (['png', 'jpg', 'jpeg', 'webp'] as $ext) {
-            $legacyPath = 'product/variants/'.$this->id.'.'.$ext;
-            if ($disk->exists($legacyPath)) {
-                return asset('storage/'.$legacyPath);
-            }
-        }
-
-        return asset('images/generic.png');
-    }
-
-    /**
-     * Image URL for this variant, or the product generic placeholder when no file exists.
-     */
-    public function displayImageUrl(): string
-    {
-        return $this->storageImageUrl() ?? Product::genericProductImageUrl();
     }
 
     /**

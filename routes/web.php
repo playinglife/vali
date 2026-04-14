@@ -14,12 +14,13 @@ use Illuminate\Support\Facades\Route;
 Route::post('/locale', [LocaleController::class, 'update'])->name('locale.update');
 
 Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
+Route::post('/cart/remove', [CartController::class, 'remove'])->name('cart.remove');
 
 Route::get('/', function () {
     return view('pages.home');
 });
-Route::get('/service', function () {
-    return view('pages.service');
+Route::get('/products', function () {
+    return view('pages.products');
 });
 
 Route::get('/products/{product:slug}', function (Product $product) {
@@ -27,11 +28,13 @@ Route::get('/products/{product:slug}', function (Product $product) {
 
     $product->load([
         'Categories',
+        'ProductImages',
         'ShortDescriptionTranslation',
         'DescriptionTranslation',
         'OptionValues.Option',
         'Variants.PriceBrackets',
         'Variants.DescriptionTranslation',
+        'Variants.VariantImages',
         'Variants.Values.Option',
         'PriceBrackets',
     ]);
@@ -41,7 +44,7 @@ Route::get('/products/{product:slug}', function (Product $product) {
 
 Route::get('/cart', function () {
     return view('pages.cart');
-})->name('cart.index');
+});
 
 Route::get('/teachers', function () {
     return view('pages.teachers');

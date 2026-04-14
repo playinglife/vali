@@ -4,12 +4,12 @@
 
 @section('content')
 
-    <div class="root-views-service">
+    <div class="root-views-products">
 
 
         <!-- Page 1 -->
         <!--<div class="page-1">
-            <h1> {{ __('pages.service.title1') }} </h1>
+            <h1> {{ __('pages.products.title1') }} </h1>
         </div>-->
 
         <x-miniviews.section type="one" blur="true">
@@ -27,7 +27,7 @@
 
 @once
     <style lang="scss" scoped>
-        .root-views-service {
+        .root-views-products {
             box-sizing: border-box;
             width: 100%;
             height: 100%;

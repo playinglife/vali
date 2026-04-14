@@ -7,22 +7,15 @@ use App\Enums\DiscountType;
 use App\Observers\ProductObserver;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Storage;
 
 #[ObservedBy([ProductObserver::class])]
 class Product extends BaseModel
 {
-    /**
-     * @var list<string>
-     */
-    protected $appends = ['image'];
-
     /**
      * @var list<string>
      */
@@ -105,7 +98,7 @@ class Product extends BaseModel
     /**
      * Product option groups built from assigned option values.
      *
-     * @return Collection<int, object{id:int,name:string,show_on_products:bool,sort_order:int,Values:Collection<int, ProductOptionValue>}>
+     * @return Collection<int, object{id:int,name:string,show_on_products:bool,type:string,sort_order:int,Values:Collection<int, ProductOptionValue>}>
      */
     public function groupedOptions(): Collection
     {
@@ -125,6 +118,7 @@ class Product extends BaseModel
                     'id' => (int) $option->id,
                     'name' => (string) $option->name,
                     'show_on_products' => (bool) $option->show_on_products,
+                    'type' => $option->type?->value ?? 'text',
                     'sort_order' => (int) ($option->sort_order ?? 0),
                     'Values' => $group
                         ->sortBy('sort_order')
@@ -160,11 +154,13 @@ class Product extends BaseModel
     }
 
     /**
-     * Resolved public image URL from {@see storageImageUrl()} (not a database column).
+     * Gallery images for the product, ordered for display.
      */
-    protected function image(): Attribute
+    public function ProductImages(): HasMany
     {
-        return Attribute::get(fn (): ?string => $this->storageImageUrl());
+        return $this->hasMany(ProductImage::class)
+            ->orderBy('sort_order')
+            ->orderBy('id');
     }
 
     /**
@@ -190,7 +186,7 @@ class Product extends BaseModel
     }
 
     /**
-     * Public URL for the first variant image found on the public disk under product/variants/{id}.{ext},
+     * Public URL for the first variant gallery image (see {@see ProductVariant::VariantImages()}),
      * or {@see static::genericProductImageUrl()} when none exists.
      */
     public function firstVariantStorageImageUrl(): string
@@ -283,19 +279,5 @@ class Product extends BaseModel
         $diff = round((float) $list - $unit, 2);
 
         return $diff > 0 ? $diff : 0.0;
-    }
-
-    public function storageImageUrl(): ?string
-    {
-        $disk = Storage::disk('public');
-
-        foreach (['png', 'jpg', 'jpeg', 'webp'] as $ext) {
-            $path = 'product/variants/'.$this->id.'.'.$ext;
-            if ($disk->exists($path)) {
-                return asset('storage/'.$path);
-            }
-        }
-
-        return null;
     }
 }

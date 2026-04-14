@@ -2,8 +2,7 @@
 
 return [
     'home' => 'ACASĂ',
-    'service' => 'SERVICII',
-    'business' => 'AFACERI',
+    'products' => 'PRODUSE',
     'custom' => 'PERSONALIZAT',
     'about_us' => 'DESPRE NOI',
     'contact' => 'CONTACT',

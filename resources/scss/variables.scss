@@ -1,4 +1,6 @@
 $color-background: #E7DCC0;
+$color-background-light: #fff;
+$color-background-dark: #000;
 $color-background-transparent-dark: rgba(0, 0, 0, 0.5);
 $color-background-transparent-dark-border: rgba(0, 0, 0, 0.8);
 $color-background-transparent-light: rgba(255, 255, 255, 0.7);
@@ -23,6 +25,7 @@ $padding-tiny: 0.5em;
 $padding-small: 1em;
 $padding-medium: 2em;
 $padding-large: 3em;
+$padding-huge: 4em;
 
 $margin-small: 1em;
 $margin-medium: 2em;
@@ -69,6 +72,8 @@ $border-width-large: 0.3em;
     --color-background-transparent-dark-border: #{$color-background-transparent-dark-border};
     --color-background-transparent-light: #{$color-background-transparent-light};
     --color-background-transparent-light-border: #{$color-background-transparent-light-border};
+    --color-background-light: #{$color-background-light};
+    --color-background-dark: #{$color-background-dark};
     --color-panel: #{$color-panel};
     --color-border: #{$color-border};
 
@@ -90,7 +95,7 @@ $border-width-large: 0.3em;
     --padding-small: #{$padding-small};
     --padding-medium: #{$padding-medium};
     --padding-large: #{$padding-large};
-
+    --padding-huge: #{$padding-huge};
     --margin-small: #{$margin-small};
     --margin-medium: #{$margin-medium};
     --margin-large: #{$margin-large};
@@ -127,4 +132,7 @@ $border-width-large: 0.3em;
     --border-width-small: #{$border-width-small};
     --border-width-medium: #{$border-width-medium};
     --border-width-large: #{$border-width-large};
+
+    --color-five-500: #{$color-action};
+    --color-five-700: #{color-mix(in srgb, #{$color-action} 75%, #000)};
 }

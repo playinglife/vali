@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\ProductOptionType;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\ProductOption;
@@ -18,12 +19,14 @@ class AdminProductOptionController extends Controller
             'initial_value' => ['required', 'string', 'max:255'],
             'sort_order' => ['nullable', 'integer', 'min:0'],
             'show_on_products' => ['nullable', 'boolean'],
+            'type' => ['nullable', 'in:text,icon,image'],
         ]);
 
         $option = ProductOption::query()->create([
             'name' => $data['name'],
             'sort_order' => $data['sort_order'] ?? 0,
             'show_on_products' => $request->boolean('show_on_products'),
+            'type' => ProductOptionType::tryFrom((string) ($data['type'] ?? 'text')) ?? ProductOptionType::Text,
         ]);
 
         $value = $option->Values()->create([
@@ -45,12 +48,16 @@ class AdminProductOptionController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'sort_order' => ['nullable', 'integer', 'min:0'],
             'show_on_products' => ['nullable', 'boolean'],
+            'type' => ['nullable', 'in:text,icon,image'],
         ]);
 
         $option->update([
             'name' => $data['name'],
             'sort_order' => $data['sort_order'] ?? 0,
             'show_on_products' => $request->boolean('show_on_products'),
+            'type' => isset($data['type'])
+                ? (ProductOptionType::tryFrom((string) $data['type']) ?? $option->type)
+                : $option->type,
         ]);
 
         return back()->with('status', 'Option updated.');
@@ -77,6 +84,7 @@ class AdminProductOptionController extends Controller
 
         $data = $request->validate([
             'value' => ['required', 'string', 'max:255'],
+            'icon' => ['nullable', 'string', 'max:255'],
             'sort_order' => ['nullable', 'integer', 'min:0'],
             'price_adjustment_type' => ['nullable', 'in:fix,percentage'],
             'price_adjustment' => ['nullable', 'numeric', 'min:0'],
@@ -84,6 +92,7 @@ class AdminProductOptionController extends Controller
 
         $value = $option->Values()->create([
             'value' => $data['value'],
+            'icon' => $data['icon'] ?? null,
             'sort_order' => $data['sort_order'] ?? 0,
             'price_adjustment_type' => $data['price_adjustment_type'] ?? null,
             'price_adjustment' => $data['price_adjustment'] ?? 0,
@@ -100,6 +109,7 @@ class AdminProductOptionController extends Controller
 
         $data = $request->validate([
             'value' => ['required', 'string', 'max:255'],
+            'icon' => ['nullable', 'string', 'max:255'],
             'sort_order' => ['nullable', 'integer', 'min:0'],
             'price_adjustment_type' => ['nullable', 'in:fix,percentage'],
             'price_adjustment' => ['nullable', 'numeric', 'min:0'],
@@ -107,6 +117,7 @@ class AdminProductOptionController extends Controller
 
         $value->update([
             'value' => $data['value'],
+            'icon' => $data['icon'] ?? null,
             'sort_order' => $data['sort_order'] ?? 0,
             'price_adjustment_type' => $data['price_adjustment_type'] ?? null,
             'price_adjustment' => $data['price_adjustment'] ?? 0,

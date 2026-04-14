@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\ProductOptionType;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ProductOption extends BaseModel
@@ -12,7 +13,7 @@ class ProductOption extends BaseModel
     protected $fillable = [
         'name',
         'show_on_products',
-        'image',
+        'type',
         'sort_order',
     ];
 
@@ -23,6 +24,7 @@ class ProductOption extends BaseModel
     {
         return [
             'show_on_products' => 'boolean',
+            'type' => ProductOptionType::class,
         ];
     }
 

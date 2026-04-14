@@ -50,8 +50,8 @@ What can we offer you?',
 
 
 
-    'service' => [
-        'title1' => 'Camasi Service',
+    'products' => [
+        'title1' => 'Produse',
     ],
 
 
@@ -64,5 +64,6 @@ What can we offer you?',
         'grand_total' => 'Total',
         'default_line' => 'Standard',
         'variant_fallback' => 'Variantă #:id',
+        'unit' => 'bucăți',
     ],
 ];

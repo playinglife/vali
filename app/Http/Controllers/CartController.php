@@ -17,74 +17,44 @@ class CartController extends Controller
             'quantity' => ['sometimes', 'integer', 'min:1', 'max:999'],
         ]);
 
-        $product = Product::query()
-            ->with(['Variants.PriceBrackets', 'PriceBrackets'])
-            ->findOrFail($validated['product_id']);
-        abort_unless($product->is_active, 404);
-
+        $product = Product::find($validated['product_id']);
+        $variant = ProductVariant::find($validated['product_variant_id']);
+        if ($product === null) {
+            return redirect()->back()->withErrors(['product_id' => 'Product not found']);
+        }
+        if ($variant === null) {
+            return redirect()->back()->withErrors(['product_variant_id' => 'Variant not found']);
+        }
+        if (! $product->is_active) {
+            return redirect()->back()->withErrors(['product_id' => 'Product is not active']);
+        }
         if (! $product->isInStock()) {
-            return redirect()->back();
+            return redirect()->back()->withErrors(['product_id' => 'Product is not in stock']);
         }
 
         $qty = (int) ($validated['quantity'] ?? 1);
-        $variantId = $validated['product_variant_id'] ?? null;
 
-        $variant = null;
-        if ($product->Variants->isNotEmpty()) {
-            if ($variantId === null) {
-                return redirect()->back()->withInput();
-            }
-            $variant = $product->Variants->firstWhere('id', $variantId);
-            if ($variant === null || ! $variant->is_active) {
-                return redirect()->back()->withInput();
-            }
-            if ($variant->tracksStock() && (int) $variant->stock_quantity <= 0) {
-                return redirect()->back();
-            }
-            $unitPrice = $variant->unitPriceForQuantity($qty);
-            $discountPerUnit = $variant->discountPerUnitForQuantity($qty);
-        } else {
-            if ($variantId !== null) {
-                return redirect()->back()->withInput();
-            }
-            $unitPrice = $product->unitPriceForQuantity($qty);
-            $discountPerUnit = $product->discountPerUnitForQuantity($qty);
-        }
 
+        // Add to session cart
         $lines = session()->get('cart', []);
-        $merged = false;
-        foreach ($lines as $i => $line) {
-            if ((int) $line['product_id'] === $product->id
-                && (int) ($line['product_variant_id'] ?? 0) === (int) ($variant?->id ?? 0)) {
-                $newQty = (int) $line['quantity'] + $qty;
-                if ($variant instanceof ProductVariant) {
-                    $lines[$i]['quantity'] = $newQty;
-                    $lines[$i]['unit_price'] = $variant->unitPriceForQuantity($newQty);
-                    $lines[$i]['discount_per_unit'] = $variant->discountPerUnitForQuantity($newQty);
-                } else {
-                    $lines[$i]['quantity'] = $newQty;
-                    $lines[$i]['unit_price'] = $product->unitPriceForQuantity($newQty);
-                    $lines[$i]['discount_per_unit'] = $product->discountPerUnitForQuantity($newQty);
-                }
-                $merged = true;
-                break;
+        $nextId = 1;
+        foreach (session()->get('cart', []) as $line) {
+            if ((int) ($line['id'] ?? 0) > $nextId) {
+                $nextId = (int) ($line['id'] ?? 0);
             }
         }
-
-        if (! $merged) {
-            $lines[] = [
-                'product_id' => $product->id,
-                'product_variant_id' => $variant?->id,
-                'quantity' => $qty,
-                'unit_price' => $unitPrice,
-                'discount_per_unit' => $discountPerUnit,
-            ];
-        }
-
+        $nextId++;
+        $lines[] = [
+            'id' => $nextId,
+            'product_id' => $product->id,
+            'product_variant_id' => $variant?->id,
+            'quantity' => $qty,
+        ];
         session()->put('cart', array_values($lines));
 
-        $lineTotal = round($unitPrice * $qty, 2);
-
+        
+        // Flash message
+        $lineTotal = round($variant->price * $qty, 2);
         session()->flash('cart_added', [
             'product_name' => $product->name,
             'quantity' => $qty,
@@ -92,6 +62,25 @@ class CartController extends Controller
             'currency' => __('components.product.currency'),
         ]);
 
+        return redirect()->back();
+    }
+
+    public function remove(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'id' => ['required', 'integer', 'min:1'],
+        ]);
+        $lines = session()->get('cart', []);
+        $lines = array_values(array_filter($lines, function (array $line) use ($validated): bool {
+            return (int) ($line['id'] ?? 0) !== (int) $validated['id'];
+        }));
+        session()->put('cart', array_values($lines));
+        return redirect()->back();
+    }
+
+    public function clear(): RedirectResponse
+    {
+        session()->forget('cart');
         return redirect()->back();
     }
 }

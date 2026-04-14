@@ -1,6 +1,6 @@
 @php
     $menuHome = request()->path() === '';
-    $menuService = request()->is('service');
+    $menuProducts = request()->is('products', 'products/*');
     $menuContact = request()->is('contact*');
     $menuCart = request()->is('cart');
     $cartItemCount = (int) collect(session('cart', []))->sum(fn (array $line) => (int) ($line['quantity'] ?? 0));
@@ -11,8 +11,7 @@
         <x-svg.logo mode="light" class="logo"/>
     </div>
     <a href="/" class="menu-item @if($menuHome) menu-item--active @endif" @if($menuHome) aria-current="page" @endif>{{ __('menu.home') }}</a>
-    <a href="/service" class="menu-item @if($menuService) menu-item--active @endif" @if($menuService) aria-current="page" @endif>{{ __('menu.service') }}</a>
-    <a href="/contact" class="menu-item @if($menuContact) menu-item--active @endif" @if($menuContact) aria-current="page" @endif>{{ __('menu.business') }}</a>
+    <a href="/products" class="menu-item @if($menuProducts) menu-item--active @endif" @if($menuProducts) aria-current="page" @endif>{{ __('menu.products') }}</a>
     <a href="/contact" class="menu-item @if($menuContact) menu-item--active @endif" @if($menuContact) aria-current="page" @endif>{{ __('menu.custom') }}</a>
     <a href="/contact" class="menu-item @if($menuContact) menu-item--active @endif" @if($menuContact) aria-current="page" @endif>{{ __('menu.about_us') }}</a>
     <a href="/contact" class="menu-item @if($menuContact) menu-item--active @endif" @if($menuContact) aria-current="page" @endif>{{ __('menu.contact') }}</a>

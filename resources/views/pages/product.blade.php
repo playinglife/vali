@@ -6,7 +6,6 @@
 
     <div class="root-views-product">
 
-
         <!-- Page 1 -->
         <x-miniviews.panel>
             <x-product-detail :Product="$product" />

@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Enums\DiscountType;
 use App\Models\Category;
 use App\Models\Product;
+use App\Enums\ProductOptionType;
 use App\Models\ProductOption;
 use App\Models\ProductOptionValue;
 use App\Models\ProductVariant;
@@ -43,11 +44,13 @@ class ProductCatalogSeeder extends Seeder
         $sizeOption = ProductOption::query()->create([
             'name' => 'Size',
             'show_on_products' => true,
+            'type' => ProductOptionType::Text,
             'sort_order' => 0,
         ]);
         $colorOption = ProductOption::query()->create([
             'name' => 'Color',
             'show_on_products' => true,
+            'type' => ProductOptionType::Text,
             'sort_order' => 1,
         ]);
 
