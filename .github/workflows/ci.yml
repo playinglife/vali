@@ -20,10 +20,10 @@ jobs:
         run: echo ${{ secrets.MY_PAT }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Build Docker image
-        run: docker build -t ghcr.io/playinglife/alex:latest .
+        run: docker build -t ghcr.io/playinglife/vali:latest .
 
       - name: Push Docker image
-        run: docker push ghcr.io/playinglife/alex:latest
+        run: docker push ghcr.io/playinglife/vali:latest
         
   test:
     runs-on: ubuntu-latest
@@ -51,8 +51,8 @@ jobs:
 
       - name: Deploy to production
         run: |
-          ssh -o StrictHostKeyChecking=no github@69.62.112.167 << 'EOF'
-          cd /APP/alex
+          ssh -o StrictHostKeyChecking=no github@72.60.33.72 << 'EOF'
+          cd /APP/vali
           docker compose pull
           docker compose up -d          
           EOF
