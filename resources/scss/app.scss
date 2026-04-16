@@ -289,3 +289,8 @@ fieldset {
 .font-weight-bold {
     font-weight: var(--font-weight-bold);
 }
+
+/* Bundled feature CSS (single @vite entry: app.scss) */
+@import "product-detail.scss";
+@import "price-brackets.scss";
+@import "ag-grid.scss";

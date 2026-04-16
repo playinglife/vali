@@ -1,6 +1,4 @@
-/* Ag-Grid dark scheme override */
-@use "./variables.scss" as *;
-@use "sass:color";
+/* Ag-Grid dark scheme override (relies on variables already loaded via app.scss) */
 
 // Borders and shadows of the cells when editing
 :where(.ag-theme-inputStyle-7) {

@@ -1,13 +1,5 @@
 @props(['Product', 'image' => null, 'lightboxMaxZoom' => 12, 'lightboxMinZoom' => 1])
 
-@once
-    @push('styles')
-        @vite(['resources/scss/product-detail.scss'])
-    @endpush
-@endonce
-
-
-
 <!-- PHP -->
 @php
     /** @var \App\Models\Product $Product */

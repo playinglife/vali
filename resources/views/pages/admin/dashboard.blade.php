@@ -2,10 +2,6 @@
 
 @section('title', 'Admin Dashboard')
 
-@push('styles')
-    {{-- @vite('resources/scss/ag-grid.scss') --}}
-@endpush
-
 @section('content')
     <div class="admin-dashboard">
         <div class="admin-header">
