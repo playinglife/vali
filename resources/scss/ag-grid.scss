@@ -10,7 +10,7 @@
 }
 .ag-body-viewport .ag-cell-inline-editing, .ag-floating-top-viewport .ag-cell-inline-editing {
   box-shadow: none !important;
-  background-color: black !important;
+  //background-color: black !important;
 }
 
 /* Make border radius zero */
@@ -31,11 +31,11 @@
 
 /* Hide ag-grid overlay backdrop */
 .ag-overlay-exporting-wrapper, .ag-overlay-loading-wrapper, .ag-overlay-modal-wrapper {
-    background-color: transparent !important;
+    //background-color: transparent !important;
 }
 
 .ag-header-cell-text {
-  font-family: "Oswald", sans-serif !important;
+  //font-family: "Oswald", sans-serif !important;
 }
 
 /* Remove padding from header cells */
@@ -45,8 +45,8 @@
 
 /* Row mouse hover and row selected */
 .ag-row-hover::before {
-  background-color: #ffffff70 !important;
-  opacity: 0.8 !important;
+  //background-color: #ffffff70 !important;
+  //opacity: 0.8 !important;
 }
 
 .ag-row-selected {
@@ -56,15 +56,15 @@
 }
 
 .ag-row-selected::before {
-  background-color: #ffffff90 !important;
-  opacity: 0.8 !important;
+  //background-color: #ffffff90 !important;
+  //opacity: 0.8 !important;
 }
 
 .ag-row-hover.ag-row-selected {
-  background-color: #ffffff90 !important;
-  background-image: none !important;
+  //background-color: #ffffff90 !important;
+  //background-image: none !important;
   //border-color: white !important;
-  opacity: 1 !important;
+  //opacity: 1 !important;
 }
 
 /* Padding for text in column header */
@@ -75,8 +75,8 @@
 /* Sorting icons colors */
 .ag-sort-indicator-container > .ag-sort-indicator-icon > .ag-icon.ag-icon-asc,
 .ag-sort-indicator-container > .ag-sort-indicator-icon > .ag-icon.ag-icon-desc {
-  color: var(--color-one-500) !important;
-  margin-right: 0.5em !important;
+  //color: var(--color-one-500) !important;
+  //margin-right: 0.5em !important;
 }
 
 // Borders set for row editing
@@ -84,7 +84,7 @@
   .ag-cell-inline-editing {
     border-style: none !important;
     border-radius: 0px !important;
-    box-shadow: 0 0px 4px 1px rgba(#000, 0.5);
+    //box-shadow: 0 0px 4px 1px rgba(#000, 0.5);
     border: 0.05em solid #8c9398 !important;
     .ag-wrapper {
       border-style: none;
@@ -108,7 +108,7 @@
         }
       }
       &.ag-cell-focus {
-        border: 0.01em solid #fff !important;
+        //border: 0.01em solid #fff !important;
       }
     }
   }
@@ -120,7 +120,7 @@
     opacity: 0.8 !important;*/
 
 .ag-cell-focus:not(.ag-cell-range-selected):focus-within {
-  border: none !important;
+  //border: none !important;
   //border-left: 0.01em solid #fff !important
   //border-right: 0.01em solid #fff !important
 }
@@ -198,7 +198,7 @@
     left: 0;
     height: 0.3em;
     width: 0;
-    background: linear-gradient(to bottom left, transparent, $color-error);
+    //background: linear-gradient(to bottom left, transparent, $color-error);
     animation: highligthed-animation 1.5s ease-out infinite;
     pointer-events: none;
 }
@@ -209,7 +209,7 @@
     display: block;
     position: absolute;
     inset: 0;
-    background-color: #5f656a;
+    //background-color: #5f656a;
     pointer-events: none;
 }
 .ag-row-hover.unvalidated:not(.ag-row-editing)::before {
@@ -230,8 +230,8 @@
 }
 .readonly:not(.ag-row-editing) {
   .ag-cell {
-    background-color: rgba(128, 128, 128, 0.5);
-    opacity: 0.5;
+    //background-color: rgba(128, 128, 128, 0.5);
+    //opacity: 0.5;
   }
 }
 
@@ -248,11 +248,11 @@
 .ag-row,
 .ag-cell,
 .ag-overlay {
-  background: transparent !important;
+  //background: transparent !important;
 }
 .ag-cell,
 .ag-header {
-  background: rgba(0, 0, 0, 0.5) !important;
+  //background: rgba(0, 0, 0, 0.5) !important;
 }
 .ag-header {
     margin-bottom: 0.03em !important;
@@ -273,8 +273,8 @@
 
 // Row drag over
 .ag-row.ag-row-drag-over {
-    background-color: rgba(66, 133, 244, 0.25);
-    outline: 1px solid rgba(66, 133, 244, 0.5);
+    //background-color: rgba(66, 133, 244, 0.25);
+    //outline: 1px solid rgba(66, 133, 244, 0.5);
 }
 
 // Remove border on rows
@@ -284,7 +284,7 @@
 
 // No border for input elements inside ag-grid
 .ag-root-wrapper input:not([type="checkbox"]):not([type="radio"]) {
-  border: none !important;
+  //border: none !important;
   box-shadow: none !important;
-  background-color: transparent !important;
+  //background-color: transparent !important;
 }

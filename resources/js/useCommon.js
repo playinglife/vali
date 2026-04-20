@@ -1,13 +1,16 @@
 import axios from 'axios';
+import _ from 'lodash';
 import { useAdvancedAxios } from './useAdvancedAxios.js';
 import { useDynamicComponents } from './useDynamicComponents.js';
 import { useNotifications } from './useNotification.js';
+import { NoData } from './admin/NoData.js';
+import { NewGridTooltip } from './admin/NewGridTooltip.js';
 
 let uniqueId = 1000;
 
 export function useCommon(grid, columnsDefinitions, config = {}, _store = null, _dayJs = null, gridCustom = {}) {
     //COMPOSABLES
-    const nuxtAxios = typeof useNuxtApp === 'function' ? (useNuxtApp().$axios ?? axios) : axios;
+    const nuxtAxios = axios;
     const advancedAxios = useAdvancedAxios(nuxtAxios);
     const dynamicComponents = useDynamicComponents();
     const notifications = useNotifications()
@@ -42,44 +45,45 @@ export function useCommon(grid, columnsDefinitions, config = {}, _store = null, 
             //foregroundColor: '#fff',
         });*/
 
-    const defaultColDefComputed = computed(() => ({
-        resizable: true,
-        editable: true,
-        sortable: true,
-        filter: true,
-        floatingFilter: true,
-        suppressMenu: true,        //To be set to true, hides filter in header
-        filterParams: {
-            debounceMs: 500,
-            suppressAndOrCondition: true
-        },
-        floatingFilterComponentParams: {
-            suppressFilterButton: true //To be set to true, hides filter button in floating filter
-        },
-        tooltipComponent: NewGridTooltip,
-        tooltipComponentParams: {
-            show: 'overflow', // false, true, overflow
-        },
-        tooltipValueGetter: (params) => params.value ?? '',
-        //headerComponent: CustomColumnHeader,
-        enableCellChangeFlash: false,
-        suppressKeyboardEvent: function (params) {
-            let event = params.event;
-            let key = event.key;
-            let deniedKeys = ['Escape'];
-            let suppress = params.editing && deniedKeys.indexOf(key) >= 0;
-            if (event.key === 'Enter'/* && params.editing==true*/) {
-                suppress = true;
-            }
-            return suppress;
-        },
-        cellStyle: {
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'start'
+    const defaultColDef = {
+        ...{
+            resizable: true,
+            editable: true,
+            sortable: true,
+            filter: true,
+            floatingFilter: true,
+            suppressMenu: true,        //To be set to true, hides filter in header
+            filterParams: {
+                debounceMs: 500,
+                suppressAndOrCondition: true
+            },
+            floatingFilterComponentParams: {
+                suppressFilterButton: true //To be set to true, hides filter button in floating filter
+            },
+            tooltipValueGetter: (params) => params.value,
+            tooltipComponent: NewGridTooltip,
+            tooltipComponentParams: {
+                show: 'overflow',
+            },
+            enableCellChangeFlash: false,
+            suppressKeyboardEvent: function (params) {
+                let event = params.event;
+                let key = event.key;
+                let deniedKeys = ['Escape'];
+                let suppress = params.editing && deniedKeys.indexOf(key) >= 0;
+                if (event.key === 'Enter'/* && params.editing==true*/) {
+                    suppress = true;
+                }
+                return suppress;
+            },
+            cellStyle: {
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'start'
+            },
         },
         ...(typeof grid.custom.defaultColDef === 'object' ? grid.custom.defaultColDef : {}),
-    }))
+    }
     const gridOptions = {
         //theme: myTheme,
         enableCellTextSelection:true,
@@ -101,7 +105,6 @@ export function useCommon(grid, columnsDefinitions, config = {}, _store = null, 
         tooltipShowDelay: 500,
         tooltipHideDelay: 9999999,
         enableBrowserTooltips: false,
-        noRowsOverlayComponent: NoData,
         getRowId: params => {
             return params.data.uniqueId
             //return params.data.id ? params.data.id : params.data.uniqueId
@@ -111,15 +114,6 @@ export function useCommon(grid, columnsDefinitions, config = {}, _store = null, 
             "highligthed": params => params.data.highlighted,
             "unavailable": params => params.data.unavailable,
         },
-        loadingOverlayComponent: Dummy,
-        loadingOverlayComponentParams: {
-            component: Loading,
-            loading: true,
-            width: '100%',
-            height: '100%',
-            delay: 0,
-        },
-        noRowsOverlayComponent: NoData,
         onSortChanged: (params) => {
             if (!params.api) return
             ensureNewRowsFirstSort(params.api)
@@ -136,7 +130,6 @@ export function useCommon(grid, columnsDefinitions, config = {}, _store = null, 
         onBodyScroll: (params) => { onBodyScroll(params) },
         onBodyScrollEnd: (params) => { onBodyScrollEnd(params) },
         onCellClicked: (params) => { onCellClicked(params) },
-        onFirstDataRendered: (params) => { onFirstDataRendered(params) },
         onRowValueChanged: (params) => { onRowValueChanged(params) },
         onRowEditingStarted: (params) => { onRowEditingStarted(params) },
 
@@ -149,28 +142,10 @@ export function useCommon(grid, columnsDefinitions, config = {}, _store = null, 
         onCellMouseOver: (params) => { onCellMouseOver(params) },
         onCellMouseOut: (params) => { onCellMouseOut(params) },
         onCellEditingStarted: (params) => { onCellEditingStarted(params) },
-        defaultColDef: defaultColDefComputed.value,
+        defaultColDef: defaultColDef,
         rowDragManaged: false,
         suppressMoveWhenRowDragging: false, // smoother UX for tree: highlight until drop, no jumpy repositioning
     }
-
-
-
-    //EVENTS
-    onMounted(() => {
-        runEventIfExist('onMounted')
-    })
-    onBeforeUnmount(() => {
-        document.removeEventListener('mousedown', stopEditingOnClickOutsideEditingRow)
-        runEventIfExist('onBeforeUnmount')
-        // Destroy grid to prevent "emitsOptions component is null" when AG Grid async ops
-        // run after the Vue component has unmounted (e.g. quick navigation away)
-        if (grid.gridApi && typeof grid.gridApi.destroy === 'function') {
-            try {
-                grid.gridApi.destroy()
-            } catch (_) { /* grid may already be destroyed */ }
-        }
-    })
 
 
 
@@ -218,7 +193,7 @@ export function useCommon(grid, columnsDefinitions, config = {}, _store = null, 
         const parentIdField = grid.custom.treeParentIdField ?? 'parent_id'
         const idField = grid.custom.treeIdField ?? 'id'
         rowData.forEach((row) => {
-            _.set(row, 'custom.tree.children', 
+            _.set(row, 'custom.tree.children',
                 rowData.filter((r) => r[parentIdField] == row[idField])
                 .map((r) => r[idField])
             )
@@ -620,18 +595,16 @@ export function useCommon(grid, columnsDefinitions, config = {}, _store = null, 
         const rowPinned = params.rowPinned;
         grid.gridApi.startEditingCell({ rowIndex, colKey, rowPinned });
         if (grid.custom.config.autoOpenCellEditor) {
-            nextTick(() => {
-                const rowNode = rowPinned === 'top'
-                    ? grid.gridApi.getPinnedTopRow(rowIndex)
-                    : grid.gridApi.getDisplayedRowAtIndex(rowIndex);
-                if (rowNode) {
-                    const cellEditors = grid.gridApi.getCellEditorInstances({ rowNodes: [rowNode], columns: [colKey] });
-                    const editor = cellEditors?.[0];
-                    if (typeof editor?.focusIn === 'function') {
-                        editor.focusIn();
-                    }
+            const rowNode = rowPinned === 'top'
+                ? grid.gridApi.getPinnedTopRow(rowIndex)
+                : grid.gridApi.getDisplayedRowAtIndex(rowIndex);
+            if (rowNode) {
+                const cellEditors = grid.gridApi.getCellEditorInstances({ rowNodes: [rowNode], columns: [colKey] });
+                const editor = cellEditors?.[0];
+                if (typeof editor?.focusIn === 'function') {
+                    editor.focusIn();
                 }
-            });
+            }
         }
         runEventIfExist('onCellContextMenu', params)
     }
@@ -658,14 +631,20 @@ export function useCommon(grid, columnsDefinitions, config = {}, _store = null, 
 
     const onGridReady = (params) => {
         grid.gridApi = params.api
-        const { getDefinition } = columnsDefinitions(store, columnDefs(), grid)
-        grid.columnDefs = getColumnDefinitions(getDefinition([]))
-        nextTick(() => {
-            grid.custom.columns = grid.gridApi.getColumns()
-            if (grid.gridApi) {
-                reloadGrid(true, undefined, undefined, config.onBeforeSetRowData ?? null)
+        let resolvedDefinitions = []
+        if (typeof columnsDefinitions === 'function') {
+            const result = columnsDefinitions(store, columnDefs(), grid)
+            if (result && typeof result.getDefinition === 'function') {
+                resolvedDefinitions = result.getDefinition([])
             }
-        })
+        } else if (Array.isArray(columnsDefinitions)) {
+            resolvedDefinitions = columnsDefinitions
+        }
+        grid.columnDefs = getColumnDefinitions(resolvedDefinitions)
+        grid.custom.columns = grid.gridApi.getColumns()
+        if (grid.gridApi) {
+            reloadGrid(true, undefined, undefined, config.onBeforeSetRowData ?? null)
+        }
 
 
         grid.custom.firstVisibleColumn = getFirstVisibleColumn(grid)
@@ -695,7 +674,7 @@ export function useCommon(grid, columnsDefinitions, config = {}, _store = null, 
 
     const onRowEditingStarted = (params) => {
         advancedAxios.cancelRequest(grid.id + (params.data.id ? params.data.id : params.data.uniqueId));
-        grid.custom.editedRow = {...toRaw(params.data)};
+        grid.custom.editedRow = params.data;
         runEventIfExist('onRowEditingStarted', params)
     }
 
@@ -764,7 +743,6 @@ export function useCommon(grid, columnsDefinitions, config = {}, _store = null, 
     }
 
 
-    //COMPUTED
     const allowReload = (data, gridApi) => {
         let allow = false;
         if (grid.custom.isReadyFordata === true && gridApi) {
@@ -889,7 +867,7 @@ export function useCommon(grid, columnsDefinitions, config = {}, _store = null, 
 
     const editedRowChanged = (grid) => {
         const currentData = getCurrentEditedRowValues(grid)        
-        return !(_.isEqual(toRaw(grid.custom.editedRow), toRaw(currentData)));
+        return !_.isEqual(grid.custom.editedRow, currentData);
     }
 
     const onFilterChanged = (gridApi) => {
@@ -905,7 +883,8 @@ export function useCommon(grid, columnsDefinitions, config = {}, _store = null, 
         gridOptions.suppressClickEdit = value
     }
 
-    const getColumnDefinitions = (definition) => {
+    const getColumnDefinitions = (definition = []) => {
+        const safeDefinition = Array.isArray(definition) ? definition : []
         const defaultIdCol = {
             headerName: 'ID',
             field: 'id',
@@ -917,9 +896,9 @@ export function useCommon(grid, columnsDefinitions, config = {}, _store = null, 
             valueFormatter: (params) => (params.value == null || params.value === '') ? '' : params.value,
             cellRenderer: (params) => (params.value == null || params.value === '') ? 'NO ID' : params.value,
         }
-        const idOverride = definition.find(def => def.field === 'id')
+        const idOverride = safeDefinition.find(def => def.field === 'id')
         const mergedIdCol = idOverride ? { ...defaultIdCol, ...idOverride } : defaultIdCol
-        const definitionWithoutId = definition.filter(def => def.field !== 'id')
+        const definitionWithoutId = safeDefinition.filter(def => def.field !== 'id')
         return [
           ...[mergedIdCol],
           ...definitionWithoutId,
@@ -968,29 +947,8 @@ export function useCommon(grid, columnsDefinitions, config = {}, _store = null, 
         runEventIfExist('onBodyScrollEnd', params)
     }
 
-    const onFirstDataRendered = (params) => {
-        nextTick(() => {
-            // Select rows based on query params (route from useRoute())
-            let selectedRows = route.query.selected ?? route.query.roleId
-            if (selectedRows != null && !Array.isArray(selectedRows)) {
-                selectedRows = [selectedRows]
-            }
-            if (selectedRows && grid.rowData) {
-                selectedRows.forEach(id => {
-                    const row = grid.rowData.find(row => String(row.id) === String(id))
-                    if (row) {
-                        const node = grid.gridApi.getRowNode(row.uniqueId)
-                        if (node) node.setSelected(true)
-                    }
-                })
-            }
-        })
-
-        runEventIfExist('onFirstDataRendered', params)
-    }
-
     const onRowValueChanged = (params) => {
-        if (grid.custom.editedRow && _.isEqual(toRaw(grid.custom.editedRow), toRaw(params.data))) {
+        if (grid.custom.editedRow && _.isEqual(grid.custom.editedRow, params.data)) {
             return
         }
         // display differences
@@ -1066,7 +1024,7 @@ export function useCommon(grid, columnsDefinitions, config = {}, _store = null, 
             }
           })
           return {
-            ...(onlyEditingCells ? {} : toRaw(grid.custom.editedRow)),
+            ...(onlyEditingCells ? {} : grid.custom.editedRow),
             ...editedData,
           }
         } else {
@@ -1099,34 +1057,30 @@ export function useCommon(grid, columnsDefinitions, config = {}, _store = null, 
                 const selectedRowIndex = grid.rowData.findIndex((row) => row.uniqueId === selectedNode.data.uniqueId)
                 if (selectedRowIndex !== -1) {
                     grid.rowData.splice(selectedRowIndex + 1, 0, newRecord)
-                    nextTick(() => {
-                        // update the depth, children and expanded for all rows (including the new one)
-                        buildTreeChildrenMapWholeGrid(grid.rowData)
-                        grid.rowData = reorderRowsAsTree(grid.rowData)
+                    // update the depth, children and expanded for all rows (including the new one)
+                    buildTreeChildrenMapWholeGrid(grid.rowData)
+                    grid.rowData = reorderRowsAsTree(grid.rowData)
 
-                        const node = grid.gridApi?.getRowNode(newRecord.uniqueId)
-                        if (node) {
-                            node.data = grid.rowData.find((r) => r.uniqueId === newRecord.uniqueId)
-                            grid.gridApi.redrawRows({ rowNodes: [node] })
-                        }
-                    })
+                    const node = grid.gridApi?.getRowNode(newRecord.uniqueId)
+                    if (node) {
+                        node.data = grid.rowData.find((r) => r.uniqueId === newRecord.uniqueId)
+                        grid.gridApi.redrawRows({ rowNodes: [node] })
+                    }
                 }
             }
         }else{
             grid.rowData.unshift(newRecord)
         }
-        nextTick(() => {
-            setTimeout(() => {
-                const node = grid.gridApi.getRowNode(newRecord.uniqueId)
-                if (node && grid.custom.firstVisibleColumn) {
-                    grid.gridApi.setFocusedCell(node.rowIndex, grid.custom.firstVisibleColumn)
-                    grid.gridApi.startEditingCell({
-                        rowIndex: node.rowIndex,
-                        colKey: grid.custom.firstVisibleColumn,
-                    })
-                }
-            }, 100)
-        })          
+        setTimeout(() => {
+            const node = grid.gridApi.getRowNode(newRecord.uniqueId)
+            if (node && grid.custom.firstVisibleColumn) {
+                grid.gridApi.setFocusedCell(node.rowIndex, grid.custom.firstVisibleColumn)
+                grid.gridApi.startEditingCell({
+                    rowIndex: node.rowIndex,
+                    colKey: grid.custom.firstVisibleColumn,
+                })
+            }
+        }, 100)
     }
 
     const updateRow = (draggedRow, data) => {
@@ -1254,13 +1208,13 @@ export function useCommon(grid, columnsDefinitions, config = {}, _store = null, 
         runEventIfExist('onRowDragEnter', params)
     }
 
-    const lastDragOverNodeId = ref(null)
+    let lastDragOverNodeId = null
     const onRowDragMove = (params) => {
         let toRedraw = []
         const dragOverNode = params.overNode
-        if (dragOverNode && (dragOverNode.data.unavailable === false) && (lastDragOverNodeId.value === null || (lastDragOverNodeId.value !== null && lastDragOverNodeId.value !== dragOverNode.data.uniqueId))) {
-            if (lastDragOverNodeId.value !== null) {
-                const lastDragOverNode = grid.gridApi.getRowNode(lastDragOverNodeId.value)
+        if (dragOverNode && (dragOverNode.data.unavailable === false) && (lastDragOverNodeId === null || (lastDragOverNodeId !== null && lastDragOverNodeId !== dragOverNode.data.uniqueId))) {
+            if (lastDragOverNodeId !== null) {
+                const lastDragOverNode = grid.gridApi.getRowNode(lastDragOverNodeId)
                 if (lastDragOverNode) {
                     lastDragOverNode.data.highlighted = false
                     toRedraw.push(lastDragOverNode)
@@ -1273,7 +1227,7 @@ export function useCommon(grid, columnsDefinitions, config = {}, _store = null, 
                 dragOverNode.data.highlighted = true
                 toRedraw.push(dragOverNode)
             }
-            lastDragOverNodeId.value = dragOverNode.data.uniqueId
+            lastDragOverNodeId = dragOverNode.data.uniqueId
             if (toRedraw.length) grid.gridApi.redrawRows({ rowNodes: toRedraw })
             runEventIfExist('onRowDragMove', params)
         }
@@ -1301,7 +1255,7 @@ export function useCommon(grid, columnsDefinitions, config = {}, _store = null, 
 
 
     const onDragOperationEnded = () => {
-        lastDragOverNodeId.value = null
+        lastDragOverNodeId = null
         grid.rowData.forEach((_, index) => {
             grid.rowData[index].unavailable = false
             grid.rowData[index].highlighted = false
@@ -1330,7 +1284,7 @@ export function useCommon(grid, columnsDefinitions, config = {}, _store = null, 
     const common = {
             //DATA
             gridOptions,
-            defaultColDefComputed,
+            defaultColDef,
             //instance: readonly(instance),
             //METHODS
             lookupName,
@@ -1373,9 +1327,8 @@ export function useCommon(grid, columnsDefinitions, config = {}, _store = null, 
             getCurrentEditedRowValues,
             setCurrentEditedRowValues,
             onRowClicked,
-            onFirstDataRendered,
             addRow,
-            //COMPUTED
+            // 
             allowAdd,
             allowDelete,
             allowEdit,
@@ -1388,7 +1341,7 @@ export function useCommon(grid, columnsDefinitions, config = {}, _store = null, 
             columnDefs,
             editedRowChanged,
             confirmationDialog,
-    }
+     }
 
     grid.custom.common = common
     return { common }

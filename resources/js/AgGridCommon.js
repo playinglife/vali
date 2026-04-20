@@ -29,7 +29,7 @@ export function createAgGridCommon({
         ...common.gridOptions,
         ...gridOptions,
         rowData: grid.rowData,
-        columnDefs: common.getColumnDefinitions(),
+        columnDefs: common.getColumnDefinitions(columnDefinitions),
     };
 
     if (!resolvedOptions.theme && agGrid.themeQuartz && agGrid.colorSchemeLightWarm) {

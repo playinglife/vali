@@ -137,7 +137,7 @@ a.light-mode {
 
 
  // BUTTONS
-button:not(.ignore-global) {
+button:not(.ignore-global):not(.ag-button) {
   background-color: var(--color-background-transparent-dark);
   border: 0.03em solid var(--color-background-transparent-dark-border);
   border-radius: var(--border-radius-small);
@@ -156,11 +156,11 @@ button:not(.ignore-global) {
   font-family: $font-family-one;
 }
 
-button:not(.ignore-global).button-icon {
+button:not(.ignore-global):not(.ag-button).button-icon {
     font-size: 0.35em;
 }
 
-button:not(.ignore-global):hover {
+button:not(.ignore-global):not(.ag-button):hover {
   opacity: .7;
 }
 
