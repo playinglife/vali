@@ -7,6 +7,16 @@ function getCellEditorParams(params) {
         : params.colDef.cellEditorParams;
 }
 
+function createEditorTemplate() {
+    const template = document.createElement('template');
+    template.innerHTML = `
+        <div class="neo-inputer GridSelectCellEditor-root" style="width: 100%;">
+            <select class="GridSelectCellEditor-select" style="width: 100%; height: 100%; border: none; outline: none; background: transparent; font-size: 14px;"></select>
+        </div>
+    `.trim();
+    return template.content.firstElementChild.cloneNode(true);
+}
+
 export class GridSelectCellEditor {
     init(params) {
         this.params = params;
@@ -15,16 +25,8 @@ export class GridSelectCellEditor {
         const editorParams = getCellEditorParams(params);
         const valueList = Array.isArray(editorParams.valueList) ? editorParams.valueList : [];
 
-        this.eGui = document.createElement('div');
-        this.eGui.className = 'neo-inputer GridSelectCellEditor-root';
-
-        this.select = document.createElement('select');
-        this.select.style.width = '100%';
-        this.select.style.height = '100%';
-        this.select.style.border = 'none';
-        this.select.style.outline = 'none';
-        this.select.style.background = 'transparent';
-        this.select.style.fontSize = '14px';
+        this.eGui = createEditorTemplate();
+        this.select = this.eGui.querySelector('.GridSelectCellEditor-select');
 
         // Optional empty choice for nullable values.
         const emptyOption = document.createElement('option');
@@ -49,8 +51,6 @@ export class GridSelectCellEditor {
             const raw = this.select.value;
             this.value = raw === '' ? null : raw;
         });
-
-        this.eGui.appendChild(this.select);
     }
 
     getGui() {

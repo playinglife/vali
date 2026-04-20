@@ -8,7 +8,7 @@ import { NewGridTooltip } from './admin/NewGridTooltip.js';
 
 let uniqueId = 1000;
 
-export function useCommon(grid, columnsDefinitions, config = {}, _store = null, _dayJs = null, gridCustom = {}) {
+export function useCommon(grid, columnsDefinitions, config = {}, gridCustom = {}) {
     //COMPOSABLES
     const nuxtAxios = axios;
     const advancedAxios = useAdvancedAxios(nuxtAxios);
@@ -674,7 +674,7 @@ export function useCommon(grid, columnsDefinitions, config = {}, _store = null, 
 
     const onRowEditingStarted = (params) => {
         advancedAxios.cancelRequest(grid.id + (params.data.id ? params.data.id : params.data.uniqueId));
-        grid.custom.editedRow = params.data;
+        grid.custom.editedRow = _.cloneDeep(params.data);
         runEventIfExist('onRowEditingStarted', params)
     }
 
@@ -951,6 +951,7 @@ export function useCommon(grid, columnsDefinitions, config = {}, _store = null, 
         if (grid.custom.editedRow && _.isEqual(grid.custom.editedRow, params.data)) {
             return
         }
+        console.log(config);
         // display differences
         const url = params.data.id == '' ? config.url : config.url + '/' + params.data.id;
         advancedAxios.sendRequest(

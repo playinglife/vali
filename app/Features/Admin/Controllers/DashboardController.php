@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Features\Admin\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use Illuminate\View\View;
 
-class AdminDashboardController extends Controller
+class DashboardController extends Controller
 {
     public function index(): View
     {

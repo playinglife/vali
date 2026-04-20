@@ -3,11 +3,11 @@
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\LocaleController;
-use App\Http\Controllers\Admin\AdminAuthController;
-use App\Http\Controllers\Admin\AdminDashboardController;
-use App\Http\Controllers\Admin\AdminProductController;
-use App\Http\Controllers\Admin\AdminProductOptionController;
-use App\Http\Controllers\Admin\AdminProductVariantController;
+use App\Features\Admin\Controllers\AuthController;
+use App\Features\Admin\Controllers\DashboardController;
+use App\Features\Admin\Controllers\ProductController;
+use App\Features\Admin\Controllers\ProductOptionController;
+use App\Features\Admin\Controllers\ProductVariantController;
 use App\Models\Product;
 use Illuminate\Support\Facades\Route;
 
@@ -74,27 +74,27 @@ Route::post('/book-a-private-conversation', function () {
 
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::middleware('guest')->group(function () {
-        Route::get('/login', [AdminAuthController::class, 'showLoginForm'])->name('login');
-        Route::post('/login', [AdminAuthController::class, 'login'])->name('login.submit');
+        Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+        Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
     });
 
     Route::middleware('auth')->group(function () {
-        Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
-        Route::post('/logout', [AdminAuthController::class, 'logout'])->name('logout');
+        Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+        Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-        Route::post('/products', [AdminProductController::class, 'store'])->name('products.store');
-        Route::put('/products/{product}', [AdminProductController::class, 'update'])->name('products.update');
-        Route::delete('/products/{product}', [AdminProductController::class, 'destroy'])->name('products.destroy');
+        Route::post('/products', [ProductController::class, 'store'])->name('products.store');
+        Route::put('/products/{product}', [ProductController::class, 'update'])->name('products.update');
+        Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
 
-        Route::post('/products/{product}/options', [AdminProductOptionController::class, 'store'])->name('options.store');
-        Route::put('/products/{product}/options/{option}', [AdminProductOptionController::class, 'update'])->name('options.update');
-        Route::delete('/products/{product}/options/{option}', [AdminProductOptionController::class, 'destroy'])->name('options.destroy');
-        Route::post('/products/{product}/options/{option}/values', [AdminProductOptionController::class, 'storeValue'])->name('options.values.store');
-        Route::put('/products/{product}/options/{option}/values/{value}', [AdminProductOptionController::class, 'updateValue'])->name('options.values.update');
-        Route::delete('/products/{product}/options/{option}/values/{value}', [AdminProductOptionController::class, 'destroyValue'])->name('options.values.destroy');
+        Route::post('/products/{product}/options', [ProductOptionController::class, 'store'])->name('options.store');
+        Route::put('/products/{product}/options/{option}', [ProductOptionController::class, 'update'])->name('options.update');
+        Route::delete('/products/{product}/options/{option}', [ProductOptionController::class, 'destroy'])->name('options.destroy');
+        Route::post('/products/{product}/options/{option}/values', [ProductOptionController::class, 'storeValue'])->name('options.values.store');
+        Route::put('/products/{product}/options/{option}/values/{value}', [ProductOptionController::class, 'updateValue'])->name('options.values.update');
+        Route::delete('/products/{product}/options/{option}/values/{value}', [ProductOptionController::class, 'destroyValue'])->name('options.values.destroy');
 
-        Route::post('/products/{product}/variants', [AdminProductVariantController::class, 'store'])->name('variants.store');
-        Route::put('/products/{product}/variants/{variant}', [AdminProductVariantController::class, 'update'])->name('variants.update');
-        Route::delete('/products/{product}/variants/{variant}', [AdminProductVariantController::class, 'destroy'])->name('variants.destroy');
+        Route::post('/products/{product}/variants', [ProductVariantController::class, 'store'])->name('variants.store');
+        Route::put('/products/{product}/variants/{variant}', [ProductVariantController::class, 'update'])->name('variants.update');
+        Route::delete('/products/{product}/variants/{variant}', [ProductVariantController::class, 'destroy'])->name('variants.destroy');
     });
 });

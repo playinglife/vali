@@ -288,3 +288,9 @@
   box-shadow: none !important;
   //background-color: transparent !important;
 }
+
+// CUSTOM BESIDES INITIAL STYLES
+// Space from filter button to the right next cell
+.ag-floating-filter-button {
+  margin-right: 0.8em !important;
+}

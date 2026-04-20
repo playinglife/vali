@@ -1,4 +1,6 @@
 import { GridSelectCellEditor } from '../../ag-grid/cellEditors/GridSelectCellEditor.js';
+import { GridSelectCellRenderer } from '../../ag-grid/cellRenderers/GridSelectCellRenderer.js';
+import { GridTextCellEditor } from '../../ag-grid/cellEditors/GridTextCellEditor.js';
 
 export const productColumnDefs = [
     {
@@ -40,6 +42,11 @@ export const productColumnDefs = [
         editable: true,
         sortable: true,
         filter: 'agNumberColumnFilter',
+        cellEditor: GridTextCellEditor,
+        cellEditorParams: {
+            pattern: '^\\d*(?:\\.\\d{0,2})?$',
+            emptyStringIsNull: true,
+        },
     },
     {
         field: 'discount_type',
@@ -47,6 +54,13 @@ export const productColumnDefs = [
         editable: true,
         sortable: true,
         filter: true,
+        cellRenderer: GridSelectCellRenderer,
+        cellRendererParams: {
+          valueList: [
+              { id: 'percentage', name: 'Percentage' },
+              { id: 'fixed', name: 'Fixed' },
+          ],
+        },
         cellEditor: GridSelectCellEditor,
         cellEditorParams: {
           valueList: [
@@ -61,6 +75,11 @@ export const productColumnDefs = [
         editable: true,
         sortable: true,
         filter: 'agNumberColumnFilter',
+        cellEditor: GridTextCellEditor,
+        cellEditorParams: {
+            pattern: '^\\d*(?:\\.\\d{0,2})?$',
+            emptyStringIsNull: true,
+        },
     },
     {
         field: 'meta_title',
@@ -86,6 +105,11 @@ export const productColumnDefs = [
         editable: true,
         sortable: true,
         filter: true,
+        cellRenderer: 'agCheckboxCellRenderer',
+        cellEditor: 'agCheckboxCellEditor',
+        cellRendererParams: {
+            disabled: (params) => !(params?.node?.isEditing?.() ?? false),
+        },
         maxWidth: 110,
     },
     {

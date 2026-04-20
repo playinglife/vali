@@ -13,15 +13,10 @@
         </div>
 
         @php
-            $gridRows = $products->map(fn ($product) => [
-                'id' => $product->id,
-                'sku' => $product->sku,
-                'name' => $product->name,
-                'slug' => $product->slug,
-                'price' => (float) $product->price,
-                'is_active' => $product->is_active ? 'Yes' : 'No',
-                'variants_count' => $product->Variants->count(),
-            ])->values();
+            $gridRows = $products->map(function ($product) {
+                $product->variants_count = $product->Variants->count();
+                return $product;
+            })->values();
         @endphp
 
         <div class="ag-theme-quartz admin-products-grid" data-admin-products-grid id="admin-products-grid" oncontextmenu="return false;"></div>

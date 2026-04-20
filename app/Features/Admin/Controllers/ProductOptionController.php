@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Features\Admin\Controllers;
 
 use App\Enums\ProductOptionType;
 use App\Http\Controllers\Controller;
@@ -10,7 +10,7 @@ use App\Models\ProductOptionValue;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
-class AdminProductOptionController extends Controller
+class ProductOptionController extends Controller
 {
     public function store(Request $request, Product $product): RedirectResponse
     {

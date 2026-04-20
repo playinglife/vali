@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Features\Admin\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Product;
@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
-class AdminProductController extends Controller
+class ProductController extends Controller
 {
     public function store(Request $request): RedirectResponse
     {

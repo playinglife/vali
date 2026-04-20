@@ -19,8 +19,6 @@ function isCellContentOverflowing(params) {
         return false;
     }
     const content = cell.firstElementChild?.firstElementChild || cell.firstElementChild || cell;
-    console.log(content);
-    console.log(content.scrollWidth > content.clientWidth || content.scrollHeight > content.clientHeight);
     return content.scrollWidth > content.clientWidth || content.scrollHeight > content.clientHeight;
 }
 

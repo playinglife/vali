@@ -23,7 +23,10 @@ export function createAgGridCommon({
         custom: gridCustom || {},
     };
 
-    const { common } = useCommon(grid, columnDefinitions, { gridOptions }, null, null, gridCustom);
+    const commonConfig = (gridCustom && typeof gridCustom.config === 'object')
+        ? gridCustom.config
+        : {};
+    const { common } = useCommon(grid, columnDefinitions, commonConfig, gridCustom);
 
     const resolvedOptions = {
         ...common.gridOptions,
