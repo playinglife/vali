@@ -222,29 +222,8 @@ export function useCommon(grid, columnsDefinitions, config = {}, gridCustom = {}
         return parent ? 1 + getDepth(parent, rowData, visited) : 0
     }
 
-    const setupGrid = (response, grid, modelSubmodelMap) => {
-
-        let pointer = null;
-        let submodel = null;
-        let list = [];
-        for (const index in modelSubmodelMap.submodels) {
-            if (response.data.submodels[index]) {
-                submodel = response.data.submodels[index];
-                pointer = grid.columnDefs.find(def => def.field === index);
-                if (pointer) {
-                    list = [];
-                    //When we have an array of objects
-                    submodel.forEach(sub => {
-                        list.push(prepareListRecord(sub, modelSubmodelMap.submodels[index]));
-                    });
-                    if (('unselectedOption' in modelSubmodelMap.submodels[index]) && modelSubmodelMap.submodels[index].unselectedOption === true) {
-                        list.push({ id: null, name: 'Unspecified' });
-                    }
-                    pointer.cellEditorParams.valueList = list;
-                }
-            }
-        }
-        const responsePointer = Array.isArray(response.data) ? response.data : response.data.models[Object.keys(modelSubmodelMap.model)[0]]
+    const setupGrid = (response) => {
+        const responsePointer = Array.isArray(response?.data) ? response.data : []
         setDataToGrid(responsePointer);
     };
 
@@ -261,6 +240,7 @@ export function useCommon(grid, columnsDefinitions, config = {}, gridCustom = {}
             buildTreeChildrenMapWholeGrid(newList);
         }
         grid.rowData = newList;
+        grid.gridApi?.setGridOption('rowData', grid.rowData)
     }
 
     const updateDataToGrid = (data) => {
@@ -281,6 +261,7 @@ export function useCommon(grid, columnsDefinitions, config = {}, gridCustom = {}
             newList = reorderRowsAsTree(newList);
         }
         grid.rowData = newList;
+        grid.gridApi?.setGridOption('rowData', grid.rowData)
     }
 
     const reorderRowsAsTree = (rowData) => {
@@ -372,7 +353,7 @@ export function useCommon(grid, columnsDefinitions, config = {}, gridCustom = {}
                     if (onBeforeSetRowData !== null){
                         onBeforeSetRowData(response);
                     }
-                    setupGrid(response, grid, grid.custom.modelSubmodelMap);
+                    setupGrid(response);
 
                     if (typeof onSuccess === 'function') {
                         onSuccess(response);
@@ -416,40 +397,6 @@ export function useCommon(grid, columnsDefinitions, config = {}, gridCustom = {}
         gridApi.setRowData(data.rowData);
         if (data.pinnedTopRowData.length > 0) {
             store.addNotificationMessage('Some ' + txt + ' were not moved to the main list since they are not saved yet.', 'warning');
-        }
-    };
-
-    const prepareListRecord = (item, sub) => {
-        let idString = sub.id ? sub.id : 'id';
-        let nameString = sub.name ? sub.name : 'name';
-
-        let theName = null;
-        if (Array.isArray(nameString)) {
-            theName = getCombinedNames(item, nameString);
-        } else {
-            theName = item[nameString];
-        }
-        return { id: item[idString], name: theName };
-    };
-
-    const getCombinedNames = (value, path) => {
-        let theName = '';
-        let miniPath = [];
-        path.forEach(pt => {
-            miniPath = pt.split('.');
-            if (theName !== '') {
-                theName += ' - ';
-            }
-            theName += (miniPath.length === 1 ? value[miniPath] : getDeepAttribute(value, miniPath));
-        });
-        return theName;
-    };
-
-    const getDeepAttribute = (value, path) => {
-        if (path.length === 1) {
-            return value[path];
-        } else {
-            return getDeepAttribute(value[path[0]], path.shift() ? path : null);
         }
     };
 
@@ -951,8 +898,6 @@ export function useCommon(grid, columnsDefinitions, config = {}, gridCustom = {}
         if (grid.custom.editedRow && _.isEqual(grid.custom.editedRow, params.data)) {
             return
         }
-        console.log(config);
-        // display differences
         const url = params.data.id == '' ? config.url : config.url + '/' + params.data.id;
         advancedAxios.sendRequest(
             'Common-UpdateOrCreateRow' + params.data.id,
@@ -979,7 +924,7 @@ export function useCommon(grid, columnsDefinitions, config = {}, gridCustom = {}
     }
 
     const confirmationDialog = (text, yes) => {
-        const s = ref(false)
+        const s = { value: false }
         let dialog
         dialog = dynamicComponents.createComponent('dialog', {
           title: '',
@@ -1033,16 +978,48 @@ export function useCommon(grid, columnsDefinitions, config = {}, gridCustom = {}
         }
     }
     
-    const setCurrentEditedRowValues = (grid, rowIndex, data) => {
+    const setEditorFallbackValue = (cellEditor, value) => {
+        if (!cellEditor) {
+            return false
+        }
+
+        // Custom editors can expose a direct setter.
+        if (typeof cellEditor.setValue === 'function') {
+            cellEditor.setValue(value)
+            return true
+        }
+
+        // AG Grid default editors usually expose a native input/select element.
+        const editorInput = cellEditor.eInput
+            ?? cellEditor.eSelect
+            ?? cellEditor.getGui?.()?.querySelector?.('input, textarea, select')
+
+        if (!editorInput) {
+            return false
+        }
+
+        editorInput.value = value == null ? '' : String(value)
+        editorInput.dispatchEvent(new Event('input', { bubbles: true }))
+        editorInput.dispatchEvent(new Event('change', { bubbles: true }))
+        return true
+    }
+
+    const setCurrentEditedRowValues = (rowUniqueId, data) => {
+        const rowNode = grid.gridApi.getRowNode(rowUniqueId)
+        if (!rowNode) {
+            return false
+        }
         for (const column in data) {
-          const cellEditors = componentGrid.gridApi.getCellEditorInstances({
-            rowIndex,
+          const cellEditors = grid.gridApi.getCellEditorInstances({
+            rowIndex: rowNode.rowIndex,
             columns: [column],
           })
-          if (cellEditors && cellEditors[0] && cellEditors[0].setValue) {
-            cellEditors[0].setValue(data[column])
+          const didSetEditorValue = setEditorFallbackValue(cellEditors?.[0], data[column])
+          if (!didSetEditorValue) {
+            rowNode.setDataValue(column, data[column])
           }
         }
+        return true
     }
 
     const addRow = () => {
@@ -1061,46 +1038,41 @@ export function useCommon(grid, columnsDefinitions, config = {}, gridCustom = {}
                     // update the depth, children and expanded for all rows (including the new one)
                     buildTreeChildrenMapWholeGrid(grid.rowData)
                     grid.rowData = reorderRowsAsTree(grid.rowData)
-
-                    const node = grid.gridApi?.getRowNode(newRecord.uniqueId)
-                    if (node) {
-                        node.data = grid.rowData.find((r) => r.uniqueId === newRecord.uniqueId)
-                        grid.gridApi.redrawRows({ rowNodes: [node] })
-                    }
                 }
             }
         }else{
             grid.rowData.unshift(newRecord)
         }
-        setTimeout(() => {
-            const node = grid.gridApi.getRowNode(newRecord.uniqueId)
-            if (node && grid.custom.firstVisibleColumn) {
-                grid.gridApi.setFocusedCell(node.rowIndex, grid.custom.firstVisibleColumn)
-                grid.gridApi.startEditingCell({
-                    rowIndex: node.rowIndex,
-                    colKey: grid.custom.firstVisibleColumn,
-                })
-            }
-        }, 100)
+        grid.gridApi.setGridOption('rowData', grid.rowData)
+        const startEditingNewRow = () => {
+            const node = grid.gridApi.getRowNode(String(newRecord.uniqueId))
+            if (!node || !grid.custom.firstVisibleColumn) return
+            grid.gridApi.setFocusedCell(node.rowIndex, grid.custom.firstVisibleColumn)
+            grid.gridApi.startEditingCell({
+                rowIndex: node.rowIndex,
+                colKey: grid.custom.firstVisibleColumn,
+            })
+        }
+        startEditingNewRow()
+        setTimeout(startEditingNewRow, 0)
+        return newRecord.uniqueId
     }
 
     const updateRow = (draggedRow, data) => {
         const draggedRowUniqueId = draggedRow.data.uniqueId
-        const index = grid.rowData.findIndex((o) => o.uniqueId === draggedRowUniqueId)
-        if (index === -1) return
-        grid.rowData[index] = prepareRecord({ ...data, uniqueId: draggedRowUniqueId })
+        let index = grid.rowData.findIndex((o) => o.uniqueId === draggedRowUniqueId)
+        const updatedRow = prepareRecord({ ...data, uniqueId: draggedRowUniqueId })
+        if (index === -1) {
+            grid.rowData.unshift(updatedRow)
+            index = 0
+        } else {
+            grid.rowData[index] = updatedRow
+        }
         if (grid.custom.tree) {
             buildTreeChildrenMapWholeGrid(grid.rowData)
             grid.rowData = reorderRowsAsTree(grid.rowData)
-
-            // Next 5 lines are needed in order for the dragged row to update correctly it's depth/indentation
-            const node = grid.gridApi?.getRowNode(draggedRowUniqueId)
-            const updatedRow = grid.rowData.find((r) => r.uniqueId === draggedRowUniqueId)
-            if (node && updatedRow) {
-                node.data = updatedRow
-                grid.gridApi.redrawRows({ rowNodes: [node] })
-            }
         }
+        grid.gridApi.setGridOption('rowData', grid.rowData)
     }
 
     const deleteRows = (ids) => {
@@ -1121,10 +1093,12 @@ export function useCommon(grid, columnsDefinitions, config = {}, gridCustom = {}
                     data: ids,
                 }
             ).then(response => {
-                if (response.status === 200 || response.status === 201) {
+                if (response.status === 200 || response.status === 201 || response.status === 204) {
                     grid.rowData = grid.rowData.filter(row => !ids.includes(row.id))
-                    storage.deleteData(config.url, row.id)
-                    //grid.gridApi.setRowData(grid.rowData.filter(row => !ids.includes(row.id)));
+                    grid.gridApi.setGridOption('rowData', grid.rowData)
+                    ids.forEach((id) => {
+                        storage.deleteData(config.url, id)
+                    })
                 }
             }).catch(error => {
                 if (error.message !== 'canceled') {
@@ -1295,9 +1269,6 @@ export function useCommon(grid, columnsDefinitions, config = {}, gridCustom = {}
             reloadGrid,
             stopEditing,
             unpinRows,
-            prepareListRecord,
-            getCombinedNames,
-            getDeepAttribute,
             copyValue,
             getNodeId,
             onGridKeyDownHandler,

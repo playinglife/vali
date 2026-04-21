@@ -2,38 +2,50 @@
 
 namespace App\Features\Admin\Controllers;
 
+use App\Features\Admin\Resources\ProductResource;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
 class ProductController extends Controller
 {
-    public function store(Request $request): RedirectResponse
+
+    public function index(): JsonResponse
+    {
+        $products = Product::query()
+            ->with([
+                'ProductImages',
+                'OptionValues.Option',
+                'Variants.VariantImages',
+                'Variants.Values',
+            ])
+            ->orderByDesc('id')
+            ->get();
+        return response()->json(ProductResource::collection($products)->resolve());
+    }
+
+    public function store(Request $request): JsonResponse
     {
         $data = $this->validated($request);
-
-        Product::query()->create($data);
-
-        return back()->with('status', 'Product created.');
+        $product = Product::query()->create($data);
+        return response()->json(ProductResource::make($product)->resolve());
     }
 
-    public function update(Request $request, Product $product): RedirectResponse
+    public function update(Request $request, Product $product): JsonResponse
     {
         $data = $this->validated($request, $product->id);
-
         $product->update($data);
-
-        return back()->with('status', 'Product updated.');
+        return response()->json(ProductResource::make($product)->resolve());
     }
 
-    public function destroy(Product $product): RedirectResponse
+    public function destroy(Product $product): JsonResponse
     {
         $product->delete();
-
-        return back()->with('status', 'Product deleted.');
+        return response()->json([], 200);
     }
 
     /**

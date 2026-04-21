@@ -17,7 +17,17 @@
         <div class="root-views-layouts-app">
             <x-flash-messages />
             <!-- Menu -->
-            <!--<@include('layouts.menu')-->
+            <div class="admin-menu">
+                <div class="admin-menu-left">
+                    @yield('admin-menu-left')
+                </div>
+                <div class="admin-menu-center">
+                    @yield('admin-menu-center')
+                </div>
+                <div class="admin-menu-right">
+                    @yield('admin-menu-right')
+                </div>
+            </div>
             <!-- Content -->
             <div id="main-content" class="main-content">
             <!--<div class="flex flex-1 relative">-->
@@ -74,6 +84,18 @@
             display: flex;
             flex-direction: column;
             overflow: hidden;
+            &::before {
+                content: "";
+                position: absolute;
+                inset: -8%;
+                pointer-events: none;
+                z-index: -1;
+                background:
+                    radial-gradient(circle 50rem at 50% 30%, rgba(255, 159, 67, 0.55), transparent 62%),
+                    radial-gradient(circle 50rem at 38% 68%, rgba(255, 99, 71, 0.5), transparent 64%),
+                    radial-gradient(circle 50rem at 82% 78%, rgba(255, 214, 102, 0.48), transparent 64%);
+                filter: blur(10px);
+            }
             & > .main-content {
                 width: 100%;
                 height: 100%;
@@ -86,20 +108,32 @@
                 flex-direction: column;
                 overflow: auto;
                 box-sizing: border-box;
-
-                &::before {
-                    content: "";
-                    position: absolute;
-                    inset: -8%;
-                    pointer-events: none;
-                    z-index: -1;
-                    background:
-                        radial-gradient(circle 50rem at 50% 30%, rgba(255, 159, 67, 0.55), transparent 62%),
-                        radial-gradient(circle 50rem at 38% 68%, rgba(255, 99, 71, 0.5), transparent 64%),
-                        radial-gradient(circle 50rem at 82% 78%, rgba(255, 214, 102, 0.48), transparent 64%);
-                    filter: blur(10px);
-                }
             }
+        }
+        .admin-menu {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-left: var(--padding-small);
+            padding-right: var(--padding-small);
+            gap: var(--gap-small);
+            padding: var(--padding-small);
+        }
+        .admin-menu-left {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            gap: var(--gap-small);
+        }
+        .admin-menu-center {
+            display: flex;
+            flex: 1;
+        }
+        .admin-menu-right {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: var(--gap-small);
         }
     </style>
 @endonce

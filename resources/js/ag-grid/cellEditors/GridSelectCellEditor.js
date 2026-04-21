@@ -11,7 +11,7 @@ function createEditorTemplate() {
     const template = document.createElement('template');
     template.innerHTML = `
         <div class="neo-inputer GridSelectCellEditor-root" style="width: 100%;">
-            <select class="GridSelectCellEditor-select" style="width: 100%; height: 100%; border: none; outline: none; background: transparent; font-size: 14px;"></select>
+            <select class="GridSelectCellEditor-select" style="width: 100%; height: 100%; border: none; outline: none; background: white; font-size: 14px;"></select>
         </div>
     `.trim();
     return template.content.firstElementChild.cloneNode(true);

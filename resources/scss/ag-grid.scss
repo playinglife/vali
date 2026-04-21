@@ -3,6 +3,10 @@
 // Borders and shadows of the cells when editing
 :where(.ag-theme-inputStyle-7) {
   & .ag-input-field-input:where(input:not([type]), input[type="text"], input[type="number"], input[type="tel"], input[type="date"], input[type="datetime-local"], textarea) {
+    height: 100%;
+    margin: 0;
+    border: none;
+    border-radius: 0;
     &:focus {
       box-shadow: none !important;
     }
