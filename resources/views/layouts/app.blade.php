@@ -29,7 +29,7 @@
             @endphp
             @if (filled($cartAdded))
                 @php
-                    $pricing = \App\Support\VariantPricing::forVariantId((int) ($cartAdded['product_variant_id'] ?? 0), (int) ($cartAdded['quantity'] ?? 1));
+                    $pricing = \App\Support\VariantPricing::forVariantId((int) ($cartAdded['variant_id'] ?? $cartAdded['product_variant_id'] ?? 0), (int) ($cartAdded['quantity'] ?? 1));
                     $productName = (string) ($pricing['product_name'] ?? $cartAdded['product_name'] ?? '');
                     $quantity = (int) ($pricing['quantity'] ?? $cartAdded['quantity'] ?? 1);
                     $price = (float) ($pricing['price'] ?? $cartAdded['price'] ?? 0);

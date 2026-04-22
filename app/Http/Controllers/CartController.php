@@ -7,6 +7,7 @@ use App\Models\ProductVariant;
 use App\Support\VariantPricing;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use App\Models\Order;
 
 class CartController extends Controller
 {
@@ -79,11 +80,58 @@ class CartController extends Controller
         return redirect()->back();
     }
 
-    public function confirmOrder(): RedirectResponse
+    public function confirmOrder(Request $request): RedirectResponse
     {
-        // Placeholder order handling: clear session cart after confirmation.
+        $request->validate([
+            'email' => ['required', 'string', 'email', 'max:255'],
+            'name' => ['required', 'string', 'max:255'],
+            'company' => ['nullable', 'string', 'max:255'],
+            'country' => ['required', 'string', 'max:255'],
+            'city' => ['required', 'string', 'max:255'],
+            'phone' => ['required', 'string', 'max:255'],
+            'notes' => ['nullable', 'string', 'max:1000'],
+        ], [
+            'email.required' => __('pages.checkout.errors.email_required'),
+            'email.email' => __('pages.checkout.errors.email_invalid'),
+            'email.max' => __('pages.checkout.errors.email_max'),
+            'name.required' => __('pages.checkout.errors.name_required'),
+            'name.max' => __('pages.checkout.errors.name_max'),
+            'company.max' => __('pages.checkout.errors.company_max'),
+            'country.required' => __('pages.checkout.errors.country_required'),
+            'country.max' => __('pages.checkout.errors.country_max'),
+            'city.required' => __('pages.checkout.errors.city_required'),
+            'city.max' => __('pages.checkout.errors.city_max'),
+            'phone.required' => __('pages.checkout.errors.phone_required'),
+            'phone.max' => __('pages.checkout.errors.phone_max'),
+            'notes.max' => __('pages.checkout.errors.notes_max'),
+        ]);
+
+
+        $order = Order::create([
+            'email' => $request->email,
+            'name' => $request->name,
+            'company' => $request->company,
+            'country' => $request->country,
+            'city' => $request->city,
+            'phone' => $request->phone,
+            'notes' => $request->notes,
+        ]);
+        foreach (session()->get('cart', []) as $line) {
+            $order->items()->create([
+                'product_id' => $line['product_id'] ?? $line['id'] ?? null,
+                'variant_id' => $line['variant_id'] ?? $line['product_variant_id'] ?? null,
+                'quantity' => $line['quantity'],
+                'price' => $line['price'],
+                'discount' => $line['discount'] ?? null,
+                'discount_type' => $line['discount_type'] ?? null,
+                'currency' => $line['currency'] ?? 'RON',
+                'sku' => $line['sku'],
+            ]);
+        }
+        $order->save();
+
         session()->forget('cart');
 
-        return redirect('/cart')->with('order_confirmed', true);
+        return redirect()->route('thankyou')->with('order_confirmed', true);
     }
 }

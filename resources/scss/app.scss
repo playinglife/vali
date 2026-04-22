@@ -182,7 +182,9 @@ a.button:not(.ignore-global):not(.ag-button):hover {
 
 
 // INPUTS
-input {
+input,
+select,
+textarea {
   background-color: white;
   border-radius: var(--border-radius-small);
   border: 1px solid var(--color-border);

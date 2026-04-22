@@ -53,6 +53,15 @@ Route::get('/cart', function () {
 Route::get('/checkout', function () {
     return view('pages.checkout');
 })->name('checkout');
+Route::get('/thankyou', function () {
+    return view('pages.thankyou');
+})->name('thankyou');
+Route::get('/custom', function () {
+    return view('pages.custom');
+})->name('custom');
+Route::get('/aboutus', function () {
+    return view('pages.aboutus');
+})->name('aboutus');
 
 Route::get('/teachers', function () {
     return view('pages.teachers');

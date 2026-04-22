@@ -1,24 +1,17 @@
 @extends('layouts.app')
 
-@section('title','Checkout')
+@section('title','Custom')
 
 @section('content')
-
-    <div class="root-views-checkout">
-
-        <!-- Checkout Page -->
-        <x-checkout />
-
-        <!-- Footer -->
+    <div class="root-views-custom">
+        <x-custom />
         @include('layouts.footer', ['backgroundImage' => 'none'])
-
     </div>
-
 @endsection
 
 @once
     <style lang="scss" scoped>
-        .root-views-checkout {
+        .root-views-custom {
             box-sizing: border-box;
             width: 100%;
             height: 100%;
@@ -32,7 +25,7 @@
             background-repeat: no-repeat;
             min-height: 100%;
             display: flex;
-            flex-direction: column;            
+            flex-direction: column;
             &::before {
                 width: 100%;
                 height: 100%;

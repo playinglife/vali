@@ -10,8 +10,6 @@ use App\Models\ProductOption;
     $sessionLines = session('cart', []);
     $lines = [];
 
-//dd($sessionLines);
-
     $cartIsEmpty = $sessionLines === [];
     $total = 0;
     $totalItems = 0;
@@ -19,7 +17,7 @@ use App\Models\ProductOption;
     if (!$cartIsEmpty) {
         foreach ($sessionLines as &$sessionLine) {
             $product = Product::find($sessionLine['product_id']);
-            $variant = ProductVariant::with('Values.Option')->find($sessionLine['product_variant_id']);
+            $variant = ProductVariant::with('Values.Option')->find($sessionLine['variant_id'] ?? $sessionLine['product_variant_id'] ?? null);
             if (!isset($lines[$sessionLine['product_id']])) {
                 $lines[$sessionLine['product_id']] = [
                     'product' => $product,
@@ -43,6 +41,8 @@ use App\Models\ProductOption;
         'total' => $total,
         'totalItems' => $totalItems,
     ];
+
+    //dd($lines);
     //(new CartController())->clear();
 @endphp
 
@@ -89,7 +89,7 @@ use App\Models\ProductOption;
                                 </div>
                                 <p class="text-small"> {{ $variant->product->localizedDescription() }} </p>
                                 <p class="text-small"> {{ $variant->localizedDescription() }} </p>
-                                <p class="root-cart-items__line-total"> {{ $sessionLine['quantity'] }}  {{ __('pages.cart.unit') }}  x  {{ $variant->price }} {{ __('components.product.currency') }} = {{ $sessionLine['quantity'] * $variant->price }} {{ __('components.product.currency') }} </p>
+                                <p class="root-cart-items__line-total"> {{ $sessionLine['quantity'] }}  {{ __('pages.cart.unit') }}  x  {{ $sessionLine['price'] }} {{ __('components.product.currency') }} = {{ $sessionLine['quantity'] * $variant->price }} {{ __('components.product.currency') }} </p>
 
                                 <div class="root-cart-items__options">
                                     @foreach ($variant->Values as $value)
@@ -183,6 +183,7 @@ use App\Models\ProductOption;
             display: flex;
             flex-direction: column;
             gap: var(--gap-medium);
+            flex: 1 0 auto;
         }
         .root-cart-items__grid {
             gap: var(--gap-large);

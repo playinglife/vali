@@ -55,7 +55,7 @@
                             {!! __('components.product.cart_added', [
                                 'product' => e($cartAdded['product_name']),
                                 'qty' => $cartAdded['quantity'],
-                                'total' => number_format((float) $cartAdded['line_total'], 2, '.', ''),
+                                'total' => number_format((float) $cartAdded['total'], 2, '.', ''),
                                 'currency' => $cartAdded['currency'],
                             ]) !!}
                         @endif

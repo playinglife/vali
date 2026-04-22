@@ -26,7 +26,8 @@ class VariantPricing
         $data = [
             'product_id' => (int) $variant->product_id,
             'product_name' => (string) $variant->Product->name,
-            'product_variant_id' => (int) $variant->id,
+            'variant_id' => (int) $variant->id,
+            'sku' => (string) $variant->sku,
             'quantity' => $qty,
             'price' => $unitPrice,
             'discount' => $variant->discount,

@@ -2,7 +2,7 @@
 @once
     <style lang="scss" scoped>
         .menu-height-compensator {
-            height: 4em;
+            min-height: 4em;
         }
     </style>
 @endonce

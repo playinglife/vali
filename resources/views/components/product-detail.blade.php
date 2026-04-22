@@ -682,16 +682,16 @@
                 });
             }
 
-            dlg.addEventListener('click', function (e) {
-                if (e.target === dlg) {
+            dlg.addEventListener('click', function () {
+                if (dlg.open) {
                     dlg.close();
                 }
             });
 
             const pane = dlg.querySelector('.modal-dialog__pane');
             if (pane) {
-                pane.addEventListener('click', function (e) {
-                    if (e.target === pane) {
+                pane.addEventListener('click', function () {
+                    if (dlg.open) {
                         dlg.close();
                     }
                 });

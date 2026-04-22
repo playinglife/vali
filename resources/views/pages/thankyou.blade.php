@@ -1,24 +1,17 @@
 @extends('layouts.app')
 
-@section('title','Checkout')
+@section('title','Thank You')
 
 @section('content')
-
-    <div class="root-views-checkout">
-
-        <!-- Checkout Page -->
-        <x-checkout />
-
-        <!-- Footer -->
+    <div class="root-views-thankyou">
+        <x-thankyou />
         @include('layouts.footer', ['backgroundImage' => 'none'])
-
     </div>
-
 @endsection
 
 @once
     <style lang="scss" scoped>
-        .root-views-checkout {
+        .root-views-thankyou {
             box-sizing: border-box;
             width: 100%;
             height: 100%;

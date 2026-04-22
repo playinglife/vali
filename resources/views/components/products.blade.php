@@ -547,6 +547,9 @@
         }
         .root-products__filter-button {
             aspect-ratio: 1 / 1;
+            & > svg {
+                width: 3em;
+            }
         }
     </style>
 @endonce

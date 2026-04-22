@@ -12,13 +12,13 @@ class OrderItem extends BaseModel
     protected $fillable = [
         'order_id',
         'product_id',
-        'product_variant_id',
-        'product_name',
-        'variant_label',
+        'variant_id',
         'sku',
         'quantity',
-        'unit_price',
-        'line_total',
+        'price',
+        'discount_type',
+        'discount',
+        'currency',
     ];
 
     /**
@@ -27,8 +27,8 @@ class OrderItem extends BaseModel
     protected function casts(): array
     {
         return [
-            'unit_price' => 'decimal:2',
-            'line_total' => 'decimal:2',
+            'price' => 'decimal:2',
+            'discount' => 'decimal:2',
         ];
     }
 
@@ -44,6 +44,6 @@ class OrderItem extends BaseModel
 
     public function Variant(): BelongsTo
     {
-        return $this->belongsTo(ProductVariant::class, 'product_variant_id');
+        return $this->belongsTo(ProductVariant::class, 'variant_id');
     }
 }

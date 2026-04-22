@@ -68,6 +68,7 @@
             box-sizing: border-box;
             z-index: 1;
             width: 100%;
+            margin-top: auto;
             min-height: 4em;
             padding: var(--padding-small);
             padding-bottom: var(--padding-medium);

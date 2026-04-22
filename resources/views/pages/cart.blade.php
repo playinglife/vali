@@ -23,7 +23,6 @@
             width: 100%;
             height: 100%;
             flex: 1;
-            min-height: 0;
             overflow: auto;
             position: relative;
             isolation: isolate;
@@ -31,6 +30,9 @@
             background-size: cover;
             background-position: top;
             background-repeat: no-repeat;
+            min-height: 100%;
+            display: flex;
+            flex-direction: column;            
             &::before {
                 width: 100%;
                 height: 100%;

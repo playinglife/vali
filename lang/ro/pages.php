@@ -71,5 +71,71 @@ What can we offer you?',
     'checkout' => [
         'title1' => 'Finalizare',
         'confirm_order' => 'Confirmă comanda',
+        'name' => 'Nume',
+        'email' => 'Email',
+        'company' => 'Companie',
+        'country' => 'Țară',
+        'city' => 'Orăș',
+        'phone' => 'Telefon',
+        'notes' => 'Note',
+        'send_order' => 'Trimite comanda',
+        'message' => 'Vom reveni la tine în cel mai scurt timp posibil pentru a discuta detalii suplimentare.',
+        'errors' => [
+            'email_required' => 'Emailul este obligatoriu.',
+            'email_invalid' => 'Te rugăm să introduci o adresă de email validă.',
+            'email_max' => 'Emailul trebuie să aibă cel mult 255 de caractere.',
+            'name_required' => 'Numele este obligatoriu.',
+            'name_max' => 'Numele trebuie să aibă cel mult 255 de caractere.',
+            'company_max' => 'Compania trebuie să aibă cel mult 255 de caractere.',
+            'country_required' => 'Țara este obligatorie.',
+            'country_max' => 'Țara trebuie să aibă cel mult 255 de caractere.',
+            'city_required' => 'Orașul este obligatoriu.',
+            'city_max' => 'Orașul trebuie să aibă cel mult 255 de caractere.',
+            'phone_required' => 'Telefonul este obligatoriu.',
+            'phone_max' => 'Telefonul trebuie să aibă cel mult 255 de caractere.',
+            'notes_max' => 'Notițele trebuie să aibă cel mult 1000 de caractere.',
+        ],
+    ],
+    'thankyou' => [
+        'title1' => 'Mulțumim pentru comandă!',
+        'message' => 'Comanda ta a fost înregistrată cu succes. Te vom contacta curând pentru confirmarea detaliilor.',
+        'back_to_products' => 'Înapoi la produse',
+    ],
+    'custom' => [
+        'title1' => 'Cămăși Personalizate',
+        'message' => 'La Shirthouse, personalizarea cămășilor nu este doar un detaliu suplimentar, ci o oportunitate reală de a crea un produs unic, perfect adaptat nevoilor și identității dumneavoastră – indiferent dacă vorbim despre imaginea companiei, un eveniment special sau preferințele personale.
+
+Reproducere personalizată
+Aveți o cămașă sau un bluzon preferat? Ne putem reproduce cu fidelitate, respectând dimensiunile, croiala și toate detaliile de design. De la structură până la finisaj, adaptăm totul la cerințele dumneavoastră
+
+ 
+
+
+Modificări la modelele noastre standard
+Modelele din colecția noastră pot fi ajustate în orice fel:
+
+• eliminare sau adăugare de elemente (pochetelor, manșetelor, gulerului, slits, etc.)
+• inserții contrastante în culorile dorite
+• personalizări funcționale (pochetelor interne/externe, flapelor, patch-urilor)
+• adaptări stilistice (croială, lungime, sistem de închidere)'
+    ],
+    'aboutus' => [
+        'title1' => 'Cine suntem',
+        'message' => '<b>Shirt House SRL</b> este o companie de producție care se specializează în cămăși pentru bărbați și bluzuri pentru femei, situată în orașul frumos de Sighișoara din regiunea Transilvania, România. Cu o istorie bogată în industria de producție a hainelor și un echipă dedicată, suntem dedicați oferind produse de cea mai înaltă calitate și servicii excelente.
+
+În fabrică, acordăm o atenție deosebită calității și durabilității fiecărui produs pe care îl fabricăm. Fiecare piesă este supusă unei inspectări atente, iar materialele utilizate sunt selectate cu mare grijă pentru a asigura că își mențin frumusețea și funcționalitatea pe termen lung. Ne bucurăm să oferim clienților noștri nu doar produse estetic de plăcere, ci și fiabile care își mențin frumusețea și funcționalitatea pe termen lung.
+
+Suntem echipați cu mașini de înaltă performanță, inclusiv mașini de cusut de înaltă calitate Juki, mașini de tăiere automată Gemini, presă de fuziune Reliant fiabilă și multe altele, care ne permit să răspundem la cele mai înalte cereri ale pieței.
+
+Suntem mulțumiți să servim clienții noștri atât național, cât și internațional și mulțumim pentru încrederea și sprijinul lor continui. Fiecare produs pe care îl fabricăm reprezintă îndatorarea noastră de a aduce un element de eleganță și rafinare în garderobă fiecărui client.
+
+Suntem deschiși la noi colaborări cu clienții noștri din întreaga Europă. Dacă aveți o solicitare sau doriți să discutați o potențială colaborare, vă rugăm să ne contactați prin adresa noastră de email sau prin formularul de contact disponibil pe site-ul nostru.',
+    ],
+    'contact' => [
+        'title1' => 'Contact',
+        'message' => 'Ia legătura cu noi și îți vom răspunde cât mai curând posibil.
+
+Email: info@shirthouse.ro',
+        'back_to_products' => 'Înapoi la produse',
     ],
 ];

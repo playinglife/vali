@@ -16,11 +16,7 @@ class Order extends BaseModel
         'email',
         'status',
         'currency',
-        'subtotal',
-        'tax_total',
         'shipping_total',
-        'discount_total',
-        'grand_total',
         'billing_address',
         'shipping_address',
         'notes',
@@ -34,11 +30,7 @@ class Order extends BaseModel
     protected function casts(): array
     {
         return [
-            'subtotal' => 'decimal:2',
-            'tax_total' => 'decimal:2',
             'shipping_total' => 'decimal:2',
-            'discount_total' => 'decimal:2',
-            'grand_total' => 'decimal:2',
             'billing_address' => 'array',
             'shipping_address' => 'array',
             'placed_at' => 'datetime',
