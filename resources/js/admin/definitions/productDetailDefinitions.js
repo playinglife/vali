@@ -1,4 +1,7 @@
 import { GridValueCellEditor } from '../../ag-grid/cellEditors/GridValueCellEditor.js';
+import { GridTextCellEditor } from '../../ag-grid/cellEditors/GridTextCellEditor.js';
+import { GridSelectCellRenderer } from '../../ag-grid/cellRenderers/GridSelectCellRenderer.js';
+import { GridSelectCellEditor } from '../../ag-grid/cellEditors/GridSelectCellEditor.js';
 
 function openImagePreviewDialog(imageUrl) {
     if (!imageUrl) {
@@ -77,7 +80,7 @@ export const productDetailBaseDefinitions = [
     {
         field: 'sku',
         headerName: 'SKU',
-        editable: false,
+        editable: true,
         sortable: true,
         filter: true,
         minWidth: 160,
@@ -85,43 +88,76 @@ export const productDetailBaseDefinitions = [
     {
         field: 'price',
         headerName: 'Price',
-        editable: false,
+        editable: true,
         sortable: true,
         filter: 'agNumberColumnFilter',
         minWidth: 120,
+        cellEditor: GridTextCellEditor,
+        cellEditorParams: {
+            pattern: '^\\d*(?:\\.\\d{0,2})?$',
+            emptyStringIsNull: true,
+        },
     },
     {
         field: 'stock_quantity',
         headerName: 'Stock',
-        editable: false,
+        editable: true,
         sortable: true,
         filter: 'agNumberColumnFilter',
         minWidth: 110,
+        cellEditor: GridTextCellEditor,
+        cellEditorParams: {
+            pattern: '^\\d*$',
+            emptyStringIsNull: true,
+        },
     },
     {
         field: 'discount_type',
         headerName: 'Discount Type',
-        editable: false,
+        editable: true,
         sortable: true,
         filter: true,
         minWidth: 140,
+        cellRenderer: GridSelectCellRenderer,
+        cellRendererParams: {
+            valueList: [
+                { id: 'percentage', name: 'Percentage' },
+                { id: 'fixed', name: 'Fixed' },
+            ],
+        },
+        cellEditor: GridSelectCellEditor,
+        cellEditorParams: {
+            valueList: [
+                { id: 'percentage', name: 'Percentage' },
+                { id: 'fixed', name: 'Fixed' },
+            ],
+        },
     },
     {
         field: 'discount',
         headerName: 'Discount',
-        editable: false,
+        editable: true,
         sortable: true,
         filter: 'agNumberColumnFilter',
         minWidth: 110,
+        cellEditor: GridTextCellEditor,
+        cellEditorParams: {
+            pattern: '^\\d*(?:\\.\\d{0,2})?$',
+            emptyStringIsNull: true,
+        },
     },
     {
         field: 'is_active',
         headerName: 'Active',
-        editable: false,
+        editable: true,
         sortable: true,
         filter: true,
         minWidth: 110,
-        valueFormatter: (params) => (params.value ? 'Yes' : 'No'),
+        cellRenderer: 'agCheckboxCellRenderer',
+        cellEditor: 'agCheckboxCellEditor',
+        cellRendererParams: {
+            disabled: (params) => !(params?.node?.isEditing?.() ?? false),
+        },
     },
     {
         field: 'image',
@@ -174,8 +210,9 @@ function createOptionRadioRenderer(values, optionId) {
 
 export function buildProductDetailDefinitions(options = []) {
     const optionColumns = (Array.isArray(options) ? options : []).map((option) => {
+        console.log(option);
         const values = Array.isArray(option.values) ? option.values : [];
-        const field = `option_${option.id}_value_id`;
+        const field = option.name;
 
         return {
             field,

@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Illuminate\View\View;
 
 class ProductController extends Controller
 {
@@ -46,6 +47,12 @@ class ProductController extends Controller
     {
         $product->delete();
         return response()->json([], 200);
+    }
+
+
+    public function productDetail(Product $product): View
+    {
+
     }
 
     /**

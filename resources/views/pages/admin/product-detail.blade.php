@@ -4,13 +4,19 @@
 
 @section('admin-menu-left')
     <a class="admin-back-link" href="{{ route('admin.dashboard') }}">Back</a>
-    <span class="admin-header-title">Product Detail: {{ $product['name'] }}</span>
-@endsection
+    <div class="admin-header-left">
+        <span class="admin-header-title">Product Variants Management</span>
+        <span class="admin-header-title">Product: {{ $product['name'] }}</span>
+    </div>
+ @endsection
 
 @section('admin-menu-center')
     <div class="admin-menu-center-content">
         <button class="admin-menu-center-content-button" type="button" data-admin-grid-action="new">New</button>
-        <button class="admin-menu-center-content-button">Delete</button>
+        <button class="admin-menu-center-content-button" type="button" data-admin-grid-action="delete">Delete</button>
+        <button class="admin-menu-center-content-button" type="button" data-admin-grid-action="duplicate">Duplicate</button>
+        <button class="admin-menu-center-content-button" type="button" data-admin-grid-action="refresh">Refresh</button>
+        <button class="admin-menu-center-content-button" type="button" data-admin-grid-action="variate">Create Variations</button>
     </div>
 @endsection
 
@@ -22,22 +28,7 @@
 @endsection
 
 @section('content')
-    <div class="admin-dashboard">
-        <div class="admin-header">
-            <div class="admin-header-left">
-                <a class="admin-back-link" href="{{ route('admin.dashboard') }}">Back</a>
-                <span class="admin-header-title">Product Detail: {{ $product['name'] }}</span>
-            </div>
-            <form method="POST" action="{{ route('admin.logout') }}">
-                @csrf
-                <button type="submit">Logout</button>
-            </form>
-        </div>
-        <div class="admin-meta">
-            <span><strong>ID:</strong> {{ $product['id'] }}</span>
-            <span><strong>SKU:</strong> {{ $product['sku'] }}</span>
-            <span><strong>Slug:</strong> {{ $product['slug'] }}</span>
-        </div>
+    <div class="admin-product-detail">
         <div class="ag-theme-quartz admin-products-grid" id="admin-product-detail-grid" oncontextmenu="return false;"></div>
     </div>
 @endsection
@@ -62,12 +53,12 @@
 
 @once
     <style>
-        .admin-dashboard { padding: var(--padding-small); gap: var(--gap-small); display: flex; flex-direction: column; height: 100%; }
+        .admin-product-detail { padding: var(--padding-small); gap: var(--gap-small); display: flex; flex-direction: column; height: 100%; }
         .admin-header { display: flex; justify-content: space-between; align-items: center; gap: var(--gap-small); }
         .admin-header-left { display: flex; align-items: center; gap: var(--gap-small); }
         .admin-back-link { color: var(--color-text-light); text-decoration: none; border: 1px solid var(--color-border-medium); border-radius: 4px; padding: 0.2rem 0.55rem; }
         .admin-products-grid { width: 100%; height: 100%; flex: 1; }
         .admin-header-title { font-size: var(--text-size-small); font-weight: 700; color: var(--color-text-light); }
-        .admin-meta { display: flex; gap: 1rem; color: var(--color-text-light); font-size: 0.875rem; }
+        .admin-header-left { display: flex; flex-direction: column; align-items: flex-start; gap: var(--gap-small); }
     </style>
 @endonce

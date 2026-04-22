@@ -222,10 +222,28 @@ export function useCommon(grid, columnsDefinitions, config = {}, gridCustom = {}
         return parent ? 1 + getDepth(parent, rowData, visited) : 0
     }
 
+    const resolvePath = (obj, path) => {
+        if (!path) return obj
+        return String(path)
+            .split('.')
+            .filter(Boolean)
+            .reduce((acc, key) => (acc == null ? undefined : acc[key]), obj)
+    }
+
     const setupGrid = (response) => {
-        const responsePointer = Array.isArray(response?.data) ? response.data : []
+        const resolvedData = resolvePath(response?.data, grid.custom.config.mainData)
+        const responsePointer = Array.isArray(resolvedData) ? resolvedData : []
         setDataToGrid(responsePointer);
     };
+
+    const autoSizeColumnsAfterDataLoad = () => {
+        if (!grid.gridApi || grid.custom?.config?.autoSizeAfterReload === false) {
+            return
+        }
+        requestAnimationFrame(() => {
+            grid.gridApi.autoSizeAllColumns(false)
+        })
+    }
 
     const setDataToGrid = (data) => {
         let newList = [];        
@@ -241,6 +259,7 @@ export function useCommon(grid, columnsDefinitions, config = {}, gridCustom = {}
         }
         grid.rowData = newList;
         grid.gridApi?.setGridOption('rowData', grid.rowData)
+        autoSizeColumnsAfterDataLoad()
     }
 
     const updateDataToGrid = (data) => {

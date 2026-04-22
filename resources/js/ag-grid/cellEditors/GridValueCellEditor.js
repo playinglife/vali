@@ -12,7 +12,7 @@ function createEditorRoot() {
     root.style.display = 'flex';
     root.style.flexWrap = 'wrap';
     root.style.gap = '0.5rem';
-    root.style.padding = '0.1rem 0';
+    root.style.padding = '0.1rem 1em';
     return root;
 }
 

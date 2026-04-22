@@ -80,7 +80,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
     Route::middleware('auth')->group(function () {
         Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
-        Route::get('/product-detail/{product}', [DashboardController::class, 'productDetail'])->name('products.detail');
         Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
         Route::get('/products', [ProductController::class, 'index'])->name('products.index');
@@ -95,6 +94,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::put('/products/{product}/options/{option}/values/{value}', [ProductOptionController::class, 'updateValue'])->name('options.values.update');
         Route::delete('/products/{product}/options/{option}/values/{value}', [ProductOptionController::class, 'destroyValue'])->name('options.values.destroy');
 
+        Route::get('/product-detail/{product}', [DashboardController::class, 'productDetail'])->name('products.detail');
+        
+        Route::get('/products/{product}/variants', [ProductVariantController::class, 'index'])->name('variants.index');
+        Route::post('/products/{product}/variants/create-all', [ProductVariantController::class, 'createAll'])->name('variants.create-all');
         Route::post('/products/{product}/variants', [ProductVariantController::class, 'store'])->name('variants.store');
         Route::put('/products/{product}/variants/{variant}', [ProductVariantController::class, 'update'])->name('variants.update');
         Route::delete('/products/{product}/variants/{variant}', [ProductVariantController::class, 'destroy'])->name('variants.destroy');
