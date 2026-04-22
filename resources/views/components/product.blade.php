@@ -272,7 +272,6 @@
             if (scriptEl && scriptEl.textContent) {
                 try {
                     data = JSON.parse(scriptEl.textContent.trim());
-                    console.log(data);
                 } catch (err) {
                     data = null;
                 }

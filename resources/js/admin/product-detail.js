@@ -223,6 +223,7 @@ import { buildProductDetailDefinitions } from './definitions/productDetailDefini
                     params.data.value_ids = collectValueIdsFromOptionColumns(params.data, options);
                 },
                 prepareRecord: (item) => {
+                    console.log(item);
                     const optionValues = mapVariantOptionValues(item, options);
                     return {
                         id: item.id || '',
@@ -235,6 +236,7 @@ import { buildProductDetailDefinitions } from './definitions/productDetailDefini
                         image: item.image || '',
                         ...optionValues,
                         value_ids: collectValueIdsFromOptionColumns({ ...item, ...optionValues }, options),
+                        product_variant_images: item.product_variant_images || [],
                     };
                 },
             },

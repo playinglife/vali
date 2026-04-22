@@ -98,6 +98,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
         
         Route::get('/products/{product}/variants', [ProductVariantController::class, 'index'])->name('variants.index');
         Route::post('/products/{product}/variants/create-all', [ProductVariantController::class, 'createAll'])->name('variants.create-all');
+        Route::post('/products/{product}/variants/{variant}/images', [ProductVariantController::class, 'storeImage'])->name('variants.images.store');
+        Route::delete('/products/{product}/variants/{variant}/images/{image}', [ProductVariantController::class, 'destroyImage'])->name('variants.images.destroy');
         Route::post('/products/{product}/variants', [ProductVariantController::class, 'store'])->name('variants.store');
         Route::put('/products/{product}/variants/{variant}', [ProductVariantController::class, 'update'])->name('variants.update');
         Route::delete('/products/{product}/variants/{variant}', [ProductVariantController::class, 'destroy'])->name('variants.destroy');

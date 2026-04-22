@@ -35,10 +35,7 @@ class VariantResource extends JsonResource
             'image' => $this->image,
             'product_variant_images' => $this->whenLoaded(
                 'VariantImages',
-                fn () => $this->VariantImages
-                    ->map(fn ($variantImage) => $variantImage->image)
-                    ->filter()
-                    ->values(),
+                fn () => VariantImageResource::collection($this->VariantImages)->resolve(),
                 []
             ),
             'values_label' => $values

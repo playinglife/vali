@@ -9,9 +9,11 @@ use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\ProductOption;
 use App\Models\ProductVariant;
+use App\Models\ProductVariantImage;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 
 class ProductVariantController extends Controller
@@ -218,6 +220,47 @@ class ProductVariantController extends Controller
             'created' => $createdVariants->count(),
             'variants' => VariantResource::collection($createdVariants)->resolve(),
         ]);
+    }
+
+    public function storeImage(Request $request, Product $product, ProductVariant $variant): JsonResponse
+    {
+        $this->ensureVariantBelongsToProduct($product, $variant);
+        $validated = $request->validate([
+            'image' => ['required', 'file', 'image', 'max:8192'],
+        ]);
+        $nextSortOrder = (int) ($variant->VariantImages()->max('sort_order') ?? 0) + 1;
+        $variantImage = $variant->VariantImages()->create([
+            'sort_order' => $nextSortOrder,
+        ]);
+        $extension = strtolower((string) $validated['image']->getClientOriginalExtension());
+        $allowedExtensions = ['jpg', 'jpeg', 'png', 'webp', 'avif', 'svg'];
+        if (! in_array($extension, $allowedExtensions, true)) {
+            $extension = 'jpg';
+        }
+        $disk = Storage::disk('public');
+        foreach (['jpg', 'jpeg', 'png', 'webp', 'avif', 'svg'] as $ext) {
+            $disk->delete('product/variant-images/' . $variantImage->id . '.' . $ext);
+        }
+        $validated['image']->storeAs('product/variant-images', $variantImage->id . '.' . $extension, 'public');
+        $variantImage->refresh();
+        return response()->json([
+            'image' => $variantImage->image,
+            'variant_image_id' => $variantImage->id,
+        ]);
+    }
+
+    public function destroyImage(Product $product, ProductVariant $variant, ProductVariantImage $image): JsonResponse
+    {
+        $this->ensureVariantBelongsToProduct($product, $variant);
+        if ((int) $image->product_variant_id !== (int) $variant->id) {
+            abort(404);
+        }
+        $disk = Storage::disk('public');
+        foreach (['jpg', 'jpeg', 'png', 'webp', 'avif', 'svg'] as $ext) {
+            $disk->delete('product/variant-images/' . $image->id . '.' . $ext);
+        }
+        $image->delete();
+        return response()->json([], 200);
     }
 
     /**

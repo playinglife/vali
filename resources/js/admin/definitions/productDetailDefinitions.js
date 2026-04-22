@@ -1,72 +1,8 @@
 import { GridValueCellEditor } from '../../ag-grid/cellEditors/GridValueCellEditor.js';
 import { GridTextCellEditor } from '../../ag-grid/cellEditors/GridTextCellEditor.js';
 import { GridSelectCellRenderer } from '../../ag-grid/cellRenderers/GridSelectCellRenderer.js';
+import { GridImageCellRenderer } from '../../ag-grid/cellRenderers/GridImageCellRenderer.js';
 import { GridSelectCellEditor } from '../../ag-grid/cellEditors/GridSelectCellEditor.js';
-
-function openImagePreviewDialog(imageUrl) {
-    if (!imageUrl) {
-        return;
-    }
-
-    const overlay = document.createElement('div');
-    overlay.style.position = 'fixed';
-    overlay.style.inset = '0';
-    overlay.style.zIndex = '100001';
-    overlay.style.background = 'white';
-    overlay.style.display = 'flex';
-    overlay.style.alignItems = 'center';
-    overlay.style.justifyContent = 'center';
-    overlay.style.padding = '1rem';
-
-    const image = document.createElement('img');
-    image.src = String(imageUrl);
-    image.alt = 'Variant full-size image';
-    image.style.maxWidth = 'min(96vw, 1600px)';
-    image.style.maxHeight = '96vh';
-    image.style.width = 'auto';
-    image.style.height = 'auto';
-    image.style.objectFit = 'contain';
-    image.style.cursor = 'zoom-out';
-    image.style.borderRadius = '6px';
-    image.style.boxShadow = '0 10px 40px rgba(0, 0, 0, 0.45)';
-    image.addEventListener('click', () => {
-        overlay.remove();
-    });
-
-    overlay.appendChild(image);
-    document.body.appendChild(overlay);
-}
-
-function createVariantImagesRenderer(params) {
-    const imageList = Array.isArray(params?.data?.product_variant_images)
-        ? params.data.product_variant_images
-        : [];
-    const images = imageList;
-
-    const wrapper = document.createElement('div');
-    wrapper.style.display = 'flex';
-    wrapper.style.alignItems = 'center';
-    wrapper.style.gap = '0.25rem';
-    wrapper.style.padding = '0.2rem 0';
-
-    images.forEach((url) => {
-        const img = document.createElement('img');
-        img.src = String(url);
-        img.alt = 'Variant image';
-        img.style.cursor = 'zoom-in';
-        img.style.width = '34px';
-        img.style.height = '34px';
-        img.style.objectFit = 'cover';
-        img.style.borderRadius = '4px';
-        img.style.border = '1px solid rgba(0,0,0,0.1)';
-        img.addEventListener('click', () => {
-            openImagePreviewDialog(url);
-        });
-        wrapper.appendChild(img);
-    });
-
-    return wrapper;
-}
 
 export const productDetailBaseDefinitions = [
     {
@@ -166,7 +102,11 @@ export const productDetailBaseDefinitions = [
         sortable: false,
         filter: false,
         minWidth: 140,
-        cellRenderer: createVariantImagesRenderer,
+        cellRenderer: GridImageCellRenderer,
+        cellRendererParams: {
+            idColumn: 'id',
+            url: '/admin/products/' + String(window.transferData?.product?.id) + '/variants/{id}/images',
+        },
     }
 ];
 
@@ -210,7 +150,6 @@ function createOptionRadioRenderer(values, optionId) {
 
 export function buildProductDetailDefinitions(options = []) {
     const optionColumns = (Array.isArray(options) ? options : []).map((option) => {
-        console.log(option);
         const values = Array.isArray(option.values) ? option.values : [];
         const field = option.name;
 
