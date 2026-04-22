@@ -51,12 +51,14 @@
                     :allow-escape-key="false"
                 >
                     <p class="modal-dialog__cart-text" role="status">
-                        {{ __('components.product.cart_added', [
-                            'product' => $cartAdded['product_name'],
-                            'qty' => $cartAdded['quantity'],
-                            'total' => number_format((float) $cartAdded['line_total'], 2, '.', ''),
-                            'currency' => $cartAdded['currency'],
-                        ]) }}
+                        @if (filled($cartAdded))
+                            {!! __('components.product.cart_added', [
+                                'product' => e($cartAdded['product_name']),
+                                'qty' => $cartAdded['quantity'],
+                                'total' => number_format((float) $cartAdded['line_total'], 2, '.', ''),
+                                'currency' => $cartAdded['currency'],
+                            ]) !!}
+                        @endif
                     </p>
                 </x-modal-dialog>
             @endif

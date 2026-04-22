@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use App\Models\ProductVariant;
+use App\Support\VariantPricing;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
@@ -36,6 +37,7 @@ class CartController extends Controller
 
 
         // Add to session cart
+        //session()->put('cart', []);
         $lines = session()->get('cart', []);
         $nextId = 1;
         foreach (session()->get('cart', []) as $line) {
@@ -44,23 +46,16 @@ class CartController extends Controller
             }
         }
         $nextId++;
-        $lines[] = [
-            'id' => $nextId,
-            'product_id' => $product->id,
-            'product_variant_id' => $variant?->id,
-            'quantity' => $qty,
-        ];
+        $pricing = VariantPricing::forVariantId((int) $variant->id, $qty);
+        if ($pricing === null) {
+            return redirect()->back()->withErrors(['product_variant_id' => 'Unable to calculate variant price']);
+        }
+        $newItem = array_merge(['id' => $nextId], $pricing);
+        $lines[] = $newItem;
         session()->put('cart', array_values($lines));
-
         
         // Flash message
-        $lineTotal = round($variant->price * $qty, 2);
-        session()->flash('cart_added', [
-            'product_name' => $product->name,
-            'quantity' => $qty,
-            'line_total' => $lineTotal,
-            'currency' => __('components.product.currency'),
-        ]);
+        session()->flash('cart_added', $newItem);
 
         return redirect()->back();
     }
@@ -82,5 +77,13 @@ class CartController extends Controller
     {
         session()->forget('cart');
         return redirect()->back();
+    }
+
+    public function confirmOrder(): RedirectResponse
+    {
+        // Placeholder order handling: clear session cart after confirmation.
+        session()->forget('cart');
+
+        return redirect('/cart')->with('order_confirmed', true);
     }
 }

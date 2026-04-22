@@ -8,6 +8,11 @@ return [
         'message_sent_flash' => 'Your message has been sent successfully. We typically respond within 24 hours.',
     ],
     'product' => [
+        'product' => 'Product',
+        'quantity' => 'Quantity',
+        'total' => 'Total',
+        'discount' => 'Discount',
+        'discounted_price' => 'Discounted price',
         'featured' => 'Featured',
         'out_of_stock' => 'Out of stock',
         'price' => 'Price',
@@ -27,7 +32,7 @@ return [
         'qty_plus_open' => '+',
         'cart_added_title' => 'Added to cart',
         'cart_added_ok' => 'OK',
-        'cart_added' => ':product — quantity :qty — total :total :currency added to your cart.',
+        'cart_added' => 'Product: :product<br>Quantity: :qty<br>Total: :total :currency <br>Was added to your cart.',
         'product_options' => 'Product options',
         'option_value_label' => ':option — :value',
         'option_select_placeholder' => 'Choose :option…',
@@ -35,6 +40,7 @@ return [
         'product_default_photo' => 'Default product photo',
         'options_extra_region' => 'Additional product options',
         'options_extra_heading' => 'Additional options',
+        'size_chart' => 'Size chart',
     ],
     'products' => [
         'filter_category' => 'Category',

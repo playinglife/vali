@@ -137,7 +137,8 @@ a.light-mode {
 
 
  // BUTTONS
-button:not(.ignore-global):not(.ag-button) {
+button:not(.ignore-global):not(.ag-button),
+a.button:not(.ignore-global):not(.ag-button) {
   background-color: var(--color-background-transparent-dark);
   border: 0.03em solid var(--color-background-transparent-dark-border);
   border-radius: var(--border-radius-small);
@@ -154,17 +155,23 @@ button:not(.ignore-global):not(.ag-button) {
   padding: var(--padding-small);
   text-transform: uppercase;
   font-family: $font-family-one;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
-button:not(.ignore-global):not(.ag-button).button-icon {
+button:not(.ignore-global):not(.ag-button).button-icon,
+a.button:not(.ignore-global):not(.ag-button).button-icon {
     font-size: 0.35em;
 }
 
-button:not(.ignore-global):not(.ag-button):hover {
+button:not(.ignore-global):not(.ag-button):hover,
+a.button:not(.ignore-global):not(.ag-button):hover {
   opacity: .7;
 }
 
-button>svg {
+.button > svg {
     width: 2em;
     height: 2em;
     display: block;

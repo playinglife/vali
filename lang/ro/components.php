@@ -8,6 +8,11 @@ return [
         'message_sent_flash' => 'Mesajul tău a fost trimis cu succes. De obicei răspundem în 24 de ore.',
     ],
     'product' => [
+        'product' => 'Produs',
+        'quantity' => 'Cantitate',
+        'total' => 'Total',
+        'discount' => 'Reducere',
+        'discounted_price' => 'Preț redus',
         'featured' => 'Recomandat',
         'out_of_stock' => 'Stoc epuizat',
         'price' => 'Preț',
@@ -35,6 +40,7 @@ return [
         'product_default_photo' => 'Fotografia principală a produsului',
         'options_extra_region' => 'Opțiuni produs suplimentare',
         'options_extra_heading' => 'Opțiuni suplimentare',
+        'size_chart' => 'Diagramă dimensiuni',
     ],
     'products' => [
         'filter_category' => 'Categorie',

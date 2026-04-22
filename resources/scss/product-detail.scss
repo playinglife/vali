@@ -202,3 +202,24 @@ button.root-product-detail__thumb--active {
     opacity: 0.5;
     cursor: not-allowed;
 }
+
+.svg-size-chart {
+    width: 7em;
+    height: 7em;
+}
+
+.root-product-detail__size-chart {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--gap-small);
+    & > h4 {
+        margin: 0;
+    }
+}
+
+.root-product-detail__media-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-small);
+}

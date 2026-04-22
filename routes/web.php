@@ -15,6 +15,8 @@ Route::post('/locale', [LocaleController::class, 'update'])->name('locale.update
 
 Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
 Route::post('/cart/remove', [CartController::class, 'remove'])->name('cart.remove');
+Route::post('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
+Route::post('/checkout/confirm-order', [CartController::class, 'confirmOrder'])->name('confirm_order');
 
 Route::get('/', function () {
     return view('pages.home');
@@ -41,10 +43,16 @@ Route::get('/products/{product:slug}', function (Product $product) {
 
     return view('pages.product', ['product' => $product]);
 })->name('products.show');
+Route::get('/size-chart', function () {
+    return view('pages.size-chart');
+})->name('size-chart');
 
 Route::get('/cart', function () {
     return view('pages.cart');
 });
+Route::get('/checkout', function () {
+    return view('pages.checkout');
+})->name('checkout');
 
 Route::get('/teachers', function () {
     return view('pages.teachers');

@@ -22,10 +22,7 @@
     }
 @endphp
 
-<dialog
-    id="{{ $id }}"
-    class="modal-dialog {{ $mode === 'zoom' ? 'modal-dialog--zoom' : 'modal-dialog--message' }}"
-    aria-modal="true"
+<dialog id="{{ $id }}" class="modal-dialog {{ $mode === 'zoom' ? 'modal-dialog--zoom' : 'modal-dialog--message' }}" aria-modal="true"
     @if(filled($ariaLabel)) aria-label="{{ $ariaLabel }}" @endif
     @if($mode === 'zoom')
         data-lightbox-min-zoom="{{ $lightboxMinZoom }}"
@@ -37,11 +34,7 @@
 >
     @if($mode === 'zoom')
         <div class="modal-dialog__pane">
-            <button
-                type="button"
-                class="modal-dialog__close"
-                aria-label="{{ $closeLabel }}"
-            >
+            <button type="button" class="modal-dialog__close" aria-label="{{ $closeLabel }}">
                 ×
             </button>
             <div class="modal-dialog__lightbox-zoom-wrap">
@@ -51,11 +44,7 @@
     @else
         <div class="modal-dialog__message-shell">
             @if ($showCloseButton)
-                <button
-                    type="button"
-                    class="modal-dialog__close modal-dialog__close--message"
-                    aria-label="{{ $closeLabel }}"
-                >
+                <button type="button" class="modal-dialog__close modal-dialog__close--message" aria-label="{{ $closeLabel }}">
                     ×
                 </button>
             @endif
@@ -168,7 +157,7 @@
             margin: 0;
             padding: var(--padding-small);
             border-radius: var(--border-radius-medium);
-            background: var(--color-background-transparent-light);
+            background: var(--color-background-light);
             color: var(--color-text-dark);
             box-shadow: 0 0.5rem 2rem color-mix(in srgb, black 18%, transparent);
         }

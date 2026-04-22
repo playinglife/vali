@@ -62,8 +62,14 @@ What can we offer you?',
         'unit_price' => 'Preț unitar',
         'line_total' => 'Subtotal',
         'grand_total' => 'Total',
+        'checkout' => 'Finalizare',
         'default_line' => 'Standard',
         'variant_fallback' => 'Variantă #:id',
         'unit' => 'bucăți',
+    ],
+
+    'checkout' => [
+        'title1' => 'Finalizare',
+        'confirm_order' => 'Confirmă comanda',
     ],
 ];

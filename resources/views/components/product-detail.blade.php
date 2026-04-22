@@ -168,7 +168,7 @@
 
     <!-- PRODUCT DETAIL -->
     <div class="grid root-product-detail__grid">
-        <div class="col">
+        <div class="col root-product-detail__media-container">
 
 
             <!-- MAIN IMAGE -->
@@ -232,18 +232,25 @@
                 <!-- PRICES -->
                 <div class="root-product-detail__prices" aria-label="{{ __('components.product.price') }}">
                     <!-- COMPARE PRICE -->
+                     @php
+                         $discountedPrice = null;
+                         if ($hasVariants ? $selectedVariant->discount_type !== null && $selectedVariant->discount !== null && $selectedVariant->discount > 0 : $Product->discount_type !== null && $Product->discount !== null && $Product->discount > 0){
+                            $discountedPrice = $selectedVariant->discount_type === \App\Enums\DiscountType::Percentage ? $selectedVariant->price * (1 - $selectedVariant->discount / 100) : $selectedVariant->price - $selectedVariant->discount;
+                         }else{
+                            $discountedPrice = null;
+                         }
+                     @endphp
                     <span data-reference="product-detail-compare-price" class="root-product-detail__compare" 
-                        @if ($selectedVariant->discount_type === null || $selectedVariant->discount === null || $selectedVariant->discount == 0) hidden @endif
-                        @php
-                            $comparePrice = $selectedVariant->discount_type === \App\Enums\DiscountType::Percentage ? $selectedVariant->price * (1 - $selectedVariant->discount / 100) : $selectedVariant->price - $selectedVariant->discount;
-                        @endphp
+                        @if ($discountedPrice === null) 
+                        hidden 
+                        @endif
                         <s>
-                            <span data-reference="product-detail-compare-price-value">{{ number_format($comparePrice, 2) }}</span>
+                            <span data-reference="product-detail-compare-price-value">{{ $selectedVariant->price }}</span>
                             <span data-reference="product-detail-compare-price-currency">{{ __('components.product.currency') }}</span>
                         </s>
                     </span>
                     <span class="root-product-detail__price">
-                        <span data-reference="product-detail-price-value">{{ number_format($selectedVariant->price, 2) }}</span>
+                        <span data-reference="product-detail-price-value">{{ $discountedPrice !== null ? number_format($discountedPrice, 2) : number_format($selectedVariant->price, 2) }}</span>
                         <span>{{ __('components.product.currency') }}</span>
                         </span>
                 </div>
@@ -298,6 +305,17 @@
                 </div>
             @endif
 
+            <!-- Size chart -->
+            <x-miniviews.group>
+                <div class="root-product-detail__size-chart">
+                    <h4 class="dark label">{{ __('components.product.size_chart') }}</h4>
+                    <div>
+                        <a href="{{ route('size-chart') }}" target="_blank">
+                            <x-svg name="size-chart" class="svg-size-chart" />
+                        </a>
+                    </div>
+                </div>
+            </x-miniviews.group>
 
             <!-- Price brackets -->
             @foreach ($Product->Variants as $variant)
@@ -580,19 +598,24 @@
         function updateMainImage(event, element) {
             resetProductDetailLightboxZoom();
             const imageId = element.dataset.imageId;
-            const image = data.displayedImages.find(image => image.id == imageId);
+            const image = (data.displayedImages || []).find(image => image.id == imageId);
             const mainImg = root.querySelector('.root-product-detail__img');
-            if (data.hasVariants) {
-                const variant = data.Product.Variants.find(variant => variant.VariantImages.some(image => image.id == imageId));
-                if (variant) {
-                    mainImg.src = variant.image;
-                    mainImg.alt = variant.name;
-                }
-            }else{
-                const productImage = data.Product.ProductImages.find(image => image.id == imageId);
-                if (productImage) {
+            if (!mainImg) {
+                return;
+            }
+
+            // Always prefer the clicked thumbnail's own image.
+            if (image && image.image) {
+                mainImg.src = image.image;
+                mainImg.alt = image.alt || data.Product?.name || '';
+                return;
+            }
+
+            if (!data.hasVariants) {
+                const productImage = (data.Product?.ProductImages || []).find(image => image.id == imageId);
+                if (productImage && productImage.image) {
                     mainImg.src = productImage.image;
-                    mainImg.alt = productImage.alt;
+                    mainImg.alt = productImage.alt || data.Product?.name || '';
                 }
             }
         }

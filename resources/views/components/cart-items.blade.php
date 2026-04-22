@@ -153,12 +153,16 @@ use App\Models\ProductOption;
                             <td class="root-cart-items__total-value"> 
                                 {{ $total }}
                             </td>
-                            <td> {{ __('components.product.currency') }} </td>
+                            <td class="root-cart-items__total-currency"> {{ __('components.product.currency') }} </td>
                         </tr>
                     </table>
                 </div>
-                <div class="col">
-                    <x-button text="Checkout" aria-label="{{ __('pages.cart.remove_item') }}" />
+                <div class="col root-cart-items__total-buttons">
+                    <form method="post" action="{{ route('cart.clear') }}">
+                        @csrf
+                        <x-button type="submit" text="Clear cart" aria-label="{{ __('pages.cart.clear_cart') }}" />
+                    </form>
+                    <x-button text="{{ __('pages.cart.checkout') }}" url="{{ route('checkout') }}" aria-label="{{ __('pages.cart.checkout') }}" />
                 </div>
             </div>
         </x-miniviews.panel>
@@ -245,6 +249,9 @@ use App\Models\ProductOption;
                 color: var(--color-text-dark);
                 padding: 0 var(--padding-tiny);
             }
+            & > .col:first-child > table > tbody > tr > td.root-cart-items__total-currency {
+                padding-left: 0;
+            }
         }
 
         .root-cart-items__total-text {
@@ -261,6 +268,17 @@ use App\Models\ProductOption;
             flex-direction: column;
             font-size: var(--text-size-tiny);
             gap: var(--gap-medium);
+        }
+        .root-cart-items__total-buttons {
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-end;
+            gap: var(--gap-medium);
+            padding: var(--padding-small);
+            & > form {
+                margin: 0;
+                padding: 0;
+            }
         }
     </style>
 @endonce

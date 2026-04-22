@@ -60,8 +60,14 @@ What can we offer you?',
         'unit_price' => 'Unit price',
         'line_total' => 'Line total',
         'grand_total' => 'Total',
+        'checkout' => 'Checkout',
         'default_line' => 'Standard',
         'variant_fallback' => 'Variant #:id',
         'unit' => 'Items',
+    ],
+
+    'checkout' => [
+        'title1' => 'Checkout',
+        'confirm_order' => 'Confirm order',
     ],
 ];
