@@ -30,7 +30,7 @@
             background-size: cover;
             background-position: top;
             background-repeat: no-repeat;
-            min-height: 100%;
+            min-height: 0;
             display: flex;
             flex-direction: column;            
             &::before {

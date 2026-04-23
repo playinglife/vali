@@ -147,6 +147,9 @@ We are open to new collaborations with clients across Europe. If you have a requ
         'message' => 'Get in touch with us and we will get back to you as soon as possible.
 
 Email: info@shirthouse.ro',
-        'back_to_products' => 'Back to products',
+        'address' => 'Address',
+        'address_text' => 'Liberty Street 9<br>Sighișoara, Romania',
+        'email' => 'Email',
+        'email_text' => 'comenzi@shirthouse.ro<br>0740 123 456',
     ],
 ];

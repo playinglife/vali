@@ -46,6 +46,8 @@
             background-color: var(--color-background-transparent-light);
             border: 1px solid var(--color-background-transparent-light-border);
             border-radius: var(--border-radius-small);
+            gap: var(--gap-large);
+            padding: var(--padding-huge);
         }
     }
     </style>

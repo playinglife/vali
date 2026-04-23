@@ -7,11 +7,15 @@
         <x-miniviews.panel :padding="false">
             <div class="root-contact__line">
                 <div class="root-contact__line-content">
-                    <div class="col">
-                        
+                    <div class="col root-contact__line-content-left">
+                        <x-icon name="heroicon-s-map-pin" class="small-icon" />
+                        <h4 class="dark">{{ __('pages.contact.address') }}</h4>
+                        <p class="dark">{!! __('pages.contact.address_text') !!}</p>
                     </div>
-                    <div class="col">
-                        
+                    <div class="col root-contact__line-content-right">
+                        <x-icon name="heroicon-s-envelope" class="small-icon" />
+                        <h4 class="dark">{{ __('pages.contact.email') }}</h4>
+                        <p class="dark">{!! __('pages.contact.email_text') !!}</p>
                     </div>
                 </div>
             </div>
@@ -42,12 +46,41 @@
         .root-contact__line-content {
             width: 100%;
             display: flex;
-            flex-direction: column;
+            flex-direction: row;
             gap: var(--gap-medium);
-            padding: var(--padding-huge);
             box-sizing: border-box;
             & > iframe {
                 width: 100%;
+            }
+            & > .root-contact__line-content-left {
+                flex: 1 1 auto;
+                min-width: 0;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                gap: var(--gap-small);
+                p {
+                    align-self: stretch;
+                    text-align: center;
+                    font-size: var(--text-size-normal);
+                    margin: 0;
+                }
+            }
+            & > .root-contact__line-content-right {
+                flex: 1 1 auto;
+                min-width: 0;
+                display: flex;
+                flex-direction: column;
+                gap: var(--gap-small);
+                justify-content: center;
+                align-items: center;
+                p {
+                    align-self: stretch;
+                    text-align: center;
+                    font-size: var(--text-size-normal);
+                    margin: 0;
+                }
             }
         }
         .root-contact__main-title {
