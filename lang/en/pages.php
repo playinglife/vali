@@ -56,6 +56,7 @@ What can we offer you?',
     'cart' => [
         'title1' => 'Shopping Cart',
         'empty' => 'Your cart is empty.',
+        'no_items_flash' => 'There are no items in your cart.',
         'quantity' => 'Quantity',
         'unit_price' => 'Unit price',
         'line_total' => 'Line total',

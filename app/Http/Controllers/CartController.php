@@ -8,9 +8,24 @@ use App\Support\VariantPricing;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use App\Models\Order;
+use Illuminate\Contracts\View\View;
 
 class CartController extends Controller
 {
+    public function showCheckout(): View|RedirectResponse
+    {
+        return $this->redirectIfCartEmpty() ?? view('pages.checkout');
+    }
+
+    protected function redirectIfCartEmpty(): ?RedirectResponse
+    {
+        if (session()->get('cart', []) === []) {
+            return redirect()->route('cart')->withNotify('info', __('pages.cart.no_items_flash'));
+        }
+
+        return null;
+    }
+
     public function add(Request $request): RedirectResponse
     {
         $validated = $request->validate([
@@ -82,6 +97,10 @@ class CartController extends Controller
 
     public function confirmOrder(Request $request): RedirectResponse
     {
+        if (($redirect = $this->redirectIfCartEmpty()) !== null) {
+            return $redirect;
+        }
+
         $request->validate([
             'email' => ['required', 'string', 'email', 'max:255'],
             'name' => ['required', 'string', 'max:255'],

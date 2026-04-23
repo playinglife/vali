@@ -58,6 +58,7 @@ What can we offer you?',
     'cart' => [
         'title1' => 'Coș de cumpărături',
         'empty' => 'Coșul tău este gol.',
+        'no_items_flash' => 'Nu există articole în coș.',
         'quantity' => 'Cantitate',
         'unit_price' => 'Preț unitar',
         'line_total' => 'Subtotal',

@@ -18,6 +18,7 @@
             <x-flash-messages />
             <!-- Menu -->
             <div class="admin-menu">
+                <x-admin.admin-menu />
                 <div class="admin-menu-left">
                     @yield('admin-menu-left')
                 </div>

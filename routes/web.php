@@ -7,6 +7,8 @@ use App\Features\Admin\Controllers\AuthController;
 use App\Features\Admin\Controllers\DashboardController;
 use App\Features\Admin\Controllers\ProductController;
 use App\Features\Admin\Controllers\ProductOptionController;
+use App\Features\Admin\Controllers\OrderController;
+use App\Features\Admin\Controllers\OrderItemController;
 use App\Features\Admin\Controllers\ProductVariantController;
 use App\Models\Product;
 use Illuminate\Support\Facades\Route;
@@ -49,10 +51,8 @@ Route::get('/size-chart', function () {
 
 Route::get('/cart', function () {
     return view('pages.cart');
-});
-Route::get('/checkout', function () {
-    return view('pages.checkout');
-})->name('checkout');
+})->name('cart');
+Route::get('/checkout', [CartController::class, 'showCheckout'])->name('checkout');
 Route::get('/thankyou', function () {
     return view('pages.thankyou');
 })->name('thankyou');
@@ -97,6 +97,31 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
     Route::middleware('auth')->group(function () {
         Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+        Route::get('/order-records', [OrderController::class, 'index'])->name('order-records.index');
+        Route::post('/order-records', [OrderController::class, 'store'])->name('order-records.store');
+        Route::put('/order-records/{order}', [OrderController::class, 'update'])
+            ->whereNumber('order')
+            ->name('order-records.update');
+        Route::delete('/order-records/{orders}', [OrderController::class, 'destroy'])->name('order-records.destroy');
+
+        Route::get('/orders/{order}', [DashboardController::class, 'orderDetail'])
+            ->whereNumber('order')
+            ->name('orders.show');
+        Route::get('/orders', [DashboardController::class, 'orders'])->name('orders');
+
+        Route::get('/orders/{order}/items', [OrderItemController::class, 'index'])
+            ->whereNumber('order')
+            ->name('orders.items.index');
+        Route::post('/orders/{order}/items', [OrderItemController::class, 'store'])
+            ->whereNumber('order')
+            ->name('orders.items.store');
+        Route::put('/orders/{order}/items/{item}', [OrderItemController::class, 'update'])
+            ->whereNumber(['order', 'item'])
+            ->name('orders.items.update');
+        Route::delete('/orders/{order}/items/{orderItems}', [OrderItemController::class, 'destroy'])
+            ->whereNumber('order')
+            ->name('orders.items.destroy');
+
         Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
         Route::get('/products', [ProductController::class, 'index'])->name('products.index');

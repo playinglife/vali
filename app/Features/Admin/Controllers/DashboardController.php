@@ -3,9 +3,11 @@
 namespace App\Features\Admin\Controllers;
 
 use App\Features\Admin\Resources\OptionResource;
+use App\Features\Admin\Resources\OrderResource;
 use App\Features\Admin\Resources\ProductResource;
 use App\Features\Admin\Resources\VariantResource;
 use App\Http\Controllers\Controller;
+use App\Models\Order;
 use App\Models\Product;
 use App\Models\ProductOption;
 use Illuminate\View\View;
@@ -42,6 +44,29 @@ class DashboardController extends Controller
             'product' => ProductResource::make($product)->resolve(),
             'variants' => VariantResource::collection($product->Variants)->resolve(),
             'options' => OptionResource::collection($options)->resolve(),
+        ]);
+    }
+
+    public function orders(): View
+    {
+        $orders = Order::query()
+            ->with([
+                'Items',
+            ])
+            ->orderByDesc('id')
+            ->get();
+
+        return view('pages.admin.orders', [
+            'orders' => OrderResource::collection($orders)->resolve(),
+        ]);
+    }
+
+    public function orderDetail(Order $order): View
+    {
+        $order->load(['Items', 'User']);
+
+        return view('pages.admin.order-detail', [
+            'order' => OrderResource::make($order)->resolve(),
         ]);
     }
 }
