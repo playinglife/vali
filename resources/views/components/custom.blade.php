@@ -1,8 +1,7 @@
-<x-menu-height-compensator />
 <div data-reference="custom" class="root-custom">
     <div class="grid root-custom__grid">
         <div class="grid grid-middle grid-center root-custom__main-title">
-            <h2 class="dark"> {{ __('pages.custom.title1') }} </h2>
+            <h2> {{ __('pages.custom.title1') }} </h2>
         </div>
         <x-miniviews.panel :padding="false">
             <div class="root-custom__line">
@@ -25,6 +24,7 @@
             flex-direction: column;
             gap: var(--gap-medium);
             flex: 1 0 auto;
+            padding-top: 4em;
         }
         .root-custom__grid {
             gap: var(--gap-large);

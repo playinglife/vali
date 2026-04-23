@@ -32,7 +32,7 @@ class VariantPricing
             'price' => $unitPrice,
             'discount' => $variant->discount,
             'discount_type' => $variant->discount_type?->value ?? (string) $variant->discount_type,
-            'discount_price' => $variant->discount_type === DiscountType::Percentage ? $unitPrice * $variant->discount / 100 : $unitPrice - $variant->discount,
+            'discount_price' => $variant->discount_type === DiscountType::Percentage ? $unitPrice - ($variant->discount * $unitPrice / 100) : $unitPrice - $variant->discount,
             'currency' => __('components.product.currency'),
         ];
         $data['total'] = round($data['discount_price'] * $qty, 2);

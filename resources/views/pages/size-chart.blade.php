@@ -3,7 +3,6 @@
 @section('title','Size Chart')
 
 @section('content')
-    <x-menu-height-compensator />
     <div class="root-views-size-chart">
         <div class="grid root-views-size-chart__grid">
             <div class="grid grid-middle grid-center root-views-size-chart__main-title">
@@ -47,10 +46,27 @@
             flex: 1;
             min-height: 0;
             overflow: auto;
-            background-image: url("{{ asset('images/detailed.jpg') }}");
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
+            position: relative;
+            isolation: isolate;
+            padding-top: 4em;
+            padding-bottom: 0em;
+            &::before {
+                content: '';
+                position: fixed;
+                inset: 0;
+                background-image: url("{{ asset('images/sizechart.png') }}");
+                background-size: cover;
+                background-position: center;
+                background-repeat: no-repeat;
+                filter: blur(8px);
+                transform: scale(1.05);
+                z-index: -1;
+                pointer-events: none;
+            }
+            & > * {
+                position: relative;
+                z-index: 1;
+            }
             & > .page-1 {
                 width: 100%;
                 height: 100%;

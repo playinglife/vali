@@ -17,7 +17,6 @@
 @once
     <style lang="scss" scoped>
     .root-miniviews-section {
-        min-height: 100%;
         width: 100%;
         position: relative;
         display: flex;

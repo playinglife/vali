@@ -44,7 +44,6 @@ use App\Models\ProductOption;
 
 
 <!-- TEMPLATE -->
-<x-menu-height-compensator />
 <div data-reference="checkout" class="root-checkout">
     <script type="application/json" class="product-detail-json">
         @json($transferData)
@@ -182,6 +181,7 @@ use App\Models\ProductOption;
             display: flex;
             flex-direction: column;
             gap: var(--gap-medium);
+            padding-top: 4em;
         }
         .root-checkout__grid {
             gap: var(--gap-large);

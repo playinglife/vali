@@ -19,7 +19,7 @@
             <!-- Menu -->
             @include('layouts.menu')
             <!-- Content -->
-            <div id="main-content" class="main-content">
+            <div id="main-content" @class(['main-content', 'main-content--scroll' => $scroll ?? false])>
             <!--<div class="flex flex-1 relative">-->
                 @yield('content')
             </div>
@@ -56,7 +56,7 @@
                             <table class="modal-dialog__cart-table">
                                 <tr>
                                     <td colspan="2" class="modal-dialog__cart-table-title">
-                                        <h4 class="dark">{{ __('components.product.cart_added_title') }}</h4>
+                                        <h4 class="light">{{ __('components.product.cart_added_title') }}</h4>
                                     </td>
                                 </tr>
                                 <tr>
@@ -108,34 +108,38 @@
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            & > .main-content {
-                width: 100%;
-                height: 100%;
-                box-sizing: border-box;
-                flex: 1;
-                z-index: 0;
-                display: flex;
-                flex-direction: column;
-                overflow: auto;
-                box-sizing: border-box;
+        }
+        .main-content {
+            width: 100%;
+            height: 100%;
+            box-sizing: border-box;
+            flex: 1;
+            z-index: 0;
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box;
+            overflow: hidden;
+            position: relative;
+            isolation: isolate;
+        }
+        .main-content--scroll {
+            overflow: auto;
+        }
+        .modal-dialog__cart-table {
+            width: 100%;
+            border-collapse: collapse;
+            border: none;
+            & > tbody > tr {
+                & > td {
+                    color: var(--color-text-light);
+                    font-family: var(--font-family-one);
+                    font-weight: var(--font-weight-bold);
+                    font-size: var(--text-size-tiny);
+                }
             }
-            .modal-dialog__cart-table {
-                width: 100%;
-                border-collapse: collapse;
-                border: none;
-                & > tr {
-                    & > td {
-                        color: var(--color-text-dark);
-                        font-family: var(--font-family-one);
-                        font-weight: var(--font-weight-bold);
-                        font-size: var(--text-size-normal);
-                        padding: var(--padding-small);
-                    }
-                }
-                .modal-dialog__cart-table-title {
-                    text-align: center;
-                    padding: var(--padding-small);
-                }
+            .modal-dialog__cart-table-title {
+                text-align: center;
+                padding: var(--padding-small);
             }
         }
     </style>

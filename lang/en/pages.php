@@ -96,7 +96,7 @@ What can we offer you?',
     ],
     'thankyou' => [
         'title1' => 'Thank you for your order!',
-        'message' => 'Your order was registered successfully. We will contact you soon to confirm details.',
+        'message' => 'Your order was registered successfully.<br>We will contact you soon to confirm details.',
         'back_to_products' => 'Back to products',
     ],
     'custom' => [
@@ -131,7 +131,7 @@ Don’t like the shape of the collar, cuff or pocket? We can adapt it. Do you wa
 At Shirthouse, no detail is too small – as long as it’s important to you.',
     ],
     'aboutus' => [
-        'title1' => 'Who we are',
+        'title1' => 'Who We Are',
         'message' => '<b>Shirt House SRL</b> is a manufacturing company specializing in men’s shirts and women’s blouses, located in the beautiful city of Sighișoara in the Transylvania region of Romania. With a rich history in the clothing production industry and a dedicated team, we are committed to offering the highest quality products and excellent services.
 
 At our factory, we pay special attention to the quality and durability of every item we produce. Each piece undergoes careful inspection, and the materials used are selected with the utmost care to ensure they stand the test of time. We take pride in providing our customers not only with aesthetically pleasing products but also with reliable ones that maintain their beauty and functionality over the long term.

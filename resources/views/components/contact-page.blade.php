@@ -1,8 +1,7 @@
-<x-menu-height-compensator />
 <div data-reference="contact" class="root-contact">
     <div class="grid root-contact__grid">
         <div class="grid grid-middle grid-center root-contact__main-title">
-            <h2 class="dark"> {{ __('pages.contact.title1') }} </h2>
+            <h2> {{ __('pages.contact.title1') }} </h2>
         </div>
         <x-miniviews.panel :padding="false">
             <div class="root-contact__line">
@@ -38,6 +37,7 @@
             flex-direction: column;
             gap: var(--gap-medium);
             flex: 1 0 auto;
+            padding-top: 4em;
         }
         .root-contact__grid {
             gap: var(--gap-large);

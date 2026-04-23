@@ -501,10 +501,11 @@
             flex-wrap: wrap;
             align-items: center;
             gap: var(--padding-medium);
-            font-size: var(--text-size-small);
+            font-size: var(--text-size-tiny);
             padding: var(--padding-small);
             margin-top: calc(var(--padding-large) * 3);
             color: var(--color-text-dark);
+            font-family: var(--font-family-one);
         }
         .root-products__results [data-root-products-filter-toggle] {
         }

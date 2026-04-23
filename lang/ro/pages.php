@@ -98,7 +98,7 @@ What can we offer you?',
     ],
     'thankyou' => [
         'title1' => 'Mulțumim pentru comandă!',
-        'message' => 'Comanda ta a fost înregistrată cu succes. Te vom contacta curând pentru confirmarea detaliilor.',
+        'message' => 'Comanda ta a fost înregistrată cu succes.<br>Te vom contacta curând pentru confirmarea detaliilor.',
         'back_to_products' => 'Înapoi la produse',
     ],
     'custom' => [
@@ -120,7 +120,7 @@ Modelele din colecția noastră pot fi ajustate în orice fel:
 • adaptări stilistice (croială, lungime, sistem de închidere)'
     ],
     'aboutus' => [
-        'title1' => 'Cine suntem',
+        'title1' => 'Cine Suntem',
         'message' => '<b>Shirt House SRL</b> este o companie de producție care se specializează în cămăși pentru bărbați și bluzuri pentru femei, situată în orașul frumos de Sighișoara din regiunea Transilvania, România. Cu o istorie bogată în industria de producție a hainelor și un echipă dedicată, suntem dedicați oferind produse de cea mai înaltă calitate și servicii excelente.
 
 În fabrică, acordăm o atenție deosebită calității și durabilității fiecărui produs pe care îl fabricăm. Fiecare piesă este supusă unei inspectări atente, iar materialele utilizate sunt selectate cu mare grijă pentru a asigura că își mențin frumusețea și funcționalitatea pe termen lung. Ne bucurăm să oferim clienților noștri nu doar produse estetic de plăcere, ci și fiabile care își mențin frumusețea și funcționalitatea pe termen lung.

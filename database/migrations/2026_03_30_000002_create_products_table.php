@@ -21,7 +21,6 @@ return new class extends Migration
             $table->decimal('price', 10, 2);
             $table->string('discount_type')->nullable();
             $table->decimal('discount', 10, 2)->nullable();
-            $table->decimal('cost', 10, 2)->nullable();
             $table->boolean('is_active')->default(true);
             $table->boolean('is_featured')->default(false);
             $table->decimal('weight', 10, 3)->nullable();

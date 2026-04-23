@@ -19,20 +19,25 @@
             overflow: auto;
             position: relative;
             isolation: isolate;
-            background-image: url("{{ asset('images/cart.png') }}");
-            background-size: cover;
-            background-position: top;
-            background-repeat: no-repeat;
             min-height: 0;
             display: flex;
             flex-direction: column;
             &::before {
-                width: 100%;
-                height: 100%;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
+                content: '';
+                position: fixed;
+                inset: 0;
+                background-image: url("{{ asset('images/aboutus.jpg') }}");
+                background-size: cover;
+                background-position: top;
+                background-repeat: no-repeat;
+                filter: blur(8px);
+                transform: scale(1.05);
+                z-index: -1;
+                pointer-events: none;
+            }
+            & > * {
+                position: relative;
+                z-index: 1;
             }
         }
     </style>

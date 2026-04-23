@@ -68,6 +68,8 @@
             box-sizing: border-box;
             z-index: 1;
             width: 100%;
+            height: auto;
+            flex: 0 0 auto;
             margin-top: auto;
             min-height: 4em;
             padding: var(--padding-small);
@@ -78,7 +80,8 @@
             backdrop-filter: blur(10px);
             border-top: 1px solid var(--color-border);
             align-items: stretch;
-            overflow: hidden;
+            position: relative;
+            overflow: visible;
 
             &.root-views-layouts-footer--has-bg::before {
                 content: '';

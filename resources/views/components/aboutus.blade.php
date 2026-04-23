@@ -1,8 +1,7 @@
-<x-menu-height-compensator />
 <div data-reference="aboutus" class="root-aboutus">
     <div class="grid root-aboutus__grid">
         <div class="grid grid-middle grid-center root-aboutus__main-title">
-            <h2 class="dark"> {{ __('pages.aboutus.title1') }} </h2>
+            <h2> {{ __('pages.aboutus.title1') }} </h2>
         </div>
         <x-miniviews.panel :padding="false">
             <div class="root-aboutus__line">
@@ -25,6 +24,7 @@
             flex-direction: column;
             gap: var(--gap-medium);
             flex: 1 0 auto;
+            padding-top: 4em;
         }
         .root-aboutus__grid {
             gap: var(--gap-large);
@@ -53,11 +53,6 @@
             justify-content: center;
             & > p {
                 white-space: pre-line;
-            }
-            & > p b,
-            & > p strong {
-                font-family: "Roboto Black", sans-serif !important;
-                font-weight: 900 !important;
             }
         }
         .root-aboutus__line-content-item-buttons {

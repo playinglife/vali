@@ -30,7 +30,7 @@ use App\Models\ProductOption;
             ];
 
             $totalItems += $sessionLine['quantity'];
-            $total += $sessionLine['quantity'] * $variant->price;
+            $total += $sessionLine['quantity'] * ($sessionLine['discount_price'] !== null ? $sessionLine['discount_price'] : $sessionLine['price']);
         }
     }
 
@@ -49,7 +49,6 @@ use App\Models\ProductOption;
 
 
 <!-- TEMPLATE -->
-<x-menu-height-compensator />
 <div data-reference="cart-items" class="root-cart-items">
     <script type="application/json" class="product-detail-json">
         @json($transferData)
@@ -89,7 +88,7 @@ use App\Models\ProductOption;
                                 </div>
                                 <p class="text-small"> {{ $variant->product->localizedDescription() }} </p>
                                 <p class="text-small"> {{ $variant->localizedDescription() }} </p>
-                                <p class="root-cart-items__line-total"> {{ $sessionLine['quantity'] }}  {{ __('pages.cart.unit') }}  x  {{ $sessionLine['price'] }} {{ __('components.product.currency') }} = {{ $sessionLine['quantity'] * $variant->price }} {{ __('components.product.currency') }} </p>
+                                <p class="root-cart-items__line-total"> {{ $sessionLine['quantity'] }}  {{ __('pages.cart.unit') }}  x  {{ $sessionLine['discount_price'] !== null ? $sessionLine['discount_price'] : $sessionLine['price'] }} {{ __('components.product.currency') }} = {{ $sessionLine['quantity'] * ($sessionLine['discount_price'] !== null ? $sessionLine['discount_price'] : $sessionLine['price']) }} {{ __('components.product.currency') }} </p>
 
                                 <div class="root-cart-items__options">
                                     @foreach ($variant->Values as $value)
@@ -184,6 +183,7 @@ use App\Models\ProductOption;
             flex-direction: column;
             gap: var(--gap-medium);
             flex: 1 0 auto;
+            padding-top: 4em;
         }
         .root-cart-items__grid {
             gap: var(--gap-large);

@@ -157,9 +157,28 @@
             margin: 0;
             padding: var(--padding-small);
             border-radius: var(--border-radius-medium);
-            background: var(--color-background-light);
+            position: relative;
+            overflow: hidden;
+            isolation: isolate;
             color: var(--color-text-dark);
             box-shadow: 0 0.5rem 2rem color-mix(in srgb, black 18%, transparent);
+        }
+        .modal-dialog__message-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: url("{{ asset('images/added_to_cart.jpg') }}");
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+            filter: blur(2px);
+            transform: scale(1.05);
+            z-index: -1;
+            pointer-events: none;
+        }
+        .modal-dialog__message-card > * {
+            position: relative;
+            z-index: 1;
         }
         .modal-dialog__message-card p {
             margin: 0;

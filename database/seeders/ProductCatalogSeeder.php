@@ -102,7 +102,6 @@ class ProductCatalogSeeder extends Seeder
                 'price' => $price,
                 'discount_type' => $discountType,
                 'discount' => $discount,
-                'cost' => round($price * 0.45, 2),
                 'is_active' => true,
                 'is_featured' => $i % 4 === 0,
                 'weight' => round(0.28 + ($i % 10) * 0.01, 3),

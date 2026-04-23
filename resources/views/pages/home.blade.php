@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.app', ['scroll' => true])
 
 @section('title','Dashboard')
 
@@ -93,7 +93,7 @@
                 flex-direction: column;
                 justify-content: center;
                 align-items: center;
-                background-image: url("{{ asset('images/home1.png') }}");
+                background-image: url("{{ asset('images/home1.jpg') }}");
                 background-size: cover;
                 background-position: center;
                 background-repeat: no-repeat;
@@ -103,7 +103,7 @@
                 height: 70%;
                 align-items: stretch;
                 align-content: stretch;
-                background-image: url("{{ asset('images/home2.png') }}");
+                background-image: url("{{ asset('images/home2.jpg') }}");
                 background-size: cover;
                 background-position: center;
                 background-repeat: no-repeat;

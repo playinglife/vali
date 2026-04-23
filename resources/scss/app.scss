@@ -222,14 +222,6 @@ textarea {
     visibility: hidden;
 }
 
-.light {
-    color: $color-text-light;
-}
-
-.dark {
-    color: $color-one;
-}
-
 
 // Texts across website
 .text-micro {
@@ -255,6 +247,16 @@ textarea {
 .text-large {
     font-size: var(--text-size-large);
     color: var(--color-text-dark);
+}
+
+
+
+.light {
+    color: $color-text-light;
+}
+
+.dark {
+    color: $color-one;
 }
 
 

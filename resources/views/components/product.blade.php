@@ -11,14 +11,26 @@
         $imageUrl = $product->firstVariantStorageImageUrl();
     }
 
-    $price = (float) $product->price;
-    $list = $product->listPriceBeforeDiscount();
-    $showCompare = $list !== null && $list > $price;
-
-    $inStock = $product->resolvedStockQuantity() > 0;
-    $showBadges = $product->is_featured || ! $inStock;
-    $excerpt = $product->localizedShortDescription()
-        ?? \Illuminate\Support\Str::limit(strip_tags((string) ($product->localizedDescription() ?? '')), 120);
+// check if product has at least one variant
+    $hasVariants = $product->Variants()->exists();
+    if ($hasVariants) {
+        $pricing = \App\Support\VariantPricing::forVariantId($product->DefaultVariant->id);
+        $price = $pricing['price'];
+        $discount_price = $pricing['discount_price'];
+        $showCompare = $discount_price !== null && $discount_price < $price;
+        $inStock = $product->resolvedStockQuantity() > 0;
+        $showBadges = $product->is_featured || ! $inStock;
+        $excerpt = $product->localizedShortDescription()
+            ?? \Illuminate\Support\Str::limit(strip_tags((string) ($product->localizedDescription() ?? '')), 120);
+    }else{
+        $price = (float) $product->price;
+        $list = $product->listPriceBeforeDiscount();
+        $showCompare = $list !== null && $list > $price;
+        $inStock = $product->resolvedStockQuantity() > 0;
+        $showBadges = $product->is_featured || ! $inStock;
+        $excerpt = $product->localizedShortDescription()
+            ?? \Illuminate\Support\Str::limit(strip_tags((string) ($product->localizedDescription() ?? '')), 120);
+    }
 
     $transferData = [
         'product' => $product,
@@ -89,10 +101,10 @@
             <div class="root-product-card__prices" aria-label="{{ __('components.product.price') }}">
                 @if ($showCompare)
                     <span class="root-product-card__compare"
-                        ><s class="root-product-card__compare-strike">{{ number_format($list, 2) }}&nbsp;{{ __('components.product.currency') }}</s></span
+                        ><s class="root-product-card__compare-strike">{{ number_format($price, 2) }}&nbsp;{{ __('components.product.currency') }}</s></span
                     >
                 @endif
-                <span class="root-product-card__price">{{ number_format($price, 2) }}&nbsp;{{ __('components.product.currency') }}</span>
+                <span class="root-product-card__price">{{ number_format( $showCompare ? $discount_price : $price, 2) }}&nbsp;{{ __('components.product.currency') }}</span>
             </div>
             <span class="root-product-card__sku">{{ $product->sku }}</span>
         </div>

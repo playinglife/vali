@@ -1,21 +1,9 @@
-<x-menu-height-compensator />
 <div data-reference="thankyou" class="root-thankyou">
     <div class="grid root-thankyou__grid">
         <div class="grid grid-middle grid-center root-thankyou__main-title">
-            <h2 class="dark"> {{ __('pages.thankyou.title1') }} </h2>
+            <h2> {{ __('pages.thankyou.title1') }} </h2>
+            <p class="text-small light">{!! __('pages.thankyou.message') !!}</p>
         </div>
-        <x-miniviews.panel :padding="false">
-            <div class="root-thankyou__line">
-                <div class="root-thankyou__line-content">
-                    <div class="root-thankyou__line-content-item">
-                        <p class="text-small dark">{{ __('pages.thankyou.message') }}</p>
-                    </div>
-                    <div class="root-thankyou__line-content-item-buttons">
-                        <x-button text="{{ __('pages.thankyou.back_to_products') }}" url="{{ url('/products') }}" aria-label="{{ __('pages.thankyou.back_to_products') }}" />
-                    </div>
-                </div>
-            </div>
-        </x-miniviews.panel>
     </div>
 </div>
 
@@ -28,6 +16,7 @@
             flex-direction: column;
             gap: var(--gap-medium);
             flex: 1 0 auto;
+            padding-top: 4em;
         }
         .root-thankyou__grid {
             gap: var(--gap-large);
@@ -42,6 +31,9 @@
             box-sizing: border-box;
         }
         .root-thankyou__main-title {
+            display: flex;
+            flex-direction: column;
+            gap: var(--gap-small);
             flex: 1 1 auto;
             min-width: 0;
             padding-right: var(--gap-medium);
