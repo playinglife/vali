@@ -6,6 +6,10 @@
         <x-miniviews.panel :padding="false">
             <div class="root-custom__line">
                 <div class="root-custom__line-content">
+                    <div class="root-custom__header-images">
+                        <img src="{{ asset('svgs/shirt1.svg') }}" alt="Custom Shirt" class="root-custom__header-image">
+                        <img src="{{ asset('svgs/shirt2.svg') }}" alt="Custom Shirt" class="root-custom__header-image">
+                    </div>
                     <div class="root-custom__line-content-item">
                         <p class="text-small dark">{{ __('pages.custom.message') }}</p>
                     </div>
@@ -61,6 +65,20 @@
             justify-content: center;
             gap: var(--gap-medium);
             padding: var(--padding-small);
+        }
+        .root-custom__header-images {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            gap: var(--gap-medium);
+        }
+        .root-custom__header-image {
+            width: 100%;
+            height: 100%;
+            opacity: 0.5;
+            &:hover {
+                opacity: 0.6;
+            }
         }
     </style>
 @endonce

@@ -78,13 +78,14 @@ services:
             - website
            
     vite:
+        profiles: ["dev"]
         image: node:20-alpine
         working_dir: /app
         volumes:
           - .:/app
         command: sh -c "npm i && npm run dev"
         ports:
-          - "5173:5173"   # uses your FRONTEND_URL port
+          - "5173:5173"
         networks:
           - website
         depends_on:

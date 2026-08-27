@@ -6,12 +6,13 @@
         <script>document.documentElement.classList.add('js');</script>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="robots" content="noindex, nofollow">
+        <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any">
         <title>ShirtHouse - @yield('title')</title>
+        <link rel="preload" href="{{ asset('fonts/roboto/Roboto-Regular.woff2') }}" as="font" type="font/woff2" crossorigin>
+        <link rel="preload" href="{{ asset('fonts/roboto/Roboto-Black.woff2') }}" as="font" type="font/woff2" crossorigin>
+        <link rel="stylesheet" href="{{ asset('fonts/roboto/roboto.css') }}">
         @vite(['resources/scss/app.scss','resources/js/app.js'])
         {{-- @livewireStyles --}}
-
-        <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     </head>
     <body>
         <div class="root-views-layouts-app">
