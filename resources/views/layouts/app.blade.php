@@ -5,9 +5,8 @@
         <meta charset="utf-8">
         <script>document.documentElement.classList.add('js');</script>
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="robots" content="noindex, nofollow">
+        @include('partials.seo')
         <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any">
-        <title>ShirtHouse - @yield('title')</title>
         <link rel="preload" href="{{ asset('fonts/roboto/Roboto-Regular.woff2') }}" as="font" type="font/woff2" crossorigin>
         <link rel="preload" href="{{ asset('fonts/roboto/Roboto-Black.woff2') }}" as="font" type="font/woff2" crossorigin>
         <link rel="stylesheet" href="{{ asset('fonts/roboto/roboto.css') }}">

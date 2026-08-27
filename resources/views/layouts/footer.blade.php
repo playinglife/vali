@@ -26,13 +26,13 @@
             <div class="col">
                 <div class="grid grid-1 grid-noGutter grid-center column">
                     <div class="col">
-                        <a href="/">Home</a>
+                        <a href="{{ route('home') }}">Home</a>
                     </div>
                     <div class="col">
-                        <a href="/about">About</a>
+                        <a href="{{ route('aboutus') }}">About</a>
                     </div>
                     <div class="col">
-                        <a href="/contact">Contact</a>
+                        <a href="{{ route('contact') }}">Contact</a>
                     </div>
                 </div>
             </div>

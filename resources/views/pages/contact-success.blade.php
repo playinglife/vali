@@ -1,6 +1,8 @@
 @extends('layouts.app')
 
-@section('title','Contact Success')
+@section('title', __('pages.contact_success.meta_title'))
+@section('robots','noindex, nofollow')
+@section('description', __('pages.contact_success.meta_description'))
 
 @section('content')
 

@@ -1,6 +1,7 @@
 @extends('layouts.app', ['scroll' => true])
 
-@section('title','Dashboard')
+@section('title_full', config('app.name').' | '.__('pages.home.meta_title'))
+@section('description', __('pages.home.meta_description'))
 
 @section('content')
 
@@ -29,7 +30,7 @@
 
 
         <div class="page-2">
-            <h1> {{ __('pages.home.title2') }} </h1>
+            <h2> {{ __('pages.home.title2') }} </h2>
         </div>
 
         <x-miniviews.section type="one" background="white">
@@ -43,7 +44,7 @@
 
         <div class="page-3 grid grid-3 grid-noGutter">
             <div class="page3-content col">
-                <h1> {{ __('pages.home.title3') }} </h1>
+                <h2> {{ __('pages.home.title3') }} </h2>
                 <form action="">
                     <div>
                         <input type="text" placeholder="Name" class="name-input">
@@ -97,6 +98,10 @@
                 background-size: cover;
                 background-position: center;
                 background-repeat: no-repeat;
+                & > h2 {
+                    font-size: 2.2rem;
+                    text-shadow: 2px 2px 4px #000000;
+                }
             }
             & > .page-3 {
                 width: 100%;
@@ -117,6 +122,10 @@
                     justify-content: center;
                     align-items: center;
                     
+                    & > h2 {
+                        font-size: 2.2rem;
+                        text-shadow: 2px 2px 4px #000000;
+                    }
                     & > form {
                         width: 50%;
                         display: flex;

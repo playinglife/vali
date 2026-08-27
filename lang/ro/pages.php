@@ -2,6 +2,8 @@
 
 return [
     'home' => [
+        'meta_title' => 'Cămăși corporate la comandă',
+        'meta_description' => 'Cămăși corporate la comandă pentru femei și bărbați, fabricate în România. Materiale premium, broderie și branding pentru echipe. Livrare în 7–28 de zile. Comandă acum.',
         'title1' => 'Business To Business',
 
         'subtitle1' => 'Camasi de calitate pentru afacerile dumneavoastra',
@@ -52,11 +54,13 @@ What can we offer you?',
 
     'products' => [
         'title1' => 'Produse',
+        'meta_description' => 'Descoperă cămășile corporate ShirtHouse pentru femei și bărbați. La comandă, materiale premium, croieli adaptate și branding pentru echipe. Comandă colecția.',
     ],
 
 
     'cart' => [
         'title1' => 'Coș de cumpărături',
+        'meta_description' => 'Verifică cămășile din coșul ShirtHouse înainte de finalizarea comenzii.',
         'empty' => 'Coșul tău este gol.',
         'no_items_flash' => 'Nu există articole în coș.',
         'quantity' => 'Cantitate',
@@ -71,6 +75,7 @@ What can we offer you?',
 
     'checkout' => [
         'title1' => 'Finalizare',
+        'meta_description' => 'Finalizează comanda ShirtHouse. Te vom suna pentru confirmarea detaliilor.',
         'confirm_order' => 'Confirmă comanda',
         'name' => 'Nume',
         'email' => 'Email',
@@ -98,12 +103,15 @@ What can we offer you?',
         ],
     ],
     'thankyou' => [
+        'meta_title' => 'Mulțumim',
+        'meta_description' => 'Comanda ta ShirtHouse a fost înregistrată. Te vom contacta curând pentru confirmarea detaliilor.',
         'title1' => 'Mulțumim pentru comandă!',
         'message' => 'Comanda ta a fost înregistrată cu succes.<br>Te vom contacta curând pentru confirmarea detaliilor.',
         'back_to_products' => 'Înapoi la produse',
     ],
     'custom' => [
         'title1' => 'Cămăși Personalizate',
+        'meta_description' => 'Personalizează cămășile ShirtHouse: broderie, transfer termic, etichete și ajustări de croială. La comandă pentru companii și evenimente. Cere o ofertă.',
         'message' => 'La Shirthouse, personalizarea cămășilor nu este doar un detaliu suplimentar, ci o oportunitate reală de a crea un produs unic, perfect adaptat nevoilor și identității dumneavoastră – indiferent dacă vorbim despre imaginea companiei, un eveniment special sau preferințele personale.
 
 Reproducere personalizată
@@ -121,6 +129,8 @@ Modelele din colecția noastră pot fi ajustate în orice fel:
 • adaptări stilistice (croială, lungime, sistem de închidere)'
     ],
     'aboutus' => [
+        'meta_title' => 'Despre noi',
+        'meta_description' => 'Shirt House SRL produce cămăși pentru bărbați și bluze pentru femei în Sighișoara. Fabricație de calitate pentru echipe și parteneri din Europa. Contactează-ne.',
         'title1' => 'Cine Suntem',
         'message' => '<b>Shirt House SRL</b> este o companie de producție care se specializează în cămăși pentru bărbați și bluzuri pentru femei, situată în orașul frumos de Sighișoara din regiunea Transilvania, România. Cu o istorie bogată în industria de producție a hainelor și un echipă dedicată, suntem dedicați oferind produse de cea mai înaltă calitate și servicii excelente.
 
@@ -134,6 +144,7 @@ Suntem deschiși la noi colaborări cu clienții noștri din întreaga Europă. 
     ],
     'contact' => [
         'title1' => 'Contact',
+        'meta_description' => 'Contactează ShirtHouse în Sighișoara pentru comenzi de cămăși corporate, branding pentru echipe și producție. Scrie-ne un mesaj — răspundem cât mai curând.',
         'message' => 'Ia legătura cu noi și îți vom răspunde cât mai curând posibil.
 
 Email: info@shirthouse.ro',
@@ -141,5 +152,16 @@ Email: info@shirthouse.ro',
         'address_text' => 'Liberty Street 9<br>Sighișoara, Romania',
         'email' => 'Email',
         'email_text' => 'comenzi@shirthouse.ro<br>0740 123 456',
+    ],
+    'product' => [
+        'meta_description' => 'Comandă :name de la ShirtHouse. Cămăși corporate la comandă din materiale premium. Alege opțiunile și cere-ți modelul astăzi.',
+    ],
+    'contact_success' => [
+        'meta_title' => 'Mesaj trimis',
+        'meta_description' => 'Mesajul tău către ShirtHouse a fost trimis. Îți vom răspunde cât mai curând posibil.',
+    ],
+    'size_chart' => [
+        'meta_title' => 'Diagramă dimensiuni',
+        'meta_description' => 'Diagrama de dimensiuni ShirtHouse pentru femei și bărbați. Verifică măsurile înainte de comandă, pentru tine sau pentru echipă. Alege mărimea potrivită.',
     ],
 ];

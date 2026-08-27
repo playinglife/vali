@@ -1,10 +1,11 @@
 @php
-    $menuHome = request()->path() === '';
-    $menuProducts = request()->is('products', 'products/*');
-    $menuCustom = request()->is('custom');
-    $menuAboutUs = request()->is('aboutus');
-    $menuContact = request()->is('contact*');
-    $menuCart = request()->is('cart');
+    $locale = app()->getLocale();
+    $menuHome = request()->is($locale);
+    $menuProducts = request()->is($locale.'/products', $locale.'/products/*');
+    $menuCustom = request()->is($locale.'/custom');
+    $menuAboutUs = request()->is($locale.'/aboutus');
+    $menuContact = request()->is($locale.'/contact*');
+    $menuCart = request()->is($locale.'/cart');
     $cartItemCount = (int) collect(session('cart', []))->sum(fn (array $line) => (int) ($line['quantity'] ?? 0));
     $cartBadgeText = $cartItemCount > 99 ? '99+' : (string) $cartItemCount;
 @endphp
@@ -12,14 +13,14 @@
     <div class="flex justify-center items-center">
         <x-svg.logo mode="light" class="logo"/>
     </div>
-    <a href="/" class="menu-item @if($menuHome) menu-item--active @endif" @if($menuHome) aria-current="page" @endif>{{ __('menu.home') }}</a>
-    <a href="/products" class="menu-item @if($menuProducts) menu-item--active @endif" @if($menuProducts) aria-current="page" @endif>{{ __('menu.products') }}</a>
-    <a href="/custom" class="menu-item @if($menuCustom) menu-item--active @endif" @if($menuCustom) aria-current="page" @endif>{{ __('menu.custom') }}</a>
-    <a href="/aboutus" class="menu-item @if($menuAboutUs) menu-item--active @endif" @if($menuAboutUs) aria-current="page" @endif>{{ __('menu.about_us') }}</a>
-    <a href="/contact" class="menu-item @if($menuContact) menu-item--active @endif" @if($menuContact) aria-current="page" @endif>{{ __('menu.contact') }}</a>
+    <a href="{{ route('home') }}" class="menu-item @if($menuHome) menu-item--active @endif" @if($menuHome) aria-current="page" @endif>{{ __('menu.home') }}</a>
+    <a href="{{ route('products.index') }}" class="menu-item @if($menuProducts) menu-item--active @endif" @if($menuProducts) aria-current="page" @endif>{{ __('menu.products') }}</a>
+    <a href="{{ route('custom') }}" class="menu-item @if($menuCustom) menu-item--active @endif" @if($menuCustom) aria-current="page" @endif>{{ __('menu.custom') }}</a>
+    <a href="{{ route('aboutus') }}" class="menu-item @if($menuAboutUs) menu-item--active @endif" @if($menuAboutUs) aria-current="page" @endif>{{ __('menu.about_us') }}</a>
+    <a href="{{ route('contact') }}" class="menu-item @if($menuContact) menu-item--active @endif" @if($menuContact) aria-current="page" @endif>{{ __('menu.contact') }}</a>
     <span class="menu-item">|</span>
     <a
-        href="/cart"
+        href="{{ route('cart') }}"
         class="menu-item menu-item--cart @if($menuCart) menu-item--active @endif"
         @if($menuCart) aria-current="page" @endif
         aria-label="{{ __('menu.cart_aria', ['count' => $cartItemCount]) }}"

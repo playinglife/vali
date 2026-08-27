@@ -1,6 +1,8 @@
 @extends('layouts.app')
 
-@section('title','Dashboard')
+@section('title', __('pages.cart.title1'))
+@section('robots','noindex, nofollow')
+@section('description', __('pages.cart.meta_description'))
 
 @section('content')
 

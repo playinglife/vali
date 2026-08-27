@@ -31,25 +31,18 @@
         >
             @foreach ($locales as $locale)
                 <li role="presentation">
-                    <form
-                        method="post"
-                        action="{{ route('locale.update') }}"
-                        class="language-switcher__option-form"
+                    <a
+                        href="{{ url(\App\Http\Middleware\SetLocale::localizedPath($locale['code'])) }}"
+                        class="ignore-global language-switcher__option @if ($current === $locale['code']) language-switcher__option--active @endif"
+                        role="option"
+                        aria-selected="{{ $current === $locale['code'] ? 'true' : 'false' }}"
+                        hreflang="{{ $locale['code'] }}"
                     >
-                        @csrf
-                        <input type="hidden" name="locale" value="{{ $locale['code'] }}" />
-                        <button
-                            type="submit"
-                            class="ignore-global language-switcher__option @if ($current === $locale['code']) language-switcher__option--active @endif"
-                            role="option"
-                            aria-selected="{{ $current === $locale['code'] ? 'true' : 'false' }}"
-                        >
-                            @if ($locale['icon'])
-                                <x-icon name="{{ $locale['icon'] }}" class="language-switcher__flag" aria-hidden="true" />
-                            @endif
-                            {{ $locale['name'] }}
-                        </button>
-                    </form>
+                        @if ($locale['icon'])
+                            <x-icon name="{{ $locale['icon'] }}" class="language-switcher__flag" aria-hidden="true" />
+                        @endif
+                        {{ $locale['name'] }}
+                    </a>
                 </li>
             @endforeach
         </ul>
@@ -151,6 +144,7 @@
                 gap: 0em;
                 width: 100%;
                 text-align: left;
+                text-decoration: none;
                 font-family: var(--font-family-one);
                 font-size: 0.75rem;
                 letter-spacing: 0.05em;

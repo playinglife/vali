@@ -10,84 +10,98 @@ use App\Features\Admin\Controllers\ProductOptionController;
 use App\Features\Admin\Controllers\OrderController;
 use App\Features\Admin\Controllers\OrderItemController;
 use App\Features\Admin\Controllers\ProductVariantController;
+use App\Http\Middleware\SetLocale;
 use App\Models\Product;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+
+$locales = array_keys(config('app.supported_locales', ['en' => 'English', 'ro' => 'Română']));
+
+Route::get('/', function (Request $request) {
+    return redirect('/'.SetLocale::detectLocale($request), 301);
+});
 
 Route::post('/locale', [LocaleController::class, 'update'])->name('locale.update');
 
-Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
-Route::post('/cart/remove', [CartController::class, 'remove'])->name('cart.remove');
-Route::post('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
-Route::post('/checkout/confirm-order', [CartController::class, 'confirmOrder'])->name('confirm_order');
+Route::prefix('{locale}')
+    ->whereIn('locale', $locales)
+    ->group(function () {
+        Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
+        Route::post('/cart/remove', [CartController::class, 'remove'])->name('cart.remove');
+        Route::post('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
+        Route::post('/checkout/confirm-order', [CartController::class, 'confirmOrder'])->name('confirm_order');
 
-Route::get('/', function () {
-    return view('pages.home');
-});
-Route::get('/products', function () {
-    return view('pages.products');
-});
+        Route::get('/', function () {
+            return view('pages.home');
+        })->name('home');
+        Route::get('/products', function () {
+            return view('pages.products');
+        })->name('products.index');
 
-Route::get('/products/{product:slug}', function (Product $product) {
-    abort_unless($product->is_active, 404);
+        Route::get('/products/{product:slug}', function (string $locale, Product $product) {
+            abort_unless($product->is_active, 404);
 
-    $product->load([
-        'Categories',
-        'ProductImages',
-        'ShortDescriptionTranslation',
-        'DescriptionTranslation',
-        'OptionValues.Option',
-        'Variants.PriceBrackets',
-        'Variants.DescriptionTranslation',
-        'Variants.VariantImages',
-        'Variants.Values.Option',
-        'PriceBrackets',
-    ]);
+            $product->load([
+                'Categories',
+                'ProductImages',
+                'ShortDescriptionTranslation',
+                'DescriptionTranslation',
+                'MetaTitleTranslation',
+                'MetaDescriptionTranslation',
+                'OptionValues.Option',
+                'Variants.PriceBrackets',
+                'Variants.DescriptionTranslation',
+                'Variants.VariantImages',
+                'Variants.Values.Option',
+                'PriceBrackets',
+            ]);
 
-    return view('pages.product', ['product' => $product]);
-})->name('products.show');
-Route::get('/size-chart', function () {
-    return view('pages.size-chart');
-})->name('size-chart');
+            return view('pages.product', ['product' => $product]);
+        })->name('products.show');
+        Route::get('/size-chart', function () {
+            return view('pages.size-chart');
+        })->name('size-chart');
 
-Route::get('/cart', function () {
-    return view('pages.cart');
-})->name('cart');
-Route::get('/checkout', [CartController::class, 'showCheckout'])->name('checkout');
-Route::get('/thankyou', function () {
-    return view('pages.thankyou');
-})->name('thankyou');
-Route::get('/custom', function () {
-    return view('pages.custom');
-})->name('custom');
-Route::get('/aboutus', function () {
-    return view('pages.aboutus');
-})->name('aboutus');
+        Route::get('/cart', function () {
+            return view('pages.cart');
+        })->name('cart');
+        Route::get('/checkout', [CartController::class, 'showCheckout'])->name('checkout');
+        Route::get('/thankyou', function () {
+            return view('pages.thankyou');
+        })->name('thankyou');
+        Route::get('/custom', function () {
+            return view('pages.custom');
+        })->name('custom');
+        Route::get('/aboutus', function () {
+            return view('pages.aboutus');
+        })->name('aboutus');
 
-Route::get('/teachers', function () {
-    return view('pages.teachers');
-});
-Route::get('/app', function () {
-    return view('pages.app');
-});
-Route::get('/about', function () {
-    return view('pages.about');
-});
-Route::get('/school', function () {
-    return view('pages.school');
-});
-Route::get('/contact', function () {
-    return view('pages.contact');
-});
-Route::post('/contact', [ContactController::class, 'submit'])->name('contact.submit');
-Route::get('/contact-success', function () {
-    return view('pages.contact-success');
-})->name('contact.success');
-Route::get('/book-a-private-conversation', function () {
-    return view('pages.bookacall');
-});
-Route::post('/book-a-private-conversation', function () {
-    return redirect()->back();
-})->name('bookacall.submit');
+        Route::get('/teachers', function () {
+            return view('pages.teachers');
+        });
+        Route::get('/app', function () {
+            return view('pages.app');
+        });
+        Route::get('/about', function () {
+            return view('pages.about');
+        });
+        Route::get('/school', function () {
+            return view('pages.school');
+        });
+        Route::get('/contact', function () {
+            return view('pages.contact');
+        })->name('contact');
+        Route::post('/contact', [ContactController::class, 'submit'])->name('contact.submit');
+        Route::get('/contact-success', function () {
+            return view('pages.contact-success');
+        })->name('contact.success');
+        Route::get('/book-a-private-conversation', function () {
+            return view('pages.bookacall');
+        });
+        Route::post('/book-a-private-conversation', function () {
+            return redirect()->back();
+        })->name('bookacall.submit');
+    });
 
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::middleware('guest')->group(function () {
@@ -146,4 +160,22 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::put('/products/{product}/variants/{variant}', [ProductVariantController::class, 'update'])->name('variants.update');
         Route::delete('/products/{product}/variants/{variant}', [ProductVariantController::class, 'destroy'])->name('variants.destroy');
     });
+});
+
+Route::fallback(function (Request $request) {
+    $first = explode('/', ltrim($request->path(), '/'))[0] ?? '';
+    if (in_array($first, ['admin', 'livewire', 'up'], true) || SetLocale::isSupportedLocale($first)) {
+        abort(404);
+    }
+
+    $locale = SetLocale::detectLocale($request);
+    $path = ltrim($request->path(), '/');
+    $target = '/'.$locale.($path === '' ? '' : '/'.$path);
+    if ($query = $request->getQueryString()) {
+        $target .= '?'.$query;
+    }
+
+    $status = in_array($request->method(), ['GET', 'HEAD'], true) ? 301 : 308;
+
+    return redirect($target, $status);
 });

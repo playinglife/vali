@@ -22,6 +22,8 @@ class DashboardController extends Controller
                 'OptionValues.Option',
                 'Variants.VariantImages',
                 'Variants.Values',
+                'MetaTitleTranslation',
+                'MetaDescriptionTranslation',
             ])
             ->orderByDesc('id')
             ->get();

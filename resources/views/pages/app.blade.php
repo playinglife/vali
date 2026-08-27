@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title','Dashboard')
+@section('title', 'Clef Play App')
 
 @section('content')
 

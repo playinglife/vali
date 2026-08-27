@@ -28,4 +28,14 @@ class Translation extends BaseModel
     {
         return $this->hasMany(Product::class, 'description_id');
     }
+
+    public function ProductsAsMetaTitle(): HasMany
+    {
+        return $this->hasMany(Product::class, 'meta_title_id');
+    }
+
+    public function ProductsAsMetaDescription(): HasMany
+    {
+        return $this->hasMany(Product::class, 'meta_description_id');
+    }
 }

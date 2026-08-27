@@ -1,6 +1,8 @@
 @extends('layouts.app')
 
-@section('title','Dashboard')
+@section('title', $product->seoTitle())
+@section('description', $product->seoDescription())
+@section('og_type', 'product')
 
 @section('content')
 

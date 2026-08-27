@@ -1,6 +1,8 @@
 @extends('layouts.app')
 
-@section('title','Checkout')
+@section('title', __('pages.checkout.title1'))
+@section('robots','noindex, nofollow')
+@section('description', __('pages.checkout.meta_description'))
 
 @section('content')
 

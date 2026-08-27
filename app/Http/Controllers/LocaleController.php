@@ -12,7 +12,7 @@ class LocaleController extends Controller
 {
     public function update(Request $request): RedirectResponse
     {
-        $supported = array_keys(config('app.supported_locales', []));
+        $supported = SetLocale::supportedLocaleCodes();
 
         $validated = $request->validate([
             'locale' => ['required', 'string', Rule::in($supported)],
@@ -22,9 +22,9 @@ class LocaleController extends Controller
 
         $request->session()->put('locale', $locale);
 
-        $response = redirect()->back();
+        $refererPath = parse_url((string) $request->headers->get('referer'), PHP_URL_PATH);
+        $target = SetLocale::localizedPath($locale, is_string($refererPath) ? $refererPath : '/');
 
-        // Persist across browser sessions (optional; session alone resets when session expires)
-        return $response->withCookie(Cookie::forever(SetLocale::COOKIE_NAME, $locale));
+        return redirect($target)->withCookie(Cookie::forever(SetLocale::COOKIE_NAME, $locale));
     }
 }

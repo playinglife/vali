@@ -28,8 +28,10 @@ class ProductResource extends JsonResource
             'variants_count' => $this->Variants->count(),
             'discount_type' => $this->discount_type,
             'discount' => (float) $this->discount,
-            'meta_title' => $this->meta_title,
-            'meta_description' => $this->meta_description,
+            'meta_title_en' => $this->MetaTitleTranslation?->english,
+            'meta_title_ro' => $this->MetaTitleTranslation?->romanian,
+            'meta_description_en' => $this->MetaDescriptionTranslation?->english,
+            'meta_description_ro' => $this->MetaDescriptionTranslation?->romanian,
             'created_at' => Carbon::parse($this->created_at)->format('Y-m-d H:i:s'),
             'updated_at' => Carbon::parse($this->updated_at)->format('Y-m-d H:i:s'),
         ];

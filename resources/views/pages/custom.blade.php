@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
-@section('title','Custom')
+@section('title', __('pages.custom.title1'))
+@section('description', __('pages.custom.meta_description'))
 
 @section('content')
     <div class="root-views-custom">

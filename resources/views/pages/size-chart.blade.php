@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
-@section('title','Size Chart')
+@section('title', __('pages.size_chart.meta_title'))
+@section('description', __('pages.size_chart.meta_description'))
 
 @section('content')
     <div class="root-views-size-chart">

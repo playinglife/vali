@@ -2,6 +2,8 @@
 
 return [
     'home' => [
+        'meta_title' => 'Custom corporate shirts',
+        'meta_description' => 'Custom corporate shirts for men and women, made to order in Romania. Premium fabrics, embroidery and team branding. Delivery in 7–28 days. Shop ShirtHouse.',
         'title1' => 'Business To Business',
         'subtitle1' => 'High Quality Shirts for your Business',
         'text1' => 'At Shirthouse, we redefine the standards of the corporate shirt through elegance, impeccable tailoring and premium materials. We offer a carefully selected collection of shirts for men and women, created specifically for the modern business environment – ​​from executive offices to front-line teams.
@@ -50,11 +52,13 @@ What can we offer you?',
 
     'products' => [
         'title1' => 'Products',
+        'meta_description' => 'Browse ShirtHouse corporate shirts for men and women. Made to order with premium fabrics, tailored fits and team branding. Order your collection today.',
     ],
 
 
     'cart' => [
         'title1' => 'Shopping Cart',
+        'meta_description' => 'Review the shirts in your ShirtHouse cart before checkout.',
         'empty' => 'Your cart is empty.',
         'no_items_flash' => 'There are no items in your cart.',
         'quantity' => 'Quantity',
@@ -69,6 +73,7 @@ What can we offer you?',
 
     'checkout' => [
         'title1' => 'Checkout',
+        'meta_description' => 'Complete your ShirtHouse order. We will call you back to confirm details.',
         'confirm_order' => 'Confirm order',
         'name' => 'Name',
         'email' => 'Email',
@@ -96,12 +101,15 @@ What can we offer you?',
         ],
     ],
     'thankyou' => [
+        'meta_title' => 'Thank You',
+        'meta_description' => 'Your ShirtHouse order was registered. We will contact you soon to confirm the details.',
         'title1' => 'Thank you for your order!',
         'message' => 'Your order was registered successfully.<br>We will contact you soon to confirm details.',
         'back_to_products' => 'Back to products',
     ],
     'custom' => [
         'title1' => 'Custom Shirts',
+        'meta_description' => 'Customize ShirtHouse shirts with embroidery, heat transfer, labels and cut adjustments. Made to order for companies and events. Request yours today.',
         'message' => 'At Shirthouse, shirt customization is not just an extra detail, but a real opportunity to create a unique product, perfectly adapted to your needs and identity – whether we are talking about a company image, a special event or personal preferences.
 
 Custom Reproduction
@@ -132,6 +140,8 @@ Don’t like the shape of the collar, cuff or pocket? We can adapt it. Do you wa
 At Shirthouse, no detail is too small – as long as it’s important to you.',
     ],
     'aboutus' => [
+        'meta_title' => 'About Us',
+        'meta_description' => 'Shirt House SRL makes men’s shirts and women’s blouses in Sighișoara, Romania. Quality manufacturing for teams and partners across Europe. Get in touch.',
         'title1' => 'Who We Are',
         'message' => '<b>Shirt House SRL</b> is a manufacturing company specializing in men’s shirts and women’s blouses, located in the beautiful city of Sighișoara in the Transylvania region of Romania. With a rich history in the clothing production industry and a dedicated team, we are committed to offering the highest quality products and excellent services.
 
@@ -145,6 +155,7 @@ We are open to new collaborations with clients across Europe. If you have a requ
     ],
     'contact' => [
         'title1' => 'Contact',
+        'meta_description' => 'Contact ShirtHouse in Sighișoara for corporate shirt orders, team branding and manufacturing. Email us or send a message — we reply as soon as we can.',
         'message' => 'Get in touch with us and we will get back to you as soon as possible.
 
 Email: info@shirthouse.ro',
@@ -152,5 +163,16 @@ Email: info@shirthouse.ro',
         'address_text' => 'Liberty Street 9<br>Sighișoara, Romania',
         'email' => 'Email',
         'email_text' => 'comenzi@shirthouse.ro<br>0740 123 456',
+    ],
+    'product' => [
+        'meta_description' => 'Order :name from ShirtHouse. Made-to-order corporate shirts in premium fabrics. Browse options and request yours today.',
+    ],
+    'contact_success' => [
+        'meta_title' => 'Message sent',
+        'meta_description' => 'Your message to ShirtHouse was sent successfully. We will get back to you as soon as possible.',
+    ],
+    'size_chart' => [
+        'meta_title' => 'Size Chart',
+        'meta_description' => 'ShirtHouse size chart for men and women. Check measurements before you order so you and your team get the right fit. Shop with confidence.',
     ],
 ];

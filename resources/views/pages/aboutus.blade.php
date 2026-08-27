@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
-@section('title','About Us')
+@section('title', __('pages.aboutus.meta_title'))
+@section('description', __('pages.aboutus.meta_description'))
 
 @section('content')
     <div class="root-views-aboutus">

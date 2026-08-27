@@ -298,3 +298,11 @@
 .ag-floating-filter-button {
   margin-right: 0.8em !important;
 }
+
+// Gridlex [class*=grid-] also matches AG Grid 36+ internals (ag-grid-scrolling-container, etc.)
+// and turns them into wrapping flex rows, which vertically centers the row stack.
+[class*="ag-grid-"] {
+  display: revert;
+  flex-flow: revert;
+  margin: revert;
+}

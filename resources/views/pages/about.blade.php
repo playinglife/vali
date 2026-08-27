@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title','Dashboard')
+@section('title', 'About')
 
 @section('content')
 
@@ -133,7 +133,7 @@
                 </div>
             </x-slot:content>
             <x-slot:buttons>
-                <x-button text="Contact us" url="/contact" light="false" />
+                <x-button text="Contact us" url="{{ route('contact') }}" light="false" />
             </x-slot:buttons>
         </x-page>
 

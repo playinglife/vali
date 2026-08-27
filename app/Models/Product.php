@@ -31,8 +31,8 @@ class Product extends BaseModel
         'is_active',
         'is_featured',
         'weight',
-        'meta_title',
-        'meta_description',
+        'meta_title_id',
+        'meta_description_id',
     ];
 
     /**
@@ -65,6 +65,16 @@ class Product extends BaseModel
         return $this->belongsTo(Translation::class, 'description_id');
     }
 
+    public function MetaTitleTranslation(): BelongsTo
+    {
+        return $this->belongsTo(Translation::class, 'meta_title_id');
+    }
+
+    public function MetaDescriptionTranslation(): BelongsTo
+    {
+        return $this->belongsTo(Translation::class, 'meta_description_id');
+    }
+
     public function localizedShortDescription(?string $locale = null): ?string
     {
         return $this->ShortDescriptionTranslation?->textForLocale($locale);
@@ -76,6 +86,99 @@ class Product extends BaseModel
     public function localizedDescription(?string $locale = null): ?string
     {
         return $this->DescriptionTranslation?->textForLocale($locale);
+    }
+
+    public function seoTitle(?string $locale = null): string
+    {
+        $title = $this->plainMetaText($this->MetaTitleTranslation?->textForLocale($locale));
+        if ($title !== '') {
+            return $title;
+        }
+
+        return trim((string) ($this->name ?: $this->slug));
+    }
+
+    public function seoDescription(?string $locale = null): string
+    {
+        $description = $this->plainMetaText($this->MetaDescriptionTranslation?->textForLocale($locale));
+        if ($description === '') {
+            $description = $this->plainMetaText($this->localizedShortDescription($locale));
+        }
+        if ($description === '') {
+            $description = $this->plainMetaText($this->localizedDescription($locale));
+        }
+        if ($description === '') {
+            $description = __('pages.product.meta_description', [
+                'name' => trim((string) ($this->name ?: $this->slug)),
+            ]);
+        }
+
+        return $description;
+    }
+
+    /**
+     * @param  array{title_en?: string|null, title_ro?: string|null, description_en?: string|null, description_ro?: string|null}  $meta
+     */
+    public function syncMetaTranslations(array $meta): void
+    {
+        $this->syncMetaTranslation(
+            'meta_title_id',
+            'MetaTitleTranslation',
+            $meta['title_en'] ?? null,
+            $meta['title_ro'] ?? null,
+        );
+        $this->syncMetaTranslation(
+            'meta_description_id',
+            'MetaDescriptionTranslation',
+            $meta['description_en'] ?? null,
+            $meta['description_ro'] ?? null,
+        );
+    }
+
+    private function syncMetaTranslation(string $foreignKey, string $relation, ?string $english, ?string $romanian): void
+    {
+        $english = $this->nullableTrimmed($english);
+        $romanian = $this->nullableTrimmed($romanian);
+
+        if (! $this->relationLoaded($relation)) {
+            $this->load($relation);
+        }
+
+        if ($english === null && $romanian === null) {
+            $oldId = $this->{$foreignKey};
+            if ($oldId) {
+                $this->forceFill([$foreignKey => null])->save();
+                $this->unsetRelation($relation);
+                Translation::query()->whereKey($oldId)->delete();
+            }
+
+            return;
+        }
+
+        $translation = $this->{$relation} ?? Translation::query()->make();
+        $translation->english = $english;
+        $translation->romanian = $romanian;
+        $translation->save();
+
+        if ((int) $this->{$foreignKey} !== (int) $translation->id) {
+            $this->forceFill([$foreignKey => $translation->id])->save();
+        }
+
+        $this->setRelation($relation, $translation);
+    }
+
+    private function nullableTrimmed(?string $value): ?string
+    {
+        $value = trim((string) $value);
+
+        return $value === '' ? null : $value;
+    }
+
+    private function plainMetaText(?string $value): string
+    {
+        $value = html_entity_decode(strip_tags((string) $value), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+
+        return trim((string) preg_replace('/\s+/u', ' ', $value));
     }
 
     public function Categories(): BelongsToMany

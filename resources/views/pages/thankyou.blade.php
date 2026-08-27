@@ -1,6 +1,8 @@
 @extends('layouts.app')
 
-@section('title','Thank You')
+@section('title', __('pages.thankyou.meta_title'))
+@section('robots','noindex, nofollow')
+@section('description', __('pages.thankyou.meta_description'))
 
 @section('content')
     <div class="root-views-thankyou">

@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
-@section('title','Contact')
+@section('title', __('pages.contact.title1'))
+@section('description', __('pages.contact.meta_description'))
 
 @section('content')
     <div class="root-views-contact">

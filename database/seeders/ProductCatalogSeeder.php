@@ -92,6 +92,14 @@ class ProductCatalogSeeder extends Seeder
                 'english' => "Full description for shirt model {$i}.\nPremium fabric, tailored fit, available in multiple sizes and colors.",
                 'romanian' => "Descriere completă pentru modelul de cămașă {$i}.\nMaterial premium, croi adaptat, disponibil în mai multe mărimi și culori.",
             ]);
+            $metaTitleTranslation = Translation::query()->create([
+                'english' => 'Shirt model '.$i,
+                'romanian' => 'Model cămașă '.$i,
+            ]);
+            $metaDescriptionTranslation = Translation::query()->create([
+                'english' => 'Order shirt model '.$i.' — business quality.',
+                'romanian' => 'Comandă modelul de cămașă '.$i.' — calitate business.',
+            ]);
 
             $product = Product::query()->create([
                 'sku' => $sku,
@@ -105,8 +113,8 @@ class ProductCatalogSeeder extends Seeder
                 'is_active' => true,
                 'is_featured' => $i % 4 === 0,
                 'weight' => round(0.28 + ($i % 10) * 0.01, 3),
-                'meta_title' => 'Shirt model '.$i,
-                'meta_description' => 'Order shirt model '.$i.' — business quality.',
+                'meta_title_id' => $metaTitleTranslation->id,
+                'meta_description_id' => $metaDescriptionTranslation->id,
             ]);
 
             $primary = $categories[$i % 5];
