@@ -2,6 +2,7 @@
     'product',
     'image' => null,
     'href' => null,
+    'priority' => false,
 ])
 
 @php
@@ -46,10 +47,10 @@
 
     @if ($href)
         <a href="{{ $href }}" class="root-product-card__media root-product-card__media-link" tabindex="-1" aria-hidden="true">
-            <img src="{{ $imageUrl }}" alt="{{ $product->name }}" class="root-product-card__img" loading="lazy" decoding="async" width="640" height="960" />
+            <img src="{{ $imageUrl }}" alt="{{ $product->name }}" class="root-product-card__img" loading="{{ $priority ? 'eager' : 'lazy' }}" @if ($priority) fetchpriority="high" @endif decoding="async" width="640" height="960" />
         </a>
     @else
-        <div class="root-product-card__media" aria-hidden="true"><img src="{{ $imageUrl }}" alt="{{ $product->name }}" class="root-product-card__img" loading="lazy" decoding="async" width="640" height="960" /></div>
+        <div class="root-product-card__media" aria-hidden="true"><img src="{{ $imageUrl }}" alt="{{ $product->name }}" class="root-product-card__img" loading="{{ $priority ? 'eager' : 'lazy' }}" @if ($priority) fetchpriority="high" @endif decoding="async" width="640" height="960" /></div>
     @endif
 
     <!-- PRODUCT OPTIONS THAT SHOW ON PRODUCTS -->
@@ -60,7 +61,7 @@
                 <div class="root-product-card__option-values">
                     @foreach ($option->Values as $value)
                         @if (($option->type ?? 'text') === 'image' && filled($value->image))
-                            <img src="{{ $value->image }}" alt="{{ $value->value }}" class="root-product-card__option-value-image" loading="lazy" decoding="async" />
+                            <img src="{{ $value->image }}" alt="{{ $value->value }}" class="root-product-card__option-value-image" loading="lazy" decoding="async" width="32" height="32" />
                         @elseif (($option->type ?? 'text') === 'icon' && filled($value->icon))
                             <x-icon name="{{ explode(':', $value->icon)[0] }}" aria-hidden="true" class="medium-icon" style="color: {{ explode(':', $value->icon)[1] }};" />
                         @else

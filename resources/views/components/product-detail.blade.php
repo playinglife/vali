@@ -174,7 +174,7 @@
             <!-- MAIN IMAGE -->
             <div data-reference="product-detail-media" class="root-product-detail__media">
                 <button type="button" class="root-product-detail__media-open" aria-haspopup="dialog" aria-expanded="false" aria-controls="product-detail-lightbox-{{ $Product->id }}">
-                    <img src="{{ $displayedImages->first()?->image ?? \App\Models\Product::genericProductImageUrl() }}" alt="{{ $Product->name }}" class="root-product-detail__img" width="640" height="960" loading="eager" decoding="async" />
+                    <img src="{{ $displayedImages->first()?->image ?? \App\Models\Product::genericProductImageUrl() }}" alt="{{ $Product->name }}" class="root-product-detail__img" width="640" height="960" loading="eager" fetchpriority="high" decoding="async" />
                 </button>
             </div>
             <!-- THUMBNAIL IMAGES -->
@@ -278,7 +278,7 @@
                                             $available = $availableValues[$option->name][$val->id] ?? false;
                                         @endphp
                                         @if ($option->type === \App\Enums\ProductOptionType::Image->value)
-                                            <img src="{{ $val->image }}" alt="{{ $val->value }}" class="root-product-detail__option-image" />
+                                            <img src="{{ $val->image }}" alt="{{ $val->value }}" class="root-product-detail__option-image" width="48" height="48" loading="lazy" decoding="async" />
                                         @elseif ($option->type === \App\Enums\ProductOptionType::Icon->value)
                                             @php
                                                 [$iconName, $iconColor] = array_pad(explode(':', $val->icon, 2), 2, '');
@@ -310,8 +310,8 @@
                 <div class="root-product-detail__size-chart">
                     <h4 class="dark label">{{ __('components.product.size_chart') }}</h4>
                     <div>
-                        <a href="{{ route('size-chart') }}" target="_blank">
-                            <x-svg name="size-chart" class="svg-size-chart" />
+                        <a href="{{ route('size-chart') }}" target="_blank" aria-label="{{ __('components.product.size_chart') }}">
+                            <x-svg name="size-chart" class="svg-size-chart" aria-hidden="true" />
                         </a>
                     </div>
                 </div>
@@ -366,7 +366,7 @@
         <img
             class="modal-dialog__lightbox-img"
             src=""
-            alt=""
+            alt="{{ $Product->name }}"
             width="1280"
             height="1920"
             decoding="async"
@@ -630,7 +630,7 @@
                 return null;
             }
             const node = seed.cloneNode(true);
-            const alt = image && image.alt != null ? String(image.alt) : '';
+            const alt = (image && image.alt) || (data.Product && data.Product.name) || '';
             const rawSrc = image && image.image != null ? String(image.image) : '';
             const src = rawSrc !== '' ? rawSrc : String(data.genericProductImageUrl || '');
             node.setAttribute('data-image-id', String(image.id));
@@ -1032,7 +1032,7 @@
                 const mainImg = root.querySelector('.root-product-detail__img');
                 mainImg.style.display = 'block';
                 mainImg.src = match.image;
-                mainImg.alt = match.name;
+                mainImg.alt = data.Product?.name || match.name || '';
             } else {
                 const mainImg = root.querySelector('.root-product-detail__img');
                 mainImg.style.display = 'none';

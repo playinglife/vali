@@ -1,6 +1,6 @@
 @props(['mode' => 'light'])
 
-<x-svg-logo {{ $attributes->merge(['class' => 'logo-svg logo-' . $mode]) }} role="img" aria-label="{{ __('Logo') }}" />
+<x-svg-logo {{ $attributes->merge(['class' => 'logo-svg logo-' . $mode]) }} role="img" aria-label="{{ config('app.name') }}" />
 
 @once
     <style>

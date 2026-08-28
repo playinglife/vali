@@ -6,10 +6,12 @@
         <script>document.documentElement.classList.add('js');</script>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         @include('partials.seo')
-        <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any">
+        @include('partials.gtm')
+        @include('partials.icons')
         <link rel="preload" href="{{ asset('fonts/roboto/Roboto-Regular.woff2') }}" as="font" type="font/woff2" crossorigin>
         <link rel="preload" href="{{ asset('fonts/roboto/Roboto-Black.woff2') }}" as="font" type="font/woff2" crossorigin>
         <link rel="stylesheet" href="{{ asset('fonts/roboto/roboto.css') }}">
+        @stack('head')
         @vite(['resources/scss/app.scss','resources/js/app.js'])
         {{-- @livewireStyles --}}
     </head>
@@ -85,6 +87,7 @@
                 </x-modal-dialog>
             @endif
         </div>
+        <x-cookie-banner />
         @stack('styles')
         {{-- @livewireScripts --}}
     </body>

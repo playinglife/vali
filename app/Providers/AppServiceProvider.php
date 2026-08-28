@@ -21,13 +21,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(UrlGenerator $url): void
     {
-        if (app()->environment('production') && request()->isSecure()) {
+        if (str_starts_with((string) config('app.url'), 'https://')) {
             $url->forceScheme('https');
         }
-        // OR better
-        /*if (env('FORCE_HTTPS')) {
-            $url->forceScheme('https');
-        }*/
 
         RedirectResponse::macro('withNotify', function (string $type, string $message) {
             if ($type === 'information') {

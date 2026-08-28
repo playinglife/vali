@@ -72,6 +72,14 @@ button.root-product-detail__media-open {
     gap: var(--gap-medium);
 }
 
+.root-product-detail__option-image {
+    width: 3rem;
+    height: 3rem;
+    object-fit: cover;
+    border-radius: var(--border-radius-small);
+    display: block;
+}
+
 .root-product-detail__thumbs {
     display: flex;
     flex-wrap: wrap;

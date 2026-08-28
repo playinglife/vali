@@ -3,6 +3,10 @@
 @section('title_full', config('app.name').' | '.__('pages.home.meta_title'))
 @section('description', __('pages.home.meta_description'))
 
+@push('head')
+        <link rel="preload" as="image" href="{{ asset('images/home.jpg') }}" fetchpriority="high">
+@endpush
+
 @section('content')
 
     <div class="root-views-home">
@@ -19,6 +23,11 @@
             <x-slot:text>
                 {{ __('pages.home.text1') }}
             </x-slot:text>
+            <x-slot:content>
+                <div class="root-views-home__cta">
+                    <x-button text="{{ __('pages.home.cta_products') }}" url="{{ route('products.index') }}" light="false" />
+                </div>
+            </x-slot:content>
         </x-miniviews.section>
 
         <x-miniviews.section type="two" background="white"> 
@@ -26,6 +35,11 @@
             <x-slot:text>
                 {{ __('pages.home.text2') }}
             </x-slot:text>
+            <x-slot:content>
+                <div class="root-views-home__cta">
+                    <x-button text="{{ __('pages.home.cta_custom') }}" url="{{ route('custom') }}" light="false" />
+                </div>
+            </x-slot:content>
         </x-miniviews.section>
 
 
@@ -38,6 +52,11 @@
             <x-slot:text>
                 {{ __('pages.home.text3') }}
             </x-slot:text>
+            <x-slot:content>
+                <div class="root-views-home__cta">
+                    <x-button text="{{ __('pages.home.cta_contact') }}" url="{{ route('contact') }}" light="false" />
+                </div>
+            </x-slot:content>
         </x-miniviews.section>
 
 
@@ -62,7 +81,7 @@
 
 
         <!-- Footer -->
-        @include('layouts.footer', ['backgroundImage' => asset('images/home.png')])
+        @include('layouts.footer', ['backgroundImage' => asset('images/home.jpg')])
 
     </div>
     
@@ -79,6 +98,10 @@
             background-position: top;
             background-repeat: no-repeat;
 
+            .root-views-home__cta {
+                display: flex;
+                justify-content: center;
+            }
             & > .page-1 {
                 width: 100%;
                 height: 100%;

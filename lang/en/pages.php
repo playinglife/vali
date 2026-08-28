@@ -46,6 +46,9 @@ We collaborate with retailers across the country who want to offer their custome
 What can we offer you?',
 
         'title3' => 'Newsletter',
+        'cta_products' => 'Browse shirts',
+        'cta_custom' => 'Custom shirts',
+        'cta_contact' => 'Contact us',
     ],
 
 
@@ -83,6 +86,7 @@ What can we offer you?',
         'phone' => 'Phone',
         'notes' => 'Notes',
         'send_order' => 'Send order',
+        'legal_notice' => 'By sending this order you agree to the :terms and the :privacy.',
         'message' => 'We will call you back as soon as possible to discuss further details.',
         'errors' => [
             'email_required' => 'Email is required.',
@@ -174,5 +178,77 @@ Email: info@shirthouse.ro',
     'size_chart' => [
         'meta_title' => 'Size Chart',
         'meta_description' => 'ShirtHouse size chart for men and women. Check measurements before you order so you and your team get the right fit. Shop with confidence.',
+    ],
+    'privacy' => [
+        'meta_title' => 'Privacy Policy',
+        'meta_description' => 'How Shirt House SRL in Sighișoara collects and uses personal data for orders, contact messages, and the ShirtHouse website.',
+        'title1' => 'Privacy Policy',
+        'footer_heading' => 'PRIVACY POLICY',
+        'footer_link' => 'Read more',
+        'body' => '<h2>1. Who we are</h2>
+<p>The controller of your personal data is <b>Shirt House SRL</b>, Liberty Street 9, Sighișoara, Romania (ShirtHouse). You can reach us at info@shirthouse.ro or comenzi@shirthouse.ro.</p>
+<h2>2. What we collect</h2>
+<p>We collect only what we need to run the storefront and handle your requests:</p>
+<ul>
+<li>Contact form: name, email, and message.</li>
+<li>Checkout: name, email, company (optional), country, city, phone, notes, and the products you ordered.</li>
+<li>Cart contents stored in your session until you check out or clear the cart.</li>
+<li>Technical cookies needed for the site: session, CSRF protection, language preference (en/ro), and your cookie-consent choice.</li>
+</ul>
+<p>We do not take online payments on this website.</p>
+<p>Optional analytics: if you accept, we load Google Tag Manager, which may set Google Analytics cookies so we can see how the storefront is used. These are not set until you accept. You can refuse. Google LLC (USA) then processes usage data for us. You can change your mind by clearing cookies for this site.</p>
+<h2>3. Why we use it</h2>
+<p>We use this data to reply to messages, register and confirm made-to-order shirt requests, and keep the website working. The legal bases are performing a contract or pre-contractual steps, our legitimate interest in operating the site, and, where required, your consent.</p>
+<h2>4. How long we keep it</h2>
+<p>Order and contact records are kept for as long as needed to fulfil the request, provide support, and meet accounting or legal duties, then deleted or anonymised.</p>
+<h2>5. Who we share it with</h2>
+<p>We do not sell your data. It may be processed by hosting and email providers acting for us, by Google if you accepted analytics, and by authorities if the law requires it.</p>
+<h2>6. Your rights</h2>
+<p>You may ask for access, rectification, erasure, restriction, objection, or portability, and you may complain to the Romanian supervisory authority (ANSPDCP). Email us at info@shirthouse.ro to exercise these rights.</p>
+<h2>7. Updates</h2>
+<p>This policy was last updated on 27 August 2026. We may change it when the site or the law changes. The current version is always on this page.</p>',
+    ],
+    'terms' => [
+        'meta_title' => 'Terms',
+        'meta_description' => 'Terms for ShirtHouse made-to-order corporate shirts: how orders work, confirmation, manufacturing in Sighișoara, and contacting Shirt House SRL.',
+        'title1' => 'Terms',
+        'footer_link' => 'Terms',
+        'body' => '<h2>1. The agreement</h2>
+<p>These terms apply when you use shirthouse.ro and when you send an order request to <b>Shirt House SRL</b> (ShirtHouse), Liberty Street 9, Sighișoara, Romania.</p>
+<h2>2. Made to order</h2>
+<p>Our shirts are manufactured to order in Romania. Typical delivery is 7–28 days after we confirm the details with you. Prices are shown in RON unless we agree otherwise.</p>
+<h2>3. How ordering works</h2>
+<p>Adding items to the cart and sending the checkout form is a <b>request</b>, not an instant paid purchase. We will contact you by phone or email to confirm quantities, options, branding, price, and timing. A binding order exists only after that confirmation.</p>
+<p>We do not collect card payments on this website.</p>
+<h2>4. Your details</h2>
+<p>You must provide accurate name, email, phone, and delivery location so we can reach you. How we use that information is described in our Privacy Policy.</p>
+<h2>5. Custom work</h2>
+<p>Embroidery, labels, and other customisation are produced from the files and instructions you approve. Check spelling and artwork before production. Made-to-order goods may not be returnable except where Romanian consumer law requires it, or if we made an error.</p>
+<h2>6. Contact</h2>
+<p>Questions: info@shirthouse.ro or comenzi@shirthouse.ro.</p>
+<h2>7. Updates</h2>
+<p>These terms were last updated on 27 August 2026. The version on this page applies to new requests.</p>',
+    ],
+    'not_found' => [
+        'meta_title' => 'Page not found',
+        'meta_description' => 'This ShirtHouse page does not exist. Continue to the home page or browse our shirts.',
+        'title1' => 'Page not found',
+        'message' => 'This page is missing or the link is outdated. You can go home or browse the shirt collection.',
+    ],
+    'footer' => [
+        'quicklinks' => 'QUICKLINKS',
+        'shop' => 'SHOP',
+        'home' => 'Home',
+        'products' => 'Products',
+        'custom' => 'Custom',
+        'about' => 'About',
+        'size_chart' => 'Size chart',
+        'contact' => 'Contact',
+    ],
+    'cookies' => [
+        'aria' => 'Cookie consent',
+        'message' => 'We use optional analytics cookies (Google) only if you accept. Technical cookies are always on. Read the :privacy.',
+        'accept' => 'Accept',
+        'reject' => 'Reject',
     ],
 ];

@@ -311,7 +311,7 @@ class Product extends BaseModel
      */
     public static function genericProductImageUrl(): string
     {
-        return asset('images/generic.png');
+        return asset('images/generic.jpg');
     }
 
     /**
@@ -380,5 +380,94 @@ class Product extends BaseModel
         $diff = round((float) $list - $unit, 2);
 
         return $diff > 0 ? $diff : 0.0;
+    }
+
+    /**
+     * schema.org Product + Offer JSON-LD for the product page. No review ratings.
+     *
+     * @return array<string, mixed>
+     */
+    public function jsonLdProduct(?string $locale = null): array
+    {
+        $origin = rtrim((string) config('app.url'), '/');
+        $locale = $locale ?? app()->getLocale();
+        $variants = $this->relationLoaded('Variants')
+            ? $this->Variants
+            : $this->Variants()->with(['PriceBrackets', 'Product.PriceBrackets'])->get();
+        $variants = $variants->filter(fn (ProductVariant $variant) => $variant->is_active);
+
+        $prices = [];
+        foreach ($variants as $variant) {
+            if (! $variant->relationLoaded('Product')) {
+                $variant->setRelation('Product', $this);
+            }
+            $prices[] = $variant->unitPriceForQuantity(1);
+        }
+        if ($prices === []) {
+            $prices[] = $this->unitPriceForQuantity(1);
+        }
+
+        $low = min($prices);
+        $high = max($prices);
+        $inStock = $variants->contains(function (ProductVariant $variant) {
+            return $variant->stock_quantity === null || (int) $variant->stock_quantity > 0;
+        });
+        if ($variants->isEmpty()) {
+            $inStock = $this->isInStock();
+        }
+
+        $availability = $inStock ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock';
+        $currency = (string) __('components.product.currency');
+        $url = $origin.'/'.$locale.'/products/'.$this->slug;
+
+        $offer = ($low === $high)
+            ? [
+                '@type' => 'Offer',
+                'url' => $url,
+                'priceCurrency' => $currency,
+                'price' => number_format($low, 2, '.', ''),
+                'availability' => $availability,
+                'itemCondition' => 'https://schema.org/NewCondition',
+            ]
+            : [
+                '@type' => 'AggregateOffer',
+                'url' => $url,
+                'priceCurrency' => $currency,
+                'lowPrice' => number_format($low, 2, '.', ''),
+                'highPrice' => number_format($high, 2, '.', ''),
+                'offerCount' => (string) count($prices),
+                'availability' => $availability,
+                'itemCondition' => 'https://schema.org/NewCondition',
+            ];
+
+        return [
+            '@context' => 'https://schema.org',
+            '@type' => 'Product',
+            'name' => trim((string) ($this->name ?: $this->slug)),
+            'description' => $this->seoDescription($locale),
+            'image' => $this->absolutePublicUrl($this->firstVariantStorageImageUrl()),
+            'sku' => (string) $this->sku,
+            'brand' => [
+                '@type' => 'Brand',
+                'name' => (string) config('app.name'),
+            ],
+            'offers' => $offer,
+        ];
+    }
+
+    private function absolutePublicUrl(string $url): string
+    {
+        $origin = rtrim((string) config('app.url'), '/');
+        $url = trim($url);
+        if ($url === '') {
+            return $origin.'/images/generic.jpg';
+        }
+        if (! str_starts_with($url, 'http://') && ! str_starts_with($url, 'https://')) {
+            return $origin.'/'.ltrim($url, '/');
+        }
+        $path = parse_url($url, PHP_URL_PATH) ?: '';
+        $query = parse_url($url, PHP_URL_QUERY);
+
+        return $origin.$path.($query ? '?'.$query : '');
     }
 }

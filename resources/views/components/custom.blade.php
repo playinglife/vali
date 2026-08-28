@@ -7,8 +7,8 @@
             <div class="root-custom__line">
                 <div class="root-custom__line-content">
                     <div class="root-custom__header-images">
-                        <img src="{{ asset('svgs/shirt1.svg') }}" alt="Custom Shirt" class="root-custom__header-image">
-                        <img src="{{ asset('svgs/shirt2.svg') }}" alt="Custom Shirt" class="root-custom__header-image">
+                        <img src="{{ asset('svgs/shirt1.svg') }}" alt="" width="400" height="400" loading="lazy" decoding="async" aria-hidden="true" class="root-custom__header-image">
+                        <img src="{{ asset('svgs/shirt2.svg') }}" alt="" width="400" height="400" loading="lazy" decoding="async" aria-hidden="true" class="root-custom__header-image">
                     </div>
                     <div class="root-custom__line-content-item">
                         <p class="text-small dark">{{ __('pages.custom.message') }}</p>
@@ -74,7 +74,9 @@
         }
         .root-custom__header-image {
             width: 100%;
-            height: 100%;
+            height: auto;
+            aspect-ratio: 1 / 1;
+            object-fit: contain;
             opacity: 0.5;
             &:hover {
                 opacity: 0.6;

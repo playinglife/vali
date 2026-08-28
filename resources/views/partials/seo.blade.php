@@ -41,7 +41,47 @@
         $seoCanonical = $seoPath === '' ? $seoOrigin : $seoOrigin.'/'.$seoPath;
     }
 
-    $seoHasOptional = $seoDescription !== '' || $seoCanonical !== '' || $seoOgImage !== '';
+    $seoOgLocaleMap = [
+        'en' => 'en_US',
+        'ro' => 'ro_RO',
+    ];
+    $seoOgLocale = $seoOgLocaleMap[app()->getLocale()] ?? 'en_US';
+    if ($seoOgImage === '') {
+        $seoOgImage = $seoOrigin.'/images/og-default.jpg';
+    } elseif (! str_starts_with($seoOgImage, 'http://') && ! str_starts_with($seoOgImage, 'https://')) {
+        $seoOgImage = $seoOrigin.'/'.ltrim($seoOgImage, '/');
+    } else {
+        $seoOgImagePath = parse_url($seoOgImage, PHP_URL_PATH) ?: '';
+        $seoOgImageQuery = parse_url($seoOgImage, PHP_URL_QUERY);
+        $seoOgImage = $seoOrigin.$seoOgImagePath.($seoOgImageQuery ? '?'.$seoOgImageQuery : '');
+    }
+
+    $seoJsonLd = [
+        '@context' => 'https://schema.org',
+        '@graph' => [
+            [
+                '@type' => 'Organization',
+                '@id' => $seoOrigin.'/#organization',
+                'name' => $seoSiteName,
+                'url' => $seoOrigin,
+                'logo' => [
+                    '@type' => 'ImageObject',
+                    'url' => $seoOrigin.'/images/logo.png',
+                    'width' => 512,
+                    'height' => 512,
+                ],
+            ],
+            [
+                '@type' => 'WebSite',
+                '@id' => $seoOrigin.'/#website',
+                'name' => $seoSiteName,
+                'url' => $seoOrigin,
+                'publisher' => [
+                    '@id' => $seoOrigin.'/#organization',
+                ],
+            ],
+        ],
+    ];
 @endphp
         <title>{{ $seoFullTitle }}</title>
         <meta name="robots" content="{{ $seoRobots }}">
@@ -54,26 +94,31 @@
 @if ($seoCanonical !== '')
         <link rel="canonical" href="{{ $seoCanonical }}">
 @endif
-@if ($seoHasOptional)
         <meta property="og:type" content="{{ $seoOgType }}">
         <meta property="og:site_name" content="{{ $seoSiteName }}">
         <meta property="og:title" content="{{ $seoFullTitle }}">
+        <meta property="og:locale" content="{{ $seoOgLocale }}">
+@foreach ($seoOgLocaleMap as $seoOgLocaleCode => $seoOgLocaleValue)
+@if ($seoOgLocaleValue !== $seoOgLocale)
+        <meta property="og:locale:alternate" content="{{ $seoOgLocaleValue }}">
+@endif
+@endforeach
 @if ($seoDescription !== '')
         <meta property="og:description" content="{{ $seoDescription }}">
 @endif
 @if ($seoCanonical !== '')
         <meta property="og:url" content="{{ $seoCanonical }}">
 @endif
-@if ($seoOgImage !== '')
         <meta property="og:image" content="{{ $seoOgImage }}">
+@if (str_ends_with($seoOgImage, '/images/og-default.jpg'))
+        <meta property="og:image:width" content="1200">
+        <meta property="og:image:height" content="630">
 @endif
-        <meta name="twitter:card" content="{{ $seoOgImage !== '' ? 'summary_large_image' : 'summary' }}">
+        <meta name="twitter:card" content="summary_large_image">
         <meta name="twitter:title" content="{{ $seoFullTitle }}">
 @if ($seoDescription !== '')
         <meta name="twitter:description" content="{{ $seoDescription }}">
 @endif
-@if ($seoOgImage !== '')
         <meta name="twitter:image" content="{{ $seoOgImage }}">
-@endif
-@endif
+        <script type="application/ld+json">{!! json_encode($seoJsonLd, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP) !!}</script>
 @stack('jsonld')

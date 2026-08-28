@@ -9,30 +9,15 @@
     <div class="col">
         <div class="grid grid-1 grid-noGutter">
             <div class="col">
-                <h4>PRIVACY POLICY</h4>
-            </div>
-            <div class="col">
-                <div class="footer__social-row">
-                    <a href="/privacy-policy">Read more</a>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col">
-        <div class="grid grid-1 grid-noGutter">
-            <div class="col">
-                <h4>QUICKLINKS</h4>
+                <h4>{{ __('pages.privacy.footer_heading') }}</h4>
             </div>
             <div class="col">
                 <div class="grid grid-1 grid-noGutter grid-center column">
                     <div class="col">
-                        <a href="{{ route('home') }}">Home</a>
+                        <a href="{{ route('privacy') }}">{{ __('pages.privacy.footer_link') }}</a>
                     </div>
                     <div class="col">
-                        <a href="{{ route('aboutus') }}">About</a>
-                    </div>
-                    <div class="col">
-                        <a href="{{ route('contact') }}">Contact</a>
+                        <a href="{{ route('terms') }}">{{ __('pages.terms.footer_link') }}</a>
                     </div>
                 </div>
             </div>
@@ -41,13 +26,39 @@
     <div class="col">
         <div class="grid grid-1 grid-noGutter">
             <div class="col">
-                <h4>SOCIALS</h4>
+                <h4>{{ __('pages.footer.quicklinks') }}</h4>
             </div>
             <div class="col">
-                <div class="grid grid-3 grid-noGutter grid-center column">
-                    <x-svg name="facebook" class="svg-linkedin" />
-                    <x-svg name="twitter" class="svg-linkedin" />
-                    <x-svg name="youtube" class="svg-linkedin" />
+                <div class="grid grid-1 grid-noGutter grid-center column">
+                    <div class="col">
+                        <a href="{{ route('home') }}">{{ __('pages.footer.home') }}</a>
+                    </div>
+                    <div class="col">
+                        <a href="{{ route('aboutus') }}">{{ __('pages.footer.about') }}</a>
+                    </div>
+                    <div class="col">
+                        <a href="{{ route('contact') }}">{{ __('pages.footer.contact') }}</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="grid grid-1 grid-noGutter">
+            <div class="col">
+                <h4>{{ __('pages.footer.shop') }}</h4>
+            </div>
+            <div class="col">
+                <div class="grid grid-1 grid-noGutter grid-center column">
+                    <div class="col">
+                        <a href="{{ route('products.index') }}">{{ __('pages.footer.products') }}</a>
+                    </div>
+                    <div class="col">
+                        <a href="{{ route('custom') }}">{{ __('pages.footer.custom') }}</a>
+                    </div>
+                    <div class="col">
+                        <a href="{{ route('size-chart') }}">{{ __('pages.footer.size_chart') }}</a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -56,11 +67,6 @@
 
 @once
     <style>
-        .svg-linkedin {
-            width: 1.5em;
-            height: 1.5em;
-        }
-
         .root-views-layouts-footer {
             /*position: absolute;
             bottom: 0;

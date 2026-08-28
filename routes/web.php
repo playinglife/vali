@@ -3,6 +3,7 @@
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\LocaleController;
+use App\Http\Controllers\SitemapController;
 use App\Features\Admin\Controllers\AuthController;
 use App\Features\Admin\Controllers\DashboardController;
 use App\Features\Admin\Controllers\ProductController;
@@ -20,6 +21,9 @@ $locales = array_keys(config('app.supported_locales', ['en' => 'English', 'ro' =
 Route::get('/', function (Request $request) {
     return redirect('/'.SetLocale::detectLocale($request), 301);
 });
+
+Route::get('/sitemap.xml', SitemapController::class)->name('sitemap');
+Route::get('/robots.txt', [SitemapController::class, 'robots'])->name('robots');
 
 Route::post('/locale', [LocaleController::class, 'update'])->name('locale.update');
 
@@ -75,19 +79,16 @@ Route::prefix('{locale}')
         Route::get('/aboutus', function () {
             return view('pages.aboutus');
         })->name('aboutus');
+        Route::get('/about', function (string $locale) {
+            return redirect()->route('aboutus', ['locale' => $locale], 301);
+        });
+        Route::get('/privacy-policy', function () {
+            return view('pages.privacy');
+        })->name('privacy');
+        Route::get('/terms', function () {
+            return view('pages.terms');
+        })->name('terms');
 
-        Route::get('/teachers', function () {
-            return view('pages.teachers');
-        });
-        Route::get('/app', function () {
-            return view('pages.app');
-        });
-        Route::get('/about', function () {
-            return view('pages.about');
-        });
-        Route::get('/school', function () {
-            return view('pages.school');
-        });
         Route::get('/contact', function () {
             return view('pages.contact');
         })->name('contact');
@@ -95,12 +96,6 @@ Route::prefix('{locale}')
         Route::get('/contact-success', function () {
             return view('pages.contact-success');
         })->name('contact.success');
-        Route::get('/book-a-private-conversation', function () {
-            return view('pages.bookacall');
-        });
-        Route::post('/book-a-private-conversation', function () {
-            return redirect()->back();
-        })->name('bookacall.submit');
     });
 
 Route::prefix('admin')->name('admin.')->group(function () {
@@ -164,7 +159,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
 Route::fallback(function (Request $request) {
     $first = explode('/', ltrim($request->path(), '/'))[0] ?? '';
-    if (in_array($first, ['admin', 'livewire', 'up'], true) || SetLocale::isSupportedLocale($first)) {
+    if (in_array($first, ['admin', 'livewire', 'up', 'sitemap.xml', 'robots.txt'], true) || SetLocale::isSupportedLocale($first)) {
         abort(404);
     }
 

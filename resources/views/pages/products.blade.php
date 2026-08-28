@@ -3,6 +3,10 @@
 @section('title', __('pages.products.title1'))
 @section('description', __('pages.products.meta_description'))
 
+@push('head')
+        <link rel="preload" as="image" href="{{ asset('images/service.jpg') }}">
+@endpush
+
 @section('content')
 
     <div class="root-views-products">

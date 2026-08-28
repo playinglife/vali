@@ -159,6 +159,10 @@ use App\Models\ProductOption;
                         <div class="root-checkout__line-content-item-buttons">
                             <x-button type="submit" text="{{ __('pages.checkout.send_order') }}" aria-label="{{ __('pages.checkout.send_order') }}" />
                         </div>
+                        <p class="text-tiny dark root-checkout__legal">{!! __('pages.checkout.legal_notice', [
+                            'terms' => '<a href="'.e(route('terms')).'">'.e(__('pages.terms.meta_title')).'</a>',
+                            'privacy' => '<a href="'.e(route('privacy')).'">'.e(__('pages.privacy.meta_title')).'</a>',
+                        ]) !!}</p>
 
                     </form>
                 </div>
@@ -312,6 +316,14 @@ use App\Models\ProductOption;
             & > form {
                 margin: 0;
                 padding: 0;
+            }
+        }
+        .root-checkout__legal {
+            text-align: center;
+            margin: 0;
+            & > a {
+                color: inherit;
+                text-decoration: underline;
             }
         }
         .root-checkout__error {

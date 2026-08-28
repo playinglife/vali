@@ -1,5 +1,4 @@
 import './bootstrap';
-import { initCallBookingPickers } from './call-booking-picker';
 
 /**
  * Fade 0→half viewport; at/ past half hide. Resize can change threshold — sticky hide
@@ -32,8 +31,6 @@ function updateMenuFromScroll(menu, scrollEl, state) {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-    initCallBookingPickers();
-
     const menu = document.getElementById('main-menu');
     const main = document.getElementById('main-content');
 

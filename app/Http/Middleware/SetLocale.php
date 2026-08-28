@@ -127,7 +127,8 @@ class SetLocale
     {
         $locale = $request->route('locale');
         if (! self::isSupportedLocale(is_string($locale) ? $locale : null)) {
-            $locale = self::detectLocale($request);
+            $first = explode('/', ltrim($request->path(), '/'))[0] ?? '';
+            $locale = self::isSupportedLocale($first) ? $first : self::detectLocale($request);
         }
 
         App::setLocale($locale);

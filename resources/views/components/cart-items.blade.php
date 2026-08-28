@@ -75,7 +75,7 @@ use App\Models\ProductOption;
                         <div class="root-cart-items__group grid">
                             <div class="col">
                                 <div class="grid grid-column grid-middle">
-                                    <img src="{{ $variant->storageImageUrl() }}" alt="{{ $line['product']->name }}" width="150em" />
+                                    <img src="{{ $variant->storageImageUrl() }}" alt="{{ $line['product']->name }}" class="root-cart-items__img" width="150" height="225" loading="lazy" decoding="async" />
                                 </div>
                             </div>
                             <div class="col">
@@ -103,7 +103,7 @@ use App\Models\ProductOption;
                                         @endif
                                         <div data-reference="product-detail-option-list" class="{{ $className }}">
                                             @if ($value->Option->type->value === \App\Enums\ProductOptionType::Image->value)
-                                                <img src="{{ $value->image }}" alt="{{ $value->value }}" class="root-product-detail__option-image" />
+                                                <img src="{{ $value->image }}" alt="{{ $value->value }}" class="root-product-detail__option-image" width="48" height="48" loading="lazy" decoding="async" />
                                             @elseif ($value->Option->type->value === \App\Enums\ProductOptionType::Icon->value)
                                                 @php
                                                     [$iconName, $iconColor] = array_pad(explode(':', $value->icon, 2), 2, '');
@@ -232,6 +232,13 @@ use App\Models\ProductOption;
 
         .root-cart-items__remove-button {
             justify-content: flex-end;
+        }
+        .root-cart-items__img {
+            display: block;
+            width: 150px;
+            height: auto;
+            aspect-ratio: 2 / 3;
+            object-fit: cover;
         }
 
         .root-cart-items__total {

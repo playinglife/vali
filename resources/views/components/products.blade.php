@@ -198,7 +198,7 @@
                     data-sort-name="{{ e(\Illuminate\Support\Str::lower($product->name)) }}"
                     data-price="{{ $product->price }}"
                 >
-                    <x-product :product="$product" :href="$href" />
+                    <x-product :product="$product" :href="$href" :priority="$loop->first" />
                 </div>
             @endforeach
         </div>

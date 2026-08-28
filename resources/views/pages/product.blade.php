@@ -3,6 +3,15 @@
 @section('title', $product->seoTitle())
 @section('description', $product->seoDescription())
 @section('og_type', 'product')
+@section('og_image', $product->firstVariantStorageImageUrl())
+
+@push('head')
+        <link rel="preload" as="image" href="{{ $product->firstVariantStorageImageUrl() ?: \App\Models\Product::genericProductImageUrl() }}" fetchpriority="high">
+@endpush
+
+@push('jsonld')
+        <script type="application/ld+json">{!! json_encode($product->jsonLdProduct(), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP) !!}</script>
+@endpush
 
 @section('content')
 

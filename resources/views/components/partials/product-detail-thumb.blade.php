@@ -1,6 +1,6 @@
 @php
     $thumbSrc = $image->image ?? \App\Models\Product::genericProductImageUrl();
-    $thumbAlt = $image->alt ?? '';
+    $thumbAlt = filled($image->alt ?? null) ? $image->alt : ($Product->name ?? '');
 @endphp
 <button type="button" data-reference="product-detail-thumb" class="root-product-detail__thumb" aria-pressed="false" onclick="updateMainImage(event, this)"
     aria-label="{{ $thumbAlt }}"
