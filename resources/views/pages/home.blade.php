@@ -109,6 +109,13 @@
                 flex-direction: column;
                 justify-content: center;
                 align-items: center;
+                & > h1 {
+                    @media (max-width: 64em) {
+                        padding: var(--padding-small);
+                        box-sizing: border-box;
+                        text-align: center;
+                    }
+                }
             }
             & > .page-2 {
                 width: 100%;
@@ -144,6 +151,11 @@
                     flex-direction: column;
                     justify-content: center;
                     align-items: center;
+
+                    @media (max-width: 64em) {
+                        flex-basis: 100%;
+                        max-width: 100%;
+                    }
                     
                     & > h2 {
                         font-size: 2.2rem;

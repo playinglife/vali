@@ -118,19 +118,33 @@ What can we offer you?',
         'meta_description' => 'Personalizează cămășile ShirtHouse: broderie, transfer termic, etichete și ajustări de croială. La comandă pentru companii și evenimente. Cere o ofertă.',
         'message' => 'La Shirthouse, personalizarea cămășilor nu este doar un detaliu suplimentar, ci o oportunitate reală de a crea un produs unic, perfect adaptat nevoilor și identității dumneavoastră – indiferent dacă vorbim despre imaginea companiei, un eveniment special sau preferințele personale.
 
-Reproducere personalizată
-Aveți o cămașă sau un bluzon preferat? Ne putem reproduce cu fidelitate, respectând dimensiunile, croiala și toate detaliile de design. De la structură până la finisaj, adaptăm totul la cerințele dumneavoastră
 
- 
+<b>Reproducere personalizată</b>
+Aveți o cămașă sau o bluză preferată?<br> O putem reproduce cu fidelitate, respectând dimensiunile, croiala și toate detaliile de design. De la structură până la finisaj, adaptăm totul la cerințele dumneavoastră
 
 
-Modificări la modelele noastre standard
+<b>Modificări la modelele noastre standard</b>
 Modelele din colecția noastră pot fi ajustate în orice fel:
 
-• eliminare sau adăugare de elemente (pochetelor, manșetelor, gulerului, slits, etc.)
+• eliminare sau adăugare de elemente (buzunare, manșete, gulere, fente etc.)
 • inserții contrastante în culorile dorite
-• personalizări funcționale (pochetelor interne/externe, flapelor, patch-urilor)
-• adaptări stilistice (croială, lungime, sistem de închidere)'
+• personalizări funcționale (buzunare interne/externe, clape, aplicații)
+• adaptări stilistice (croială, lungime, sistem de închidere)
+
+
+<b>Personalizare vizuală completă</b>
+Oferim o gamă extinsă de opțiuni de branding și decorare:
+
+• Broderie profesională pentru logo-uri sau inițiale
+• Transfer termic/imprimare pentru elemente grafice complexe
+• Accesorii personalizabile: nasturi, ațe, etichete
+• Paletă largă de culori și materiale, de la clasic la accent
+
+
+<b>Totul este posibil – aproape fără limite</b>
+Nu vă place forma gulerului, a manșetei sau a buzunarului? O putem adapta. Doriți un contrast subtil sau accente de culoare puternice? Vă punem la dispoziție toate opțiunile de care aveți nevoie pentru a crea o piesă de îmbrăcăminte cu adevărat personalizată.
+
+La Shirthouse, niciun detaliu nu este prea mic – atâta timp cât este important pentru dumneavoastră.',
     ],
     'aboutus' => [
         'meta_title' => 'Despre noi',

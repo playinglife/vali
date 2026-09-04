@@ -31,22 +31,25 @@ class CartController extends Controller
         $validated = $request->validate([
             'product_id' => ['required', 'integer', 'exists:products,id'],
             'product_variant_id' => ['nullable', 'integer', 'exists:product_variants,id'],
-            'quantity' => ['sometimes', 'integer', 'min:1', 'max:999'],
+            'quantity' => ['nullable', 'integer', 'min:1', 'max:999'],
         ]);
 
         $product = Product::find($validated['product_id']);
-        $variant = ProductVariant::find($validated['product_variant_id']);
+        $variant = ProductVariant::find($validated['product_variant_id'] ?? null);
         if ($product === null) {
-            return redirect()->back()->withErrors(['product_id' => 'Product not found']);
+            return redirect()->back()->withNotify('error', 'Product not found');
         }
         if ($variant === null) {
-            return redirect()->back()->withErrors(['product_variant_id' => 'Variant not found']);
+            return redirect()->back()->withNotify('error', 'Variant not found');
+        }
+        if ((int) $variant->product_id !== (int) $product->id) {
+            return redirect()->back()->withNotify('error', 'Variant not found');
         }
         if (! $product->is_active) {
-            return redirect()->back()->withErrors(['product_id' => 'Product is not active']);
+            return redirect()->back()->withNotify('error', 'Product is not active');
         }
-        if (! $product->isInStock()) {
-            return redirect()->back()->withErrors(['product_id' => 'Product is not in stock']);
+        if (! $variant->is_active) {
+            return redirect()->back()->withNotify('error', 'Variant is not active');
         }
 
         $qty = (int) ($validated['quantity'] ?? 1);
@@ -64,7 +67,7 @@ class CartController extends Controller
         $nextId++;
         $pricing = VariantPricing::forVariantId((int) $variant->id, $qty);
         if ($pricing === null) {
-            return redirect()->back()->withErrors(['product_variant_id' => 'Unable to calculate variant price']);
+            return redirect()->back()->withNotify('error', 'Unable to calculate variant price');
         }
         $newItem = array_merge(['id' => $nextId], $pricing);
         $lines[] = $newItem;

@@ -23,7 +23,8 @@
         flex-direction: column;
         justify-content: start;
         align-items: center;
-        gap: var(--padding-large);
+        padding-bottom: var(--padding-large);
+        gap: var(--padding-medium);
         @if($blur)
             backdrop-filter: blur(10px);
         @endif
@@ -42,6 +43,13 @@
             & > h2 {   
                 color: var(--color-text-dark);
             }
+            & {
+                @media (max-width: 64em) {
+                    padding: var(--padding-small);
+                    box-sizing: border-box;
+                    text-align: center;
+                }
+            }
         }
         & > .text, & > .content {
             /* align-items:center on the section shrinks flex children to content width; stretch so grids use full page width */
@@ -50,7 +58,7 @@
             max-width: 100%;
             box-sizing: border-box;
             color: var(--color-text-dark);
-            padding: 0 15% calc(var(--padding-large) * 2) 15%;
+            padding: 0 15% 0 15%;
             font-size: 0.8em;
         }
         & > .text {

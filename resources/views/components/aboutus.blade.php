@@ -37,6 +37,9 @@
             gap: var(--gap-medium);
             padding: var(--padding-huge);
             box-sizing: border-box;
+            @media (max-width: 64em) {
+                padding: 0;
+            }
         }
         .root-aboutus__main-title {
             flex: 1 1 auto;

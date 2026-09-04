@@ -241,6 +241,10 @@
         .root-product-card__sku {
             font-size: var(--text-size-tiny);
         }
+        .root-product-card__option {
+            padding-top: calc(var(--padding-medium) * 0.66);
+        }
+
         .root-product-card__option-title {
             font-family: var(--font-family-one);
             font-size: var(--text-size-small);

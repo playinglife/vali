@@ -171,7 +171,8 @@
             background-size: cover;
             background-position: center center;
             background-repeat: no-repeat;
-            filter: blur(2px);
+            filter: blur(10px);
+            opacity: 0.9;
             transform: scale(1.05);
             z-index: -1;
             pointer-events: none;

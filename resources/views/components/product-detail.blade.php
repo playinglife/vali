@@ -346,8 +346,8 @@
         <form id="product-detail-cart-{{ $Product->id }}" method="post" action="{{ route('cart.add') }}" class="root-product-detail__cart-form">
             @csrf
             <input type="hidden" name="product_id" value="{{ $Product->id }}" />
-            <input type="hidden" name="product_variant_id" value="{{ $selectedVariant->id }}" class="root-product-detail__variant-id" />
-            <button type="submit" class="root-product-detail__add-btn" @disabled(! $selectedVariant->stock_quantity || $selectedVariant->stock_quantity <= 0) >
+            <input type="hidden" name="product_variant_id" value="{{ $selectedVariant?->id }}" class="root-product-detail__variant-id" />
+            <button type="submit" class="root-product-detail__add-btn" @disabled($selectedVariant === null) >
                 {{ __('components.product.add_to_cart') }}
             </button>
         </form>
@@ -500,6 +500,14 @@
         // Update product option selection
         function onVariantSelect(variantId) {
             selectedVariant = data.Product.Variants.find(variant => variant.id == variantId);
+            const variantIdInput = root.querySelector('.root-product-detail__variant-id');
+            if (variantIdInput) {
+                variantIdInput.value = selectedVariant ? String(selectedVariant.id) : '';
+            }
+            const addBtn = root.querySelector('.root-product-detail__add-btn');
+            if (addBtn) {
+                addBtn.disabled = !selectedVariant;
+            }
             if (selectedVariant) {
                 const variantDescription = root.querySelector('.root-product-detail__variant-description');
                 const variant = root.querySelector(`[data-variant-id="${variantId}"]`);

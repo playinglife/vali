@@ -123,10 +123,10 @@ button:not(.ignore-global):not(.ag-button),
 a.button:not(.ignore-global):not(.ag-button) {
   background-color: var(--color-background-transparent-dark);
   border: 0.03em solid var(--color-background-transparent-dark-border);
-  border-radius: var(--border-radius-small);
+  border-radius: var(--border-radius-medium);
   color: var(--color-text-light);
   cursor: pointer;
-  font-size: 0.5em;
+  font-size: 0.7em;
   outline: 0;
   text-align: center;
   transition: all .3s cubic-bezier(.05, .03, .35, 1);

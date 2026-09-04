@@ -5,6 +5,10 @@
     width: 100%;
     margin: 0 auto;
     padding: var(--padding-large);
+
+    @media (max-width: 64em) {
+        padding: 0;
+    }
 }
 
 .root-product-detail__grid {
@@ -179,6 +183,11 @@ button.root-product-detail__thumb--active {
 
 .root-product-detail__cart-form {
     margin: 0;
+}
+
+.root-product-detail__add-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
 .root-product-detail__order-qty {

@@ -116,13 +116,12 @@ What can we offer you?',
         'meta_description' => 'Customize ShirtHouse shirts with embroidery, heat transfer, labels and cut adjustments. Made to order for companies and events. Request yours today.',
         'message' => 'At Shirthouse, shirt customization is not just an extra detail, but a real opportunity to create a unique product, perfectly adapted to your needs and identity – whether we are talking about a company image, a special event or personal preferences.
 
-Custom Reproduction
-Do you have a favorite shirt or blouse? We can faithfully reproduce it, respecting the dimensions, cut and all design details. From the structure to the finish, we adapt everything to your requirements
 
- 
+<b>Custom Reproduction</b>
+Do you have a favorite shirt or blouse?<br> We can faithfully reproduce it, respecting the dimensions, cut and all design details. From the structure to the finish, we adapt everything to your requirements
 
 
-Modifications to our standard models
+<b>Modifications to our standard models</b>
 The models in our collection can be adjusted in any way:
 
 • removal or addition of elements (pockets, cuffs, collars, slits, etc.)
@@ -130,7 +129,8 @@ The models in our collection can be adjusted in any way:
 • functional customizations (internal/external pockets, flaps, patches)
 • stylistic adaptations (cut, length, closure system)
 
-Full visual customization
+
+<b>Full visual customization</b>
 We offer an extensive range of branding and decoration options:
 
 • Professional embroidery for logos or initials
@@ -138,7 +138,8 @@ We offer an extensive range of branding and decoration options:
 • Customizable accessories: buttons, threads, labels
 • Wide palette of colors and fabrics, from classic to accent
 
-Everything is possible – almost limitless
+
+<b>Everything is possible – almost limitless</b>
 Don’t like the shape of the collar, cuff or pocket? We can adapt it. Do you want a subtle contrast or strong color accents? We provide you with all the options you need to create a truly personalized piece of clothing.
 
 At Shirthouse, no detail is too small – as long as it’s important to you.',

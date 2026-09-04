@@ -148,23 +148,22 @@
                 font-family: var(--font-family-one);
                 font-size: 0.75rem;
                 letter-spacing: 0.05em;
-                color: var(--color-text-dark);
+                color: var(--color-text-dark) !important;
                 background: var(--color-background-light);
                 backdrop-filter: blur(10px);
                 border: none;
                 padding: var(--padding-tiny) var(--padding-small);
                 cursor: pointer;
+                box-sizing: border-box;
             }
 
             .language-switcher__option:hover,
             .language-switcher__option:focus {
-                background-color: var(--color-interact-1);
-                backdrop-filter: blur(10px);
                 outline: none;
             }
 
             .language-switcher__option--active {
-                color: var(--color-action);
+                color: var(--color-action) !important;
             }
         </style>
 

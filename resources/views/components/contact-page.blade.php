@@ -49,6 +49,12 @@
             flex-direction: row;
             gap: var(--gap-medium);
             box-sizing: border-box;
+
+
+            @media (max-width: 64em) {
+                flex-direction: column;
+            }
+
             & > iframe {
                 width: 100%;
             }

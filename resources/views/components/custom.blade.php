@@ -11,7 +11,7 @@
                         <img src="{{ asset('svgs/shirt2.svg') }}" alt="" width="400" height="400" loading="lazy" decoding="async" aria-hidden="true" class="root-custom__header-image">
                     </div>
                     <div class="root-custom__line-content-item">
-                        <p class="text-small dark">{{ __('pages.custom.message') }}</p>
+                        <p class="text-small dark">{!! __('pages.custom.message') !!}</p>
                     </div>
                 </div>
             </div>
@@ -41,6 +41,9 @@
             gap: var(--gap-medium);
             padding: var(--padding-huge);
             box-sizing: border-box;
+            @media (max-width: 64em) {
+                padding: 0;
+            }
         }
         .root-custom__main-title {
             flex: 1 1 auto;
@@ -71,6 +74,9 @@
             flex-direction: row;
             justify-content: center;
             gap: var(--gap-medium);
+            @media (max-width: 64em) {
+                flex-direction: column;
+            }
         }
         .root-custom__header-image {
             width: 100%;
