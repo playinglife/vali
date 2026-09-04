@@ -151,7 +151,10 @@
             height: 100%;
             object-fit: cover;
             object-position: center;
-            display: block;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
         }
         .root-product-card__body {
             display: flex;

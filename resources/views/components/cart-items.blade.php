@@ -179,8 +179,17 @@ use App\Models\ProductOption;
 <!-- STYLES -->
 @once
     <style lang="scss" scoped>
+        .root-cart-items__group.grid {
+            @media (max-width: 64em) {
+                flex-direction: column;
+            }
+        }
         .root-cart-items__title {
             padding: var(--padding-large);
+            @media (max-width: 64em) {
+                padding: 0;
+                text-align: center;
+            }
         }
         .root-cart-items {
             box-sizing: border-box;
@@ -207,6 +216,9 @@ use App\Models\ProductOption;
             &.grid > .col:last-child {
                 flex: 1 1 0%;
                 min-width: 0;
+            }
+            @media (max-width: 64em) {
+                padding: 0;
             }
         }
         .root-cart-items__main-title {
@@ -238,9 +250,15 @@ use App\Models\ProductOption;
 
         .root-cart-items__remove-button {
             justify-content: flex-end;
+            @media (max-width: 64em) {
+                justify-content: center;
+            }
         }
         .root-cart-items__img {
-            display: block;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
             width: 150px;
             height: auto;
             aspect-ratio: 2 / 3;
@@ -265,6 +283,9 @@ use App\Models\ProductOption;
             }
             & > .col:first-child > table > tbody > tr > td.root-cart-items__total-currency {
                 padding-left: 0;
+            }
+            @media (max-width: 64em) {
+                padding: 0 !important;
             }
         }
 

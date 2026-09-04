@@ -3,6 +3,16 @@
 
 @import "gridlex/dist/gridlex.min.css";
 
+// Gridlex [class*=grid-] also matches AG Grid 36 internals (ag-grid-viewport, etc.)
+[class*="ag-grid-"] {
+  flex-wrap: nowrap;
+  margin-left: 0;
+  margin-right: 0;
+}
+.ag-grid-viewport {
+  display: block;
+}
+
 @import "variables.scss";
 
 html {
@@ -117,6 +127,20 @@ a.light-mode {
 
 
 
+// Broken-image alt text (browser shows `alt` when src cannot be loaded)
+img {
+    font-family: $font-family-two;
+    font-size: $text-size-small;
+    font-weight: $font-weight-normal;
+    letter-spacing: 0.04em;
+    color: $color-text-dark;
+    text-align: center;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+}
+
+
+
 
  // BUTTONS
 button:not(.ignore-global):not(.ag-button),
@@ -126,7 +150,7 @@ a.button:not(.ignore-global):not(.ag-button) {
   border-radius: var(--border-radius-medium);
   color: var(--color-text-light);
   cursor: pointer;
-  font-size: 0.7em;
+  font-size: 0.6rem;
   outline: 0;
   text-align: center;
   transition: all .3s cubic-bezier(.05, .03, .35, 1);

@@ -228,6 +228,10 @@ use App\Models\ProductOption;
                     }
                 }
             }
+
+            @media (max-width: 64em) {
+                padding: 0;
+            }
         }
         .root-checkout__main-title {
             flex: 1 1 auto;

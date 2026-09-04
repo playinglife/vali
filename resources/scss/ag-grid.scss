@@ -299,10 +299,31 @@
   margin-right: 0.8em !important;
 }
 
-// Gridlex [class*=grid-] also matches AG Grid 36+ internals (ag-grid-scrolling-container, etc.)
-// and turns them into wrapping flex rows, which vertically centers the row stack.
-[class*="ag-grid-"] {
-  display: revert;
-  flex-flow: revert;
-  margin: revert;
+// Gridlex [class*=grid-] matches AG Grid 36 classes. AG Grid does not set `display`
+// on .ag-grid-viewport, so Gridlex's display:flex / flex-flow:row wrap wins and
+// vertically centers the row stack in the leftover viewport height.
+.ag-grid-viewport {
+  display: block !important;
+  margin: 0 !important;
+}
+
+.ag-grid-scrollable-area {
+  display: flex !important;
+  flex-direction: column !important;
+  flex-wrap: nowrap !important;
+  justify-content: flex-start !important;
+  align-items: stretch !important;
+  margin: 0 !important;
+}
+
+.ag-grid-scrolling-rows {
+  flex-wrap: nowrap !important;
+  align-items: flex-start !important;
+  align-content: flex-start !important;
+  margin: 0 !important;
+}
+
+.ag-grid-scrolling-container {
+  display: block !important;
+  margin: 0 !important;
 }

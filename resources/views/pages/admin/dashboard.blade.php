@@ -66,6 +66,28 @@
             height: 100%;
             flex: 1;
         }
+        #admin-products-grid .ag-grid-viewport {
+            display: block !important;
+            margin: 0 !important;
+        }
+        #admin-products-grid .ag-grid-scrollable-area {
+            display: flex !important;
+            flex-direction: column !important;
+            flex-wrap: nowrap !important;
+            justify-content: flex-start !important;
+            align-items: stretch !important;
+            margin: 0 !important;
+        }
+        #admin-products-grid .ag-grid-scrolling-rows {
+            flex-wrap: nowrap !important;
+            align-items: flex-start !important;
+            align-content: flex-start !important;
+            margin: 0 !important;
+        }
+        #admin-products-grid .ag-grid-scrolling-container {
+            display: block !important;
+            margin: 0 !important;
+        }
 
         .admin-header-title {
             font-size: var(--text-size-small);
