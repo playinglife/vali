@@ -62,7 +62,7 @@ What can we offer you?',
     'cart' => [
         'title1' => 'Shopping Cart',
         'meta_description' => 'Review the shirts in your ShirtHouse cart before checkout.',
-        'empty' => 'Your cart is empty.',
+        'empty' => 'There are no products in the cart',
         'no_items_flash' => 'There are no items in your cart.',
         'quantity' => 'Quantity',
         'unit_price' => 'Unit price',

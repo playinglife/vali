@@ -132,6 +132,11 @@ use App\Models\ProductOption;
 
 
 
+        @if ($cartIsEmpty)
+            <x-miniviews.panel :padding="false">
+                <p class="root-cart-items__empty">{{ __('pages.cart.empty') }}</p>
+            </x-miniviews.panel>
+        @else
         <!-- Total -->
         <x-miniviews.panel :padding="false">
             <div class="grid grid-row grid-middle grid-noGutter grid-center root-cart-items__total">
@@ -165,6 +170,7 @@ use App\Models\ProductOption;
                 </div>
             </div>
         </x-miniviews.panel>
+        @endif
     </div>
 </div>
 
@@ -270,6 +276,14 @@ use App\Models\ProductOption;
         }
         .root-cart-items__total {
             padding: var(--padding-large);
+        }
+        .root-cart-items__empty {
+            margin: 0;
+            padding: var(--padding-large);
+            text-align: center;
+            font-family: var(--font-family-one);
+            font-size: var(--text-size-normal);
+            color: var(--color-text-dark);
         }
         .root-cart-items__options {
             display: flex;

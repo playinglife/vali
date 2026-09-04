@@ -64,7 +64,7 @@ What can we offer you?',
     'cart' => [
         'title1' => 'Coș de cumpărături',
         'meta_description' => 'Verifică cămășile din coșul ShirtHouse înainte de finalizarea comenzii.',
-        'empty' => 'Coșul tău este gol.',
+        'empty' => 'Nu există produse în coș',
         'no_items_flash' => 'Nu există articole în coș.',
         'quantity' => 'Cantitate',
         'unit_price' => 'Preț unitar',
