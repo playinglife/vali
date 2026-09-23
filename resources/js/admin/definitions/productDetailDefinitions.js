@@ -20,6 +20,7 @@ export const productDetailBaseDefinitions = [
         sortable: true,
         filter: true,
         minWidth: 160,
+        custom: { unique: true },
     },
     {
         field: 'price',
@@ -101,7 +102,9 @@ export const productDetailBaseDefinitions = [
         editable: false,
         sortable: false,
         filter: false,
-        minWidth: 140,
+        minWidth: 220,
+        autoHeight: true,
+        wrapText: true,
         cellRenderer: GridImageCellRenderer,
         cellRendererParams: {
             idColumn: 'id',

@@ -70,6 +70,7 @@ export const orderItemColumnDefs = [
         sortable: true,
         filter: true,
         minWidth: 120,
+        custom: { unique: true },
     },
     {
         field: 'quantity',

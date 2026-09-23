@@ -47,7 +47,12 @@ class VariantResource extends JsonResource
         ];
 
         if ($this->relationLoaded('Values')) {
-            $attributes['options'] = OptionResource::collection($this->groupOptionsFromValues($values));
+            $attributes['value_ids'] = $values
+                ->pluck('id')
+                ->map(static fn ($id) => (int) $id)
+                ->values()
+                ->all();
+            $attributes['options'] = OptionResource::collection($this->groupOptionsFromValues($values))->resolve();
         }
 
         return $attributes;

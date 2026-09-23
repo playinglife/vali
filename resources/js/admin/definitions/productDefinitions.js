@@ -17,6 +17,7 @@ export const productColumnDefs = [
         editable: true,
         sortable: true,
         filter: true,
+        custom: { unique: true },
     },
     {
         field: 'name',
@@ -35,6 +36,7 @@ export const productColumnDefs = [
         filter: true,
         flex: 1,
         minWidth: 220,
+        custom: { unique: true },
     },
     {
         field: 'price',

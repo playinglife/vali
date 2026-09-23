@@ -18,7 +18,7 @@ class ProductVariantImage extends BaseModel
      *
      * @var list<string>
      */
-    public const FILENAME_EXTENSIONS = ['jpg', 'png', 'svg', 'webp', 'avif'];
+    public const FILENAME_EXTENSIONS = ['jpg', 'jpeg', 'png', 'svg', 'webp', 'avif'];
 
     /**
      * @var list<string>

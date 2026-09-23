@@ -36,6 +36,7 @@ class ProductVariantController extends Controller
         $data = $this->validated($request);
         $variant = $product->Variants()->create($data);
         $this->syncValues($variant, $request, $product);
+        $variant->unsetRelation('Values');
         $variant->load(['Values.Option', 'VariantImages']);
         return response()->json(VariantResource::make($variant)->resolve());
     }
@@ -46,6 +47,7 @@ class ProductVariantController extends Controller
         $data = $this->validated($request, $variant->id);
         $variant->update($data);
         $this->syncValues($variant, $request, $product);
+        $variant->unsetRelation('Values');
         $variant->load(['Values.Option', 'VariantImages']);
         return response()->json(VariantResource::make($variant)->resolve());
     }
@@ -107,19 +109,13 @@ class ProductVariantController extends Controller
             ->filter()
             ->values();
 
-        if ($ids->isEmpty()) {
-            $variant->Values()->sync([]);
+        $valueIds = $ids->all();
 
-            return;
+        if ($valueIds !== []) {
+            $product->OptionValues()->syncWithoutDetaching($valueIds);
         }
 
-        $allowedIds = $product->OptionValues()
-            ->whereIn('product_option_values.id', $ids->all())
-            ->pluck('product_option_values.id')
-            ->map(static fn ($id) => (int) $id)
-            ->all();
-
-        $variant->Values()->sync($allowedIds);
+        $variant->Values()->sync($valueIds);
     }
 
     protected function ensureVariantBelongsToProduct(Product $product, ProductVariant $variant): void
@@ -237,14 +233,17 @@ class ProductVariantController extends Controller
         if (! in_array($extension, $allowedExtensions, true)) {
             $extension = 'jpg';
         }
+        if ($extension === 'jpeg') {
+            $extension = 'jpg';
+        }
         $disk = Storage::disk('public');
         foreach (['jpg', 'jpeg', 'png', 'webp', 'avif', 'svg'] as $ext) {
             $disk->delete('product/variant-images/' . $variantImage->id . '.' . $ext);
         }
-        $validated['image']->storeAs('product/variant-images', $variantImage->id . '.' . $extension, 'public');
-        $variantImage->refresh();
+        $filename = $variantImage->id . '.' . $extension;
+        $validated['image']->storeAs('product/variant-images', $filename, 'public');
         return response()->json([
-            'image' => $variantImage->image,
+            'image' => asset('storage/product/variant-images/' . $filename),
             'variant_image_id' => $variantImage->id,
         ]);
     }

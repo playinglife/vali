@@ -49,6 +49,7 @@ export const orderColumnDefs = [
         sortable: true,
         filter: true,
         minWidth: 140,
+        custom: { unique: true },
     },
     {
         field: 'email',

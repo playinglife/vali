@@ -299,31 +299,9 @@
   margin-right: 0.8em !important;
 }
 
-// Gridlex [class*=grid-] matches AG Grid 36 classes. AG Grid does not set `display`
-// on .ag-grid-viewport, so Gridlex's display:flex / flex-flow:row wrap wins and
-// vertically centers the row stack in the leftover viewport height.
-.ag-grid-viewport {
-  display: block !important;
-  margin: 0 !important;
-}
-
-.ag-grid-scrollable-area {
+// Gridlex [class*=grid-] { flex-flow: row wrap } also matches AG Grid 36 internals.
+[class*="ag-grid-"] {
   display: flex !important;
-  flex-direction: column !important;
-  flex-wrap: nowrap !important;
-  justify-content: flex-start !important;
-  align-items: stretch !important;
-  margin: 0 !important;
-}
-
-.ag-grid-scrolling-rows {
-  flex-wrap: nowrap !important;
-  align-items: flex-start !important;
-  align-content: flex-start !important;
-  margin: 0 !important;
-}
-
-.ag-grid-scrolling-container {
-  display: block !important;
+  flex-flow: column nowrap !important;
   margin: 0 !important;
 }

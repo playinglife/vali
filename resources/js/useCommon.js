@@ -1128,6 +1128,35 @@ export function useCommon(grid, columnsDefinitions, config = {}, gridCustom = {}
         })
     }
 
+    const duplicateRow = () => {
+        const selectedRows = grid.gridApi.getSelectedNodes()
+        if (selectedRows.length === 0) {
+            notifications.showQuick('warning', 'Nothing selected')
+            return
+        }
+        const selectedRow = selectedRows[0]
+        const newData = { ...selectedRow.data }
+        delete newData.id
+        delete newData.uniqueId
+        delete newData.new
+        delete newData.created_at
+        delete newData.updated_at
+        const columns = typeof grid.gridApi?.getColumns === 'function'
+            ? grid.gridApi.getColumns()
+            : []
+        columns.forEach((col) => {
+            const colDef = col.getColDef()
+            if (colDef?.custom?.unique && colDef.field) {
+                delete newData[colDef.field]
+            }
+        })
+        const newRowUniqueId = addRow()
+        const applyDuplicatedValues = () => setCurrentEditedRowValues(newRowUniqueId, newData)
+        applyDuplicatedValues()
+        setTimeout(applyDuplicatedValues, 0)
+        return newRowUniqueId
+    }
+
     const setChildrenHeightRecursively = (toggle, childrenIds = [], parentExpanded, switchToggle = false) => {
         childrenIds.forEach((childId) => {
             const row = grid.rowData.find((row) => row.id === childId)
@@ -1293,6 +1322,7 @@ export function useCommon(grid, columnsDefinitions, config = {}, gridCustom = {}
             onGridKeyDownHandler,
             getColumnDefinitions,
             deleteRows,
+            duplicateRow,
             expandRows,
             setCustom,
             lockGrid,

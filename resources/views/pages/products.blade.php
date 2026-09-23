@@ -38,6 +38,8 @@
             height: 100%;
             flex: 1;
             min-height: 0;
+            display: flex;
+            flex-direction: column;
             overflow: auto;
             position: relative;
             isolation: isolate;
@@ -45,6 +47,9 @@
             background-size: cover;
             background-position: top;
             background-repeat: no-repeat;
+            & > .root-miniviews-section {
+                flex: 1 0 auto;
+            }
             &::before {
                 width: 100%;
                 height: 100%;

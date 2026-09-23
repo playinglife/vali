@@ -3,16 +3,6 @@
 
 @import "gridlex/dist/gridlex.min.css";
 
-// Gridlex [class*=grid-] also matches AG Grid 36 internals (ag-grid-viewport, etc.)
-[class*="ag-grid-"] {
-  flex-wrap: nowrap;
-  margin-left: 0;
-  margin-right: 0;
-}
-.ag-grid-viewport {
-  display: block;
-}
-
 @import "variables.scss";
 
 html {
@@ -188,9 +178,7 @@ a.button:not(.ignore-global):not(.ag-button):hover {
 
 
 // INPUTS
-input,
-select,
-textarea {
+:is(input, select, textarea):not(.ag-root-wrapper :is(input, select, textarea)) {
   background-color: white;
   border-radius: var(--border-radius-small);
   border: 1px solid var(--color-border);
